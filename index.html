@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>NimYAML - YAML Implementation in the Nim Programming Language</title>
+    <meta charset="utf-8"/>
+    <style>
+    body {
+      width: 920px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    textarea {
+      width: 100%;
+      height: 100%;
+      font: "Source Code Pro", Menlo, "Courier New", Courier, monospace;
+    }
+    .style-option {
+      display: inline-block;
+      margin-right: 20px;
+    }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>NimYAML</h1>
+      <h2>YAML Implementation in the Nim Programming Language</h2>
+    </header>
+    <article>
+      <section>
+        <p><strong>NimYAML</strong> is a <a href="http://yaml.org/">YAML</a>
+           implementation in the <a href="http://nim-lang.org/">Nim</a>
+           programming language. It focuses on performance and completeness.
+           It features a sequential parser which can be used to process large
+           YAML (or JSON) streams without loading the complete data into memory.
+        </p>
+      </section>
+      <section>
+        <h2>Testing Ground</h2>
+        <table style="width: 100%; table-layout: fixed">
+          <thead>
+            <tr>
+              <th>Input</th>
+              <th>Output</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="width: 50%; height: 400px; vertical-align: top;">
+                <textarea id="yaml-input" style="width: 100%; height: 100%">
+ - test some
+ - {YAML: here}
+ - foo: bar
+   [1, 2, 3]: !!str "string"
+ - 
+   ? &amp;a anchor
+   : !!bool yes
+   ? reference to anchor
+   : *a</textarea>
+              </td>
+              <td style="width: 50%; vertical-align: top; height: 400px">
+                <div style="width:100%; height:100%; overflow: scroll">
+                  <pre id="yaml-output" style="width: 100%"/>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div id="style-options">
+          <p>Output style:</p>
+          <div class="style-option">
+            <input type="radio" name="style" id="style-minimal" value="minimal"/>
+            <label for="style-minimal">Minimal</label>
+          </div>
+          <div class="style-option">
+            <input type="radio" name="style" id="style-default" value="default"/>
+            <label for="style-default">Default</label>
+          </div>
+          <div class="style-option">
+            <input type="radio" name="style" id="style-canonical" value="canonical" checked="checked"/>
+            <label for="style-canonical">Canonical</label>
+          </div>
+          <div class="style-option">
+            <input type="radio" name="style" id="style-block" value="block"/>
+            <label for="style-block">Block Only</label>
+          </div>
+          <div class="style-option">
+            <input type="radio" name="style" id="style-json" value="json"/>
+            <label for="style-json">JSON</label>
+          </div>
+        </div>
+      </section>
+    </article>
+    <script type="text/javascript">
+    function parse() {
+      var r = new XMLHttpRequest();
+      var params = "style=" + encodeURIComponent(document.querySelector(
+        "input[name=style]:checked").value) + "&input=" + encodeURIComponent(
+        document.getElementById("yaml-input").value);
+      r.open("POST", "http://flyx.org:5000", true);
+      r.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      r.onreadystatechange = function() {
+        if (r.readyState == 4) {
+          var output = document.getElementById("yaml-output");
+          if (r.status == 200) {
+            var result = JSON.parse(r.responseText);
+            switch(result.code) {
+            case 0:
+              output.innerText = result.output;
+              output.style.color = "black";
+              break;
+            case 1:
+              output.innerText = "Parser error at line " + result.line +
+                  ", column " + result.column + ":\n" + result.message +
+                  "\n\n" + result.detail;
+              output.style.color = "yellow";
+              break;
+            case 2:
+              output.innerText = "Presenter error:\n" + result.message;
+              output.style.color = "yellow";
+              break;
+            }
+          } else {
+            output.innerText = "Exception occurred on server:\n\n" +
+                r.responseText;
+            output.style.color = "red";
+          }
+        }
+      }
+      r.send(params);
+    }
+    document.getElementById("yaml-input").addEventListener('input', parse,
+        false);
+    var radios = document.querySelectorAll("input[name=style]");
+    for (var i = 0; i < radios.length; ++i) {
+      radios[i].onclick = parse;
+    }
+    parse();
+    </script>
+  </body>
+</html>
