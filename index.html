@@ -125,8 +125,13 @@
               output.style.color = "orange";
               break;
             }
+          } else if (r.status == 0) {
+            output.innerText =
+                "YAML parser server does not seem to be available.";
+            output.style.color = "red";
           } else {
-            output.innerText = "Exception occurred on server:\n\n" +
+            output.innerText = "Status: " + r.status +
+                "\nException occurred on server:\n\n" +
                 r.responseText;
             output.style.color = "red";
           }
