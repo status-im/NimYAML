@@ -12,7 +12,12 @@
     textarea {
       width: 100%;
       height: 100%;
-      font: "Source Code Pro", Menlo, "Courier New", Courier, monospace;
+    }
+    textarea, pre {
+      font-family: "Source Code Pro", Menlo, "Courier New", Courier, monospace;
+    }
+    pre {
+      font-size: small;
     }
     .style-option {
       display: inline-block;
@@ -47,15 +52,16 @@
             <tr>
               <td style="width: 50%; height: 400px; vertical-align: top;">
                 <textarea id="yaml-input" style="width: 100%; height: 100%">
- - test some
- - {YAML: here}
- - foo: bar
-   [1, 2, 3]: !!str "string"
- - 
-   ? &amp;a anchor
-   : !!bool yes
-   ? reference to anchor
-   : *a</textarea>
+- test some
+- {YAML: here}
+- foo: bar
+  ? [1, 2, 3]
+  : !!str "string"
+- 
+  ? &amp;a anchor
+  : !!bool yes
+  ? reference to anchor
+  : *a</textarea>
               </td>
               <td style="width: 50%; vertical-align: top; height: 400px; padding-left: 10px">
                 <div style="width:100%; height:100%; overflow: scroll">
