@@ -133,7 +133,9 @@
   <span class="Identifier">tsNone</span><span class="Other">,</span> <span class="Identifier">tsRootOnly</span><span class="Other">,</span> <span class="Identifier">tsAll</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L6"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 
 </dl></section>
@@ -146,7 +148,9 @@
 contains all local tags that are used for type serialization. Does not contain any of the specific default tags for sequences or maps, as those are not suited for Nim's static type system.</p>
 <p>Should not be modified manually. Will be extended by <a class="reference external" href="#make-serializable-make-serializable-stmt-stmt">make_serializable &lt;#make_serializable,stmt,stmt</a>.</p>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L23"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 
 </dl></section>
@@ -156,138 +160,190 @@ contains all local tags that are used for type serialization. Does not contain a
 <dt id="lazyLoadTag"><a name="lazyLoadTag,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">lazyLoadTag</span><span class="Other">(</span><span class="Identifier">uri</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other">{.</span><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L45"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="prepend"><a name="prepend,YamlStreamEvent,YamlStream"></a><pre><span class="Keyword">proc</span> <span class="Identifier">prepend</span><span class="Other">(</span><span class="Identifier">event</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span><span class="Other">;</span> <span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L216"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="yamlTag"><a name="yamlTag,typedesc[string]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other">{.</span><span class="Identifier">inline</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L222"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="safeTagUri"><a name="safeTagUri,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">safeTagUri</span><span class="Other">(</span><span class="Identifier">id</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L224"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="construct"><a name="construct,YamlStream,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">construct</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">string</span><span class="Other">)</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L231"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="serialize"><a name="serialize,string,TagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Identifier">tsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L239"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="yamlTag"><a name="yamlTag,typedesc[int]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">int</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other">{.</span><span class="Identifier">inline</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L244"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="construct"><a name="construct,YamlStream,int"></a><pre><span class="Keyword">proc</span> <span class="Identifier">construct</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">int</span><span class="Other">)</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">OverflowError</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L246"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="serialize"><a name="serialize,int,TagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Identifier">tsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L256"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="yamlTag"><a name="yamlTag,typedesc[int64]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">int64</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other">{.</span><span class="Identifier">inline</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L260"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="contruct"><a name="contruct,YamlStream,int64"></a><pre><span class="Keyword">proc</span> <span class="Identifier">contruct</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">int64</span><span class="Other">)</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L262"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="serialize"><a name="serialize,int64,TagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">int64</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Identifier">tsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L272"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="yamlTag"><a name="yamlTag,typedesc[float]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">float</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other">{.</span><span class="Identifier">inline</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L276"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="construct"><a name="construct,YamlStream,float"></a><pre><span class="Keyword">proc</span> <span class="Identifier">construct</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">float</span><span class="Other">)</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L278"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="serialize"><a name="serialize,float,TagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">float</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Identifier">tsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L300"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="yamlTag"><a name="yamlTag,typedesc[bool]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">bool</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other">{.</span><span class="Identifier">inline</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L315"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="construct"><a name="construct,YamlStream,bool"></a><pre><span class="Keyword">proc</span> <span class="Identifier">construct</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">bool</span><span class="Other">)</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L317"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="serialize"><a name="serialize,bool,TagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">bool</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Identifier">tsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L335"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="yamlTag"><a name="yamlTag,typedesc[seq[I]]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Identifier">I</span><span class="Other">,</span> <span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">I</span><span class="Other">]</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other">{.</span><span class="Identifier">inline</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L340"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="construct"><a name="construct,YamlStream,seq[T]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">construct</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L344"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="serialize"><a name="serialize,seq[T],TagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Identifier">tsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L365"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="yamlTag"><a name="yamlTag,typedesc[Table[K,V]]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">,</span> <span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other">{.</span><span class="Identifier">inline</span><span class="Other">.}</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L377"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="construct"><a name="construct,YamlStream,Table[K,V]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">construct</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L387"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="serialize"><a name="serialize,Table[K,V],TagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Identifier">tsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L410"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="load"><a name="load,Stream,K"></a><pre><span class="Keyword">proc</span> <span class="Identifier">load</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">input</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">;</span> <span class="Identifier">target</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">K</span><span class="Other">)</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L426"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="dump"><a name="dump,K,Stream,PresentationStyle,TagStyle,int"></a><pre><span class="Keyword">proc</span> <span class="Identifier">dump</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">K</span><span class="Other">;</span> <span class="Identifier">target</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">;</span> <span class="Identifier">style</span><span class="Other">:</span> <span class="Identifier">PresentationStyle</span> <span class="Other">=</span> <span class="Identifier">psDefault</span><span class="Other">;</span>
             <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Identifier">tsRootOnly</span><span class="Other">;</span> <span class="Identifier">indentationStep</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="DecNumber">2</span><span class="Other">)</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L434"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 
 </dl></section>
@@ -297,7 +353,9 @@ contains all local tags that are used for type serialization. Does not contain a
 <dt id="make_serializable"><a name="make_serializable.m,stmt"></a><pre><span class="Keyword">macro</span> <span class="Identifier">make_serializable</span><span class="Other">(</span><span class="Identifier">types</span><span class="Other">:</span> <span class="Identifier">stmt</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">stmt</span></pre></dt>
 <dd>
 
-
+&nbsp;&nbsp;<a
+href="https://github.com/flyx/NimYAML/blob/b7828884bd43a044fa8329f27459459547be9ca3/serialization.nim#L51"
+class="link-seesrc" target="_blank">Source</a>
 </dd>
 
 </dl></section>
@@ -309,7 +367,7 @@ contains all local tags that are used for type serialization. Does not contain a
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2016-01-24 18:29:31 UTC</small>
+        <small>Made with Nim. Generated: 2016-01-24 19:17:16 UTC</small>
       </div>
     </div>
   </div>
