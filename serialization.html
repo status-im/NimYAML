@@ -34,9 +34,9 @@
 <li>
   <a class="reference reference-toplevel" href="#7" id="57">Types</a>
   <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#YamlTagStyle"
-    title="YamlTagStyle = enum
-  ytsNone, ytsRootOnly, ytsAll"><wbr />Yaml<wbr />Tag<wbr />Style</a></li>
+      <li><a class="reference" href="#TagStyle"
+    title="TagStyle = enum
+  tsNone, tsRootOnly, tsAll"><wbr />Tag<wbr />Style</a></li>
 
   </ul>
 </li>
@@ -61,49 +61,49 @@
     title="safeTagUri(id: TagId): string"><wbr />safe<wbr />Tag<wbr />Uri</a></li>
   <li><a class="reference" href="#construct,YamlStream,string"
     title="construct(s: YamlStream; result: var string)"><wbr />construct</a></li>
-  <li><a class="reference" href="#serialize,string,YamlTagStyle"
-    title="serialize(value: string; tagStyle: YamlTagStyle = ytsNone): YamlStream"><wbr />serialize</a></li>
+  <li><a class="reference" href="#serialize,string,TagStyle"
+    title="serialize(value: string; tagStyle: TagStyle = tsNone): YamlStream"><wbr />serialize</a></li>
   <li><a class="reference" href="#yamlTag,typedesc[int]"
     title="yamlTag[](T: typedesc[int]): TagId"><wbr />yaml<wbr />Tag</a></li>
   <li><a class="reference" href="#construct,YamlStream,int"
     title="construct(s: YamlStream; result: var int)"><wbr />construct</a></li>
-  <li><a class="reference" href="#serialize,int,YamlTagStyle"
-    title="serialize(value: int; tagStyle: YamlTagStyle = ytsNone): YamlStream"><wbr />serialize</a></li>
+  <li><a class="reference" href="#serialize,int,TagStyle"
+    title="serialize(value: int; tagStyle: TagStyle = tsNone): YamlStream"><wbr />serialize</a></li>
   <li><a class="reference" href="#yamlTag,typedesc[int64]"
     title="yamlTag[](T: typedesc[int64]): TagId"><wbr />yaml<wbr />Tag</a></li>
   <li><a class="reference" href="#contruct,YamlStream,int64"
     title="contruct(s: YamlStream; result: var int64)"><wbr />contruct</a></li>
-  <li><a class="reference" href="#serialize,int64,YamlTagStyle"
-    title="serialize(value: int64; tagStyle: YamlTagStyle = ytsNone): YamlStream"><wbr />serialize</a></li>
+  <li><a class="reference" href="#serialize,int64,TagStyle"
+    title="serialize(value: int64; tagStyle: TagStyle = tsNone): YamlStream"><wbr />serialize</a></li>
   <li><a class="reference" href="#yamlTag,typedesc[float]"
     title="yamlTag[](T: typedesc[float]): TagId"><wbr />yaml<wbr />Tag</a></li>
   <li><a class="reference" href="#construct,YamlStream,float"
     title="construct(s: YamlStream; result: var float)"><wbr />construct</a></li>
-  <li><a class="reference" href="#serialize,float,YamlTagStyle"
-    title="serialize(value: float; tagStyle: YamlTagStyle = ytsNone): YamlStream"><wbr />serialize</a></li>
+  <li><a class="reference" href="#serialize,float,TagStyle"
+    title="serialize(value: float; tagStyle: TagStyle = tsNone): YamlStream"><wbr />serialize</a></li>
   <li><a class="reference" href="#yamlTag,typedesc[bool]"
     title="yamlTag[](T: typedesc[bool]): TagId"><wbr />yaml<wbr />Tag</a></li>
   <li><a class="reference" href="#construct,YamlStream,bool"
     title="construct(s: YamlStream; result: var bool)"><wbr />construct</a></li>
-  <li><a class="reference" href="#serialize,bool,YamlTagStyle"
-    title="serialize(value: bool; tagStyle: YamlTagStyle = ytsNone): YamlStream"><wbr />serialize</a></li>
+  <li><a class="reference" href="#serialize,bool,TagStyle"
+    title="serialize(value: bool; tagStyle: TagStyle = tsNone): YamlStream"><wbr />serialize</a></li>
   <li><a class="reference" href="#yamlTag,typedesc[seq[I]]"
     title="yamlTag[I, ](T: typedesc[seq[I]]): TagId"><wbr />yaml<wbr />Tag</a></li>
   <li><a class="reference" href="#construct,YamlStream,seq[T]"
     title="construct[T](s: YamlStream; result: var seq[T])"><wbr />construct</a></li>
-  <li><a class="reference" href="#serialize,seq[T],YamlTagStyle"
-    title="serialize[T](value: seq[T]; tagStyle: YamlTagStyle = ytsNone): YamlStream"><wbr />serialize</a></li>
+  <li><a class="reference" href="#serialize,seq[T],TagStyle"
+    title="serialize[T](value: seq[T]; tagStyle: TagStyle = tsNone): YamlStream"><wbr />serialize</a></li>
   <li><a class="reference" href="#yamlTag,typedesc[Table[K,V]]"
     title="yamlTag[K, V, ](T: typedesc[Table[K, V]]): TagId"><wbr />yaml<wbr />Tag</a></li>
   <li><a class="reference" href="#construct,YamlStream,Table[K,V]"
     title="construct[K, V](s: YamlStream; result: var Table[K, V])"><wbr />construct</a></li>
-  <li><a class="reference" href="#serialize,Table[K,V],YamlTagStyle"
-    title="serialize[K, V](value: Table[K, V]; tagStyle: YamlTagStyle = ytsNone): YamlStream"><wbr />serialize</a></li>
+  <li><a class="reference" href="#serialize,Table[K,V],TagStyle"
+    title="serialize[K, V](value: Table[K, V]; tagStyle: TagStyle = tsNone): YamlStream"><wbr />serialize</a></li>
   <li><a class="reference" href="#load,Stream,K"
     title="load[K](input: Stream; target: var K)"><wbr />load</a></li>
-  <li><a class="reference" href="#dump,K,Stream,YamlPresentationStyle,YamlTagStyle,int"
-    title="dump[K](value: K; target: Stream; style: YamlPresentationStyle = ypsDefault;
-        tagStyle: YamlTagStyle = ytsRootOnly; indentationStep: int = 2)"><wbr />dump</a></li>
+  <li><a class="reference" href="#dump,K,Stream,PresentationStyle,TagStyle,int"
+    title="dump[K](value: K; target: Stream; style: PresentationStyle = psDefault;
+        tagStyle: TagStyle = tsRootOnly; indentationStep: int = 2)"><wbr />dump</a></li>
 
   </ul>
 </li>
@@ -124,13 +124,13 @@
   <section id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a class="reference external" href="../yaml.html">../yaml</a>, <a class="reference external" href="macros.html">macros</a>, <a class="reference external" href="strutils.html">strutils</a>, <a class="reference external" href="streams.html">streams</a>, <a class="reference external" href="tables.html">tables</a>, <a class="reference external" href="json.html">json</a>, <a class="reference external" href="hashes.html">hashes</a>, <a class="reference external" href="re.html">re</a>
+<a class="reference external" href="../yaml.html">../yaml</a>, <a class="reference external" href="macros.html">macros</a>, <a class="reference external" href="strutils.html">strutils</a>, <a class="reference external" href="streams.html">streams</a>, <a class="reference external" href="tables.html">tables</a>, <a class="reference external" href="json.html">json</a>, <a class="reference external" href="hashes.html">hashes</a>
 </dl></section>
 <section id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
 <dl class="item">
-<dt id="YamlTagStyle"><a name="YamlTagStyle"></a><pre><span class="Identifier">YamlTagStyle</span> <span class="Other">=</span> <span class="Keyword">enum</span>
-  <span class="Identifier">ytsNone</span><span class="Other">,</span> <span class="Identifier">ytsRootOnly</span><span class="Other">,</span> <span class="Identifier">ytsAll</span></pre></dt>
+<dt id="TagStyle"><a name="TagStyle"></a><pre><span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Keyword">enum</span>
+  <span class="Identifier">tsNone</span><span class="Other">,</span> <span class="Identifier">tsRootOnly</span><span class="Other">,</span> <span class="Identifier">tsAll</span></pre></dt>
 <dd>
 
 
@@ -168,7 +168,7 @@ contains all local tags that are used for type serialization. Does not contain a
 
 
 </dd>
-<dt id="safeTagUri"><a name="safeTagUri,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">safeTagUri</span><span class="Other">(</span><span class="Identifier">id</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dt id="safeTagUri"><a name="safeTagUri,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">safeTagUri</span><span class="Other">(</span><span class="Identifier">id</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
 
@@ -178,8 +178,8 @@ contains all local tags that are used for type serialization. Does not contain a
 
 
 </dd>
-<dt id="serialize"><a name="serialize,string,YamlTagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">YamlTagStyle</span> <span class="Other">=</span> <span class="Identifier">ytsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other">{.</span>
-    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dt id="serialize"><a name="serialize,string,TagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Identifier">tsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
 
@@ -195,8 +195,7 @@ contains all local tags that are used for type serialization. Does not contain a
 
 
 </dd>
-<dt id="serialize"><a name="serialize,int,YamlTagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">YamlTagStyle</span> <span class="Other">=</span> <span class="Identifier">ytsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dt id="serialize"><a name="serialize,int,TagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Identifier">tsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
 
@@ -211,7 +210,7 @@ contains all local tags that are used for type serialization. Does not contain a
 
 
 </dd>
-<dt id="serialize"><a name="serialize,int64,YamlTagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">int64</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">YamlTagStyle</span> <span class="Other">=</span> <span class="Identifier">ytsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+<dt id="serialize"><a name="serialize,int64,TagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">int64</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Identifier">tsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
@@ -227,7 +226,7 @@ contains all local tags that are used for type serialization. Does not contain a
 
 
 </dd>
-<dt id="serialize"><a name="serialize,float,YamlTagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">float</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">YamlTagStyle</span> <span class="Other">=</span> <span class="Identifier">ytsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+<dt id="serialize"><a name="serialize,float,TagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">float</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Identifier">tsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
@@ -238,13 +237,12 @@ contains all local tags that are used for type serialization. Does not contain a
 
 
 </dd>
-<dt id="construct"><a name="construct,YamlStream,bool"></a><pre><span class="Keyword">proc</span> <span class="Identifier">construct</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">bool</span><span class="Other">)</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">RegexError</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dt id="construct"><a name="construct,YamlStream,bool"></a><pre><span class="Keyword">proc</span> <span class="Identifier">construct</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">bool</span><span class="Other">)</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
 
 </dd>
-<dt id="serialize"><a name="serialize,bool,YamlTagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">bool</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">YamlTagStyle</span> <span class="Other">=</span> <span class="Identifier">ytsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+<dt id="serialize"><a name="serialize,bool,TagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">bool</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Identifier">tsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 
@@ -260,7 +258,7 @@ contains all local tags that are used for type serialization. Does not contain a
 
 
 </dd>
-<dt id="serialize"><a name="serialize,seq[T],YamlTagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">YamlTagStyle</span> <span class="Other">=</span> <span class="Identifier">ytsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span></pre></dt>
+<dt id="serialize"><a name="serialize,seq[T],TagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Identifier">tsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span></pre></dt>
 <dd>
 
 
@@ -275,7 +273,7 @@ contains all local tags that are used for type serialization. Does not contain a
 
 
 </dd>
-<dt id="serialize"><a name="serialize,Table[K,V],YamlTagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">YamlTagStyle</span> <span class="Other">=</span> <span class="Identifier">ytsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span></pre></dt>
+<dt id="serialize"><a name="serialize,Table[K,V],TagStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Identifier">tsNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span></pre></dt>
 <dd>
 
 
@@ -285,8 +283,8 @@ contains all local tags that are used for type serialization. Does not contain a
 
 
 </dd>
-<dt id="dump"><a name="dump,K,Stream,YamlPresentationStyle,YamlTagStyle,int"></a><pre><span class="Keyword">proc</span> <span class="Identifier">dump</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">K</span><span class="Other">;</span> <span class="Identifier">target</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">;</span> <span class="Identifier">style</span><span class="Other">:</span> <span class="Identifier">YamlPresentationStyle</span> <span class="Other">=</span> <span class="Identifier">ypsDefault</span><span class="Other">;</span>
-            <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">YamlTagStyle</span> <span class="Other">=</span> <span class="Identifier">ytsRootOnly</span><span class="Other">;</span> <span class="Identifier">indentationStep</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="DecNumber">2</span><span class="Other">)</span></pre></dt>
+<dt id="dump"><a name="dump,K,Stream,PresentationStyle,TagStyle,int"></a><pre><span class="Keyword">proc</span> <span class="Identifier">dump</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">K</span><span class="Other">;</span> <span class="Identifier">target</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">;</span> <span class="Identifier">style</span><span class="Other">:</span> <span class="Identifier">PresentationStyle</span> <span class="Other">=</span> <span class="Identifier">psDefault</span><span class="Other">;</span>
+            <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Identifier">tsRootOnly</span><span class="Other">;</span> <span class="Identifier">indentationStep</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="DecNumber">2</span><span class="Other">)</span></pre></dt>
 <dd>
 
 
@@ -311,7 +309,7 @@ contains all local tags that are used for type serialization. Does not contain a
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2016-01-13 23:09:48 UTC</small>
+        <small>Made with Nim. Generated: 2016-01-24 18:29:31 UTC</small>
       </div>
     </div>
   </div>

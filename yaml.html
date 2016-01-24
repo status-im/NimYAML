@@ -34,10 +34,10 @@
 <li>
   <a class="reference reference-toplevel" href="#7" id="57">Types</a>
   <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#YamlTypeHint"
-    title="YamlTypeHint = enum
+      <li><a class="reference" href="#TypeHint"
+    title="TypeHint = enum
   yTypeInteger, yTypeFloat, yTypeFloatInf, yTypeFloatNaN, yTypeBoolTrue,
-  yTypeBoolFalse, yTypeNull, yTypeString, yTypeUnknown"><wbr />Yaml<wbr />Type<wbr />Hint</a></li>
+  yTypeBoolFalse, yTypeNull, yTypeUnknown"><wbr />Type<wbr />Hint</a></li>
   <li><a class="reference" href="#YamlStreamEventKind"
     title="YamlStreamEventKind = enum
   yamlStartDocument, yamlEndDocument, yamlStartMap, yamlEndMap, yamlStartSequence,
@@ -61,7 +61,6 @@
       scalarAnchor*: AnchorId
       scalarTag*: TagId
       scalarContent*: string
-      scalarType*: YamlTypeHint
 
   of yamlEndMap, yamlEndSequence, yamlStartDocument, yamlEndDocument:
       nil
@@ -70,21 +69,23 @@
       aliasTarget*: AnchorId"><wbr />Yaml<wbr />Stream<wbr />Event</a></li>
   <li><a class="reference" href="#YamlStream"
     title="YamlStream = iterator (): YamlStreamEvent"><wbr />Yaml<wbr />Stream</a></li>
-  <li><a class="reference" href="#YamlTagLibrary"
-    title="YamlTagLibrary = object
+  <li><a class="reference" href="#TagLibrary"
+    title="TagLibrary = ref object
   tags*: Table[string, TagId]
   nextCustomTagId*: TagId
-  secondaryPrefix*: string"><wbr />Yaml<wbr />Tag<wbr />Library</a></li>
-  <li><a class="reference" href="#YamlWarningCallback"
-    title="YamlWarningCallback = proc (line, column: int; lineContent: string; message: string)"><wbr />Yaml<wbr />Warning<wbr />Callback</a></li>
-  <li><a class="reference" href="#YamlSequentialParser"
-    title="YamlSequentialParser = ref object
-  tagLib: YamlTagLibrary
+  secondaryPrefix*: string"><wbr />Tag<wbr />Library</a></li>
+  <li><a class="reference" href="#WarningCallback"
+    title="WarningCallback = proc (line, column: int; lineContent: string; message: string)"><wbr />Warning<wbr />Callback</a></li>
+  <li><a class="reference" href="#YamlParser"
+    title="YamlParser = ref object
+  tagLib: TagLibrary
   anchors: OrderedTable[string, AnchorId]
-  callback: YamlWarningCallback"><wbr />Yaml<wbr />Sequential<wbr />Parser</a></li>
-  <li><a class="reference" href="#YamlPresentationStyle"
-    title="YamlPresentationStyle = enum
-  ypsMinimal, ypsCanonical, ypsDefault, ypsJson, ypsBlockOnly"><wbr />Yaml<wbr />Presentation<wbr />Style</a></li>
+  callback: WarningCallback
+  lexer: BaseLexer
+  tokenstart: int"><wbr />Yaml<wbr />Parser</a></li>
+  <li><a class="reference" href="#PresentationStyle"
+    title="PresentationStyle = enum
+  psMinimal, psCanonical, psDefault, psJson, psBlockOnly"><wbr />Presentation<wbr />Style</a></li>
   <li><a class="reference" href="#YamlLoadingError"
     title="YamlLoadingError = object of Exception
   line*: int                   ## line number (1-based) where the error was encountered
@@ -93,17 +94,19 @@
   lineContent*: string ## \
                      ## content of the line where the error was encountered. Includes a
                      ## second line with a marker ``^`` at the position where the error
-                     ## was encountered, as returned by ``lexbase.getCurrentLine``."><wbr />Yaml<wbr />Loading<wbr />Error</a></li>
+                     ## was encountered."><wbr />Yaml<wbr />Loading<wbr />Error</a></li>
   <li><a class="reference" href="#YamlParserError"
     title="YamlParserError = object of YamlLoadingError"><wbr />Yaml<wbr />Parser<wbr />Error</a></li>
   <li><a class="reference" href="#YamlPresenterJsonError"
     title="YamlPresenterJsonError = object of Exception"><wbr />Yaml<wbr />Presenter<wbr />Json<wbr />Error</a></li>
   <li><a class="reference" href="#YamlPresenterOutputError"
-    title="YamlPresenterOutputError = object of Exception
-  cause*: ref Exception"><wbr />Yaml<wbr />Presenter<wbr />Output<wbr />Error</a></li>
+    title="YamlPresenterOutputError = object of Exception"><wbr />Yaml<wbr />Presenter<wbr />Output<wbr />Error</a></li>
   <li><a class="reference" href="#YamlPresenterStreamError"
-    title="YamlPresenterStreamError = object of Exception
-  cause*: ref Exception"><wbr />Yaml<wbr />Presenter<wbr />Stream<wbr />Error</a></li>
+    title="YamlPresenterStreamError = object of Exception"><wbr />Yaml<wbr />Presenter<wbr />Stream<wbr />Error</a></li>
+  <li><a class="reference" href="#YamlConstructionError"
+    title="YamlConstructionError = object of YamlLoadingError"><wbr />Yaml<wbr />Construction<wbr />Error</a></li>
+  <li><a class="reference" href="#YamlConstructionStreamError"
+    title="YamlConstructionStreamError = object of YamlLoadingError"><wbr />Yaml<wbr />Construction<wbr />Stream<wbr />Error</a></li>
 
   </ul>
 </li>
@@ -166,18 +169,20 @@
     title="`$`(id: AnchorId): string"><wbr />`$`</a></li>
   <li><a class="reference" href="#hash,AnchorId"
     title="hash(id: AnchorId): Hash"><wbr />hash</a></li>
+  <li><a class="reference" href="#$,TagId"
+    title="`$`(id: TagId): string"><wbr />`$`</a></li>
   <li><a class="reference" href="#initTagLibrary,"
-    title="initTagLibrary(): YamlTagLibrary"><wbr />init<wbr />Tag<wbr />Library</a></li>
-  <li><a class="reference" href="#registerUri,YamlTagLibrary,string"
-    title="registerUri(tagLib: var YamlTagLibrary; uri: string): TagId"><wbr />register<wbr />Uri</a></li>
-  <li><a class="reference" href="#uri,YamlTagLibrary,TagId"
-    title="uri(tagLib: YamlTagLibrary; id: TagId): string"><wbr />uri</a></li>
-  <li><a class="reference" href="#failsafeTagLibrary,"
-    title="failsafeTagLibrary(): YamlTagLibrary"><wbr />failsafe<wbr />Tag<wbr />Library</a></li>
-  <li><a class="reference" href="#coreTagLibrary,"
-    title="coreTagLibrary(): YamlTagLibrary"><wbr />core<wbr />Tag<wbr />Library</a></li>
-  <li><a class="reference" href="#extendedTagLibrary,"
-    title="extendedTagLibrary(): YamlTagLibrary"><wbr />extended<wbr />Tag<wbr />Library</a></li>
+    title="initTagLibrary(): TagLibrary"><wbr />init<wbr />Tag<wbr />Library</a></li>
+  <li><a class="reference" href="#registerUri,TagLibrary,string"
+    title="registerUri(tagLib: TagLibrary; uri: string): TagId"><wbr />register<wbr />Uri</a></li>
+  <li><a class="reference" href="#uri,TagLibrary,TagId"
+    title="uri(tagLib: TagLibrary; id: TagId): string"><wbr />uri</a></li>
+  <li><a class="reference" href="#initFailsafeTagLibrary,"
+    title="initFailsafeTagLibrary(): TagLibrary"><wbr />init<wbr />Failsafe<wbr />Tag<wbr />Library</a></li>
+  <li><a class="reference" href="#initCoreTagLibrary,"
+    title="initCoreTagLibrary(): TagLibrary"><wbr />init<wbr />Core<wbr />Tag<wbr />Library</a></li>
+  <li><a class="reference" href="#initExtendedTagLibrary,"
+    title="initExtendedTagLibrary(): TagLibrary"><wbr />init<wbr />Extended<wbr />Tag<wbr />Library</a></li>
   <li><a class="reference" href="#==,YamlStreamEvent,YamlStreamEvent"
     title="`==`(left: YamlStreamEvent; right: YamlStreamEvent): bool"><wbr />`==`</a></li>
   <li><a class="reference" href="#$,YamlStreamEvent"
@@ -194,29 +199,34 @@
     title="startSeqEvent(tag: TagId = yTagQuestionMark; anchor: AnchorId = yAnchorNone): YamlStreamEvent"><wbr />start<wbr />Seq<wbr />Event</a></li>
   <li><a class="reference" href="#endSeqEvent,"
     title="endSeqEvent(): YamlStreamEvent"><wbr />end<wbr />Seq<wbr />Event</a></li>
-  <li><a class="reference" href="#scalarEvent,string,TagId,AnchorId,YamlTypeHint"
+  <li><a class="reference" href="#scalarEvent,string,TagId,AnchorId"
     title="scalarEvent(content: string = &quot;&quot;; tag: TagId = yTagQuestionMark;
-            anchor: AnchorId = yAnchorNone; typeHint: YamlTypeHint = yTypeUnknown): YamlStreamEvent"><wbr />scalar<wbr />Event</a></li>
-  <li><a class="reference" href="#$,TagId"
-    title="`$`(id: TagId): string"><wbr />`$`</a></li>
-  <li><a class="reference" href="#newParser,YamlTagLibrary"
-    title="newParser(tagLib: YamlTagLibrary): YamlSequentialParser"><wbr />new<wbr />Parser</a></li>
-  <li><a class="reference" href="#setWarningCallback,YamlSequentialParser,YamlWarningCallback"
-    title="setWarningCallback(parser: YamlSequentialParser; callback: YamlWarningCallback)"><wbr />set<wbr />Warning<wbr />Callback</a></li>
-  <li><a class="reference" href="#anchor,YamlSequentialParser,AnchorId"
-    title="anchor(parser: YamlSequentialParser; id: AnchorId): string"><wbr />anchor</a></li>
-  <li><a class="reference" href="#parse,YamlSequentialParser,Stream"
-    title="parse(parser: YamlSequentialParser; s: Stream): YamlStream"><wbr />parse</a></li>
+            anchor: AnchorId = yAnchorNone): YamlStreamEvent"><wbr />scalar<wbr />Event</a></li>
+  <li><a class="reference" href="#aliasEvent,AnchorId"
+    title="aliasEvent(anchor: AnchorId): YamlStreamEvent"><wbr />alias<wbr />Event</a></li>
   <li><a class="reference" href="#constructJson,YamlStream"
     title="constructJson(s: YamlStream): seq[JsonNode]"><wbr />construct<wbr />Json</a></li>
   <li><a class="reference" href="#loadToJson,Stream"
     title="loadToJson(s: Stream): seq[JsonNode]"><wbr />load<wbr />To<wbr />Json</a></li>
-  <li><a class="reference" href="#present,YamlStream,Stream,YamlTagLibrary,YamlPresentationStyle,int"
-    title="present(s: YamlStream; target: Stream; tagLib: YamlTagLibrary;
-        style: YamlPresentationStyle = ypsDefault; indentationStep: int = 2)"><wbr />present</a></li>
-  <li><a class="reference" href="#transform,Stream,Stream,YamlPresentationStyle,int"
-    title="transform(input: Stream; output: Stream; style: YamlPresentationStyle;
+  <li><a class="reference" href="#present,YamlStream,Stream,TagLibrary,PresentationStyle,int"
+    title="present(s: YamlStream; target: Stream; tagLib: TagLibrary;
+        style: PresentationStyle = psDefault; indentationStep: int = 2)"><wbr />present</a></li>
+  <li><a class="reference" href="#transform,Stream,Stream,PresentationStyle,int"
+    title="transform(input: Stream; output: Stream; style: PresentationStyle;
           indentationStep: int = 2)"><wbr />transform</a></li>
+  <li><a class="reference" href="#guessType,string"
+    title="guessType(scalar: string): TypeHint"><wbr />guess<wbr />Type</a></li>
+  <li><a class="reference" href="#newYamlParser,TagLibrary,WarningCallback"
+    title="newYamlParser(tagLib: TagLibrary = initExtendedTagLibrary();
+              callback: WarningCallback = nil): YamlParser"><wbr />new<wbr />Yaml<wbr />Parser</a></li>
+  <li><a class="reference" href="#getLineNumber,YamlParser"
+    title="getLineNumber(p: YamlParser): int"><wbr />get<wbr />Line<wbr />Number</a></li>
+  <li><a class="reference" href="#getColNumber,YamlParser"
+    title="getColNumber(p: YamlParser): int"><wbr />get<wbr />Col<wbr />Number</a></li>
+  <li><a class="reference" href="#getLineContent,YamlParser,bool"
+    title="getLineContent(p: YamlParser; marker: bool = true): string"><wbr />get<wbr />Line<wbr />Content</a></li>
+  <li><a class="reference" href="#parse,YamlParser,Stream"
+    title="parse(p: YamlParser; s: Stream): YamlStream"><wbr />parse</a></li>
 
   </ul>
 </li>
@@ -236,11 +246,13 @@
 <section id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
 <dl class="item">
-<dt id="YamlTypeHint"><a name="YamlTypeHint"></a><pre><span class="Identifier">YamlTypeHint</span> <span class="Other">=</span> <span class="Keyword">enum</span>
+<dt id="TypeHint"><a name="TypeHint"></a><pre><span class="Identifier">TypeHint</span> <span class="Other">=</span> <span class="Keyword">enum</span>
   <span class="Identifier">yTypeInteger</span><span class="Other">,</span> <span class="Identifier">yTypeFloat</span><span class="Other">,</span> <span class="Identifier">yTypeFloatInf</span><span class="Other">,</span> <span class="Identifier">yTypeFloatNaN</span><span class="Other">,</span> <span class="Identifier">yTypeBoolTrue</span><span class="Other">,</span>
-  <span class="Identifier">yTypeBoolFalse</span><span class="Other">,</span> <span class="Identifier">yTypeNull</span><span class="Other">,</span> <span class="Identifier">yTypeString</span><span class="Other">,</span> <span class="Identifier">yTypeUnknown</span></pre></dt>
+  <span class="Identifier">yTypeBoolFalse</span><span class="Other">,</span> <span class="Identifier">yTypeNull</span><span class="Other">,</span> <span class="Identifier">yTypeUnknown</span></pre></dt>
 <dd>
-A type hint is a friendly message from the YAML lexer, telling you it thinks a scalar string probably is of a certain type. You are not required to adhere to this information. The first matching RegEx will be the type hint of a scalar string.<table border="1" class="docutils"><tr><th>Name</th><th>RegEx</th></tr>
+<p>A type hint can be computed from scalar content and tells you what NimYAML thinks the scalar's type is. It is generated by <a class="reference external" href="#guessType,string,TypeHint">guessType</a> The first matching RegEx in the following table will be the type hint of a scalar string.</p>
+<p>You can use it to determine the type of YAML scalars that have a '?' non-specific tag, but using this feature is completely optional.</p>
+<table border="1" class="docutils"><tr><th>Name</th><th>RegEx</th></tr>
 <tr><td><tt class="docutils literal"><span class="pre">yTypeInteger</span></tt></td><td><tt class="docutils literal"><span class="pre">0 | -? [1-9] [0-9]*</span></tt></td></tr>
 <tr><td><tt class="docutils literal"><span class="pre">yTypeFloat</span></tt></td><td><tt class="docutils literal"><span class="pre">-? [1-9] ( \. [0-9]* [1-9] )? ( e [-+] [1-9] [0-9]* )?</span></tt></td></tr>
 <tr><td><tt class="docutils literal"><span class="pre">yTypeFloatInf</span></tt></td><td><tt class="docutils literal"><span class="pre">-? \. (inf | Inf | INF)</span></tt></td></tr>
@@ -248,10 +260,8 @@ A type hint is a friendly message from the YAML lexer, telling you it thinks a s
 <tr><td><tt class="docutils literal"><span class="pre">yTypeBoolTrue</span></tt></td><td><tt class="docutils literal"><span class="pre">y|Y|yes|Yes|YES|true|True|TRUE|on|On|ON</span></tt></td></tr>
 <tr><td><tt class="docutils literal"><span class="pre">yTypeBoolFalse</span></tt></td><td><tt class="docutils literal"><span class="pre">n|N|no|No|NO|false|False|FALSE|off|Off|OFF</span></tt></td></tr>
 <tr><td><tt class="docutils literal"><span class="pre">yTypeNull</span></tt></td><td><tt class="docutils literal"><span class="pre">~ | null | Null | NULL</span></tt></td></tr>
-<tr><td><tt class="docutils literal"><span class="pre">yTypeString</span></tt></td><td><em>none</em></td></tr>
 <tr><td><tt class="docutils literal"><span class="pre">yTypeUnknown</span></tt></td><td><tt class="docutils literal"><span class="pre">*</span></tt></td></tr>
-</table><p>The value <cite>yTypeString</cite> is not returned based on RegExes, but for scalars that are quoted within the YAML input character stream.</p>
-
+</table>
 
 </dd>
 <dt id="YamlStreamEventKind"><a name="YamlStreamEventKind"></a><pre><span class="Identifier">YamlStreamEventKind</span> <span class="Other">=</span> <span class="Keyword">enum</span>
@@ -263,14 +273,16 @@ Kinds of YAML events that may occur in an <tt class="docutils literal"><span cla
 </dd>
 <dt id="TagId"><a name="TagId"></a><pre><span class="Identifier">TagId</span> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">int</span></pre></dt>
 <dd>
+<p>
+A <tt class="docutils literal"><span class="pre">TagId</span></tt> identifies a tag URI, like for example <tt class="docutils literal"><span class="pre">&quot;tag:yaml.org,2002:str&quot;</span></tt>. The URI corresponding to a <tt class="docutils literal"><span class="pre">TagId</span></tt> can be queried from the <a class="reference external" href="#TagLibrary">TagLibrary</a> which was used to create this <tt class="docutils literal"><span class="pre">TagId</span></tt>; e.g. when you parse a YAML character stream, the <tt class="docutils literal"><span class="pre">TagLibrary</span></tt> of the parser is the one which generates the resulting <tt class="docutils literal"><span class="pre">TagId</span></tt> s.</p>
+<p>URI strings are mapped to <tt class="docutils literal"><span class="pre">TagId</span></tt> s for efficiency  reasons (you do not need to compare strings every time) and to be able to discover unknown tag URIs early in the parsing process.</p>
 
-A <tt class="docutils literal"><span class="pre">TagId</span></tt> identifies a tag URI, like for example <tt class="docutils literal"><span class="pre">&quot;tag:yaml.org,2002:str&quot;</span></tt>. The URI corresponding to a <tt class="docutils literal"><span class="pre">TagId</span></tt> can be queried from the <a class="reference external" href="#YamlTagLibrary">YamlTagLibrary</a> which was used to create this <tt class="docutils literal"><span class="pre">TagId</span></tt> with <a class="reference external" href="#uri,YamlTagLibrary,TagId">uri</a>. URI strings are mapped to <tt class="docutils literal"><span class="pre">TagId</span></tt> s for efficiency  reasons (you do not need to compare strings every time) and to be able to discover unknown tag URIs early in the parsing process.
 
 </dd>
 <dt id="AnchorId"><a name="AnchorId"></a><pre><span class="Identifier">AnchorId</span> <span class="Other">=</span> <span class="Keyword">distinct</span> <span class="Identifier">int</span></pre></dt>
 <dd>
 
-An <tt class="docutils literal"><span class="pre">AnchorId</span></tt> identifies an anchor in the current document. It becomes invalid as soon as the current document scope is invalidated (for example, because the parser yielded a <tt class="docutils literal"><span class="pre">yamlEndDocument</span></tt> event). <tt class="docutils literal"><span class="pre">AnchorId</span></tt> s exists because of efficiency, much like <tt class="docutils literal"><span class="pre">TagId</span></tt> s. The actual anchor name can be queried with <a class="reference external" href="#anchor,YamlSequentialParser,AnchorId">anchor</a>.
+An <tt class="docutils literal"><span class="pre">AnchorId</span></tt> identifies an anchor in the current document. It becomes invalid as soon as the current document scope is invalidated (for example, because the parser yielded a <tt class="docutils literal"><span class="pre">yamlEndDocument</span></tt> event). <tt class="docutils literal"><span class="pre">AnchorId</span></tt> s exists because of efficiency, much like <tt class="docutils literal"><span class="pre">TagId</span></tt> s. The actual anchor name is a presentation detail and cannot be queried by the user.
 
 </dd>
 <dt id="YamlStreamEvent"><a name="YamlStreamEvent"></a><pre><span class="Identifier">YamlStreamEvent</span> <span class="Other">=</span> <span class="Keyword">object</span>
@@ -287,7 +299,6 @@ An <tt class="docutils literal"><span class="pre">AnchorId</span></tt> identifie
       <span class="Identifier">scalarAnchor</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">AnchorId</span>
       <span class="Identifier">scalarTag</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">TagId</span>
       <span class="Identifier">scalarContent</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
-      <span class="Identifier">scalarType</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">YamlTypeHint</span>
 
   <span class="Keyword">of</span> <span class="Identifier">yamlEndMap</span><span class="Other">,</span> <span class="Identifier">yamlEndSequence</span><span class="Other">,</span> <span class="Identifier">yamlStartDocument</span><span class="Other">,</span> <span class="Identifier">yamlEndDocument</span><span class="Other">:</span>
       <span class="Keyword">nil</span>
@@ -298,33 +309,32 @@ An <tt class="docutils literal"><span class="pre">AnchorId</span></tt> identifie
   </pre></dt>
 <dd>
 <p>An element from a <a class="reference external" href="#YamlStream">YamlStream</a>. Events that start an object (<tt class="docutils literal"><span class="pre">yamlStartMap</span></tt>, <tt class="docutils literal"><span class="pre">yamlStartSequence</span></tt>, <tt class="docutils literal"><span class="pre">yamlScalar</span></tt>) have an optional anchor and a tag associated with them. The anchor will be set to <tt class="docutils literal"><span class="pre">yAnchorNone</span></tt> if it doesn't exist.</p>
-<p>A non-existing tag in the YAML character stream will be resolved to the non-specific tags <tt class="docutils literal"><span class="pre">?</span></tt> or <tt class="docutils literal"><span class="pre">!</span></tt> according to the YAML specification. These are by convention mapped to the <tt class="docutils literal"><span class="pre">TagId</span></tt> s <tt class="docutils literal"><span class="pre">yTagQuestionMark</span></tt> and <tt class="docutils literal"><span class="pre">yTagExclamationMark</span></tt> respectively. Mapping is done by a <a class="reference external" href="#YamlTagLibrary">YamlTagLibrary</a>.</p>
-<p>The value <tt class="docutils literal"><span class="pre">scalarType</span></tt> is a hint from the lexer, see <a class="reference external" href="#YamlTypeHint">YamlTypeHint</a>.</p>
+<p>A non-existing tag in the YAML character stream will be resolved to the non-specific tags <tt class="docutils literal"><span class="pre">?</span></tt> or <tt class="docutils literal"><span class="pre">!</span></tt> according to the YAML specification. These are by convention mapped to the <tt class="docutils literal"><span class="pre">TagId</span></tt> s <tt class="docutils literal"><span class="pre">yTagQuestionMark</span></tt> and <tt class="docutils literal"><span class="pre">yTagExclamationMark</span></tt> respectively. Mapping is done by a <a class="reference external" href="#TagLibrary">TagLibrary</a>.</p>
 
 
 </dd>
 <dt id="YamlStream"><a name="YamlStream"></a><pre><span class="Identifier">YamlStream</span> <span class="Other">=</span> <span class="Keyword">iterator</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span></pre></dt>
 <dd>
 <p>
-A <tt class="docutils literal"><span class="pre">YamlStream</span></tt> is an iterator that yields a well-formed stream of <tt class="docutils literal"><span class="pre">YamlStreamEvents</span></tt>. Well-formed means that every <tt class="docutils literal"><span class="pre">yamlStartMap</span></tt> is terminated by a <tt class="docutils literal"><span class="pre">yamlEndMap</span></tt>, every <tt class="docutils literal"><span class="pre">yamlStartSequence</span></tt> is terminated by a <tt class="docutils literal"><span class="pre">yamlEndSequence</span></tt> and every <tt class="docutils literal"><span class="pre">yamlStartDocument</span></tt> is terminated by a <tt class="docutils literal"><span class="pre">yamlEndDocument</span></tt>.</p>
+A <tt class="docutils literal"><span class="pre">YamlStream</span></tt> is an iterator that yields a well-formed stream of <tt class="docutils literal"><span class="pre">YamlStreamEvents</span></tt>. Well-formed means that every <tt class="docutils literal"><span class="pre">yamlStartMap</span></tt> is terminated by a <tt class="docutils literal"><span class="pre">yamlEndMap</span></tt>, every <tt class="docutils literal"><span class="pre">yamlStartSequence</span></tt> is terminated by a <tt class="docutils literal"><span class="pre">yamlEndSequence</span></tt> and every <tt class="docutils literal"><span class="pre">yamlStartDocument</span></tt> is terminated by a <tt class="docutils literal"><span class="pre">yamlEndDocument</span></tt>. Moreover, every emitted map has an even number of children.</p>
 <p>The creator of a <tt class="docutils literal"><span class="pre">YamlStream</span></tt> is responsible for it being well-formed. A user of the stream may assume that it is well-formed and is not required to check for it. The procs in this module will always yield a well-formed <tt class="docutils literal"><span class="pre">YamlStream</span></tt> and expect it to be well-formed if it's an input.</p>
 
 
 </dd>
-<dt id="YamlTagLibrary"><a name="YamlTagLibrary"></a><pre><span class="Identifier">YamlTagLibrary</span> <span class="Other">=</span> <span class="Keyword">object</span>
+<dt id="TagLibrary"><a name="TagLibrary"></a><pre><span class="Identifier">TagLibrary</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
   <span class="Identifier">tags</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">,</span> <span class="Identifier">TagId</span><span class="Other">]</span>
   <span class="Identifier">nextCustomTagId</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">TagId</span>
   <span class="Identifier">secondaryPrefix</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
 </pre></dt>
 <dd>
-<p>A <tt class="docutils literal"><span class="pre">YamlTagLibrary</span></tt> maps tag URIs to <tt class="docutils literal"><span class="pre">TagId</span></tt> s. YAML tag URIs that are defined in the YAML specification or in the <a class="reference external" href="http://yaml.org/type/">YAML tag repository</a> should be mapped to the <tt class="docutils literal"><span class="pre">TagId</span></tt> s defined as constants in this module.</p>
+<p>A <tt class="docutils literal"><span class="pre">TagLibrary</span></tt> maps tag URIs to <tt class="docutils literal"><span class="pre">TagId</span></tt> s.</p>
 <p>Three tag libraries are provided with this module: <a class="reference external" href="#failsafeTagLibrary">failsafeTagLibrary</a>, <a class="reference external" href="#coreTagLibrary">coreTagLibrary</a>, and <a class="reference external" href="#extendedTagLibrary">extendedTagLibrary</a>.</p>
-<p>If the <tt class="docutils literal"><span class="pre">YamlSequentialParser</span></tt> encounters a tag which is not part of the <tt class="docutils literal"><span class="pre">YamlTagLibrary</span></tt>, it will create a new <tt class="docutils literal"><span class="pre">TagId</span></tt> equal to <tt class="docutils literal"><span class="pre">nextCustomTagId</span></tt> and increase that variable. It will be initialized to <a class="reference external" href="#yFirstCustomTagId">yFirstCustomTagId</a>. If you do not want to allow unknown tag URIs to be processed, just abort processing as soon as you encounter the <tt class="docutils literal"><span class="pre">yFirstCustomTagId</span></tt>.</p>
-<p>It is highly recommended to base any <tt class="docutils literal"><span class="pre">YamlTagLibrary</span></tt> on at least <tt class="docutils literal"><span class="pre">coreTagLibrary</span></tt>. But it is also possible to use a completely empty library and treat all URIs as custom tags.</p>
+<p>When <a class="reference external" href="#YamlParser">YamlParser</a> encounters tags not existing in the tag library, it will use <a class="reference external" href="#registerTagUri,TagLibrary,string,TagId">registerTagUri</a> to add the tag to the library.</p>
+<p>You can base your tag library on common tag libraries by initializing them with <a class="reference external" href="#initFailsafeTagLibrary">initFailsafeTagLibrary</a>, <a class="reference external" href="#initCoreTagLibrary">initCoreTagLibrary</a> or <a class="reference external" href="#initExtendedTagLibrary">initExtendedTagLibrary</a>.</p>
 
 
 </dd>
-<dt id="YamlWarningCallback"><a name="YamlWarningCallback"></a><pre><span class="Identifier">YamlWarningCallback</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">line</span><span class="Other">,</span> <span class="Identifier">column</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">lineContent</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span></pre></dt>
+<dt id="WarningCallback"><a name="WarningCallback"></a><pre><span class="Identifier">WarningCallback</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">line</span><span class="Other">,</span> <span class="Identifier">column</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">lineContent</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span></pre></dt>
 <dd>
 Callback for parser warnings. Currently, this callback may be called on two occasions while parsing a YAML document stream:<ul class="simple"><li>If the version number in the <tt class="docutils literal"><span class="pre">%YAML</span></tt> directive does not match <tt class="docutils literal"><span class="pre">1.2</span></tt>.</li>
 <li>If there is an unknown directive encountered.</li>
@@ -332,17 +342,19 @@ Callback for parser warnings. Currently, this callback may be called on two occa
 
 
 </dd>
-<dt id="YamlSequentialParser"><a name="YamlSequentialParser"></a><pre><span class="Identifier">YamlSequentialParser</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
-  <span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">YamlTagLibrary</span>
+<dt id="YamlParser"><a name="YamlParser"></a><pre><span class="Identifier">YamlParser</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
+  <span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span>
   <span class="Identifier">anchors</span><span class="Other">:</span> <span class="Identifier">OrderedTable</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">,</span> <span class="Identifier">AnchorId</span><span class="Other">]</span>
-  <span class="Identifier">callback</span><span class="Other">:</span> <span class="Identifier">YamlWarningCallback</span>
+  <span class="Identifier">callback</span><span class="Other">:</span> <span class="Identifier">WarningCallback</span>
+  <span class="Identifier">lexer</span><span class="Other">:</span> <span class="Identifier">BaseLexer</span>
+  <span class="Identifier">tokenstart</span><span class="Other">:</span> <span class="Identifier">int</span>
 </pre></dt>
 <dd>
-A parser object. Retains its <tt class="docutils literal"><span class="pre">YamlTagLibrary</span></tt> across calls to <a class="reference external" href="#parse,YamlSequentialParser,Stream,YamlStream">parse</a>. Can be used to access anchor names while parsing a YAML character stream, but only until the document goes out of scope (i.e. until <tt class="docutils literal"><span class="pre">yamlEndDocument</span></tt> is yielded).
+A parser object. Retains its <tt class="docutils literal"><span class="pre">TagLibrary</span></tt> across calls to <a class="reference external" href="#parse,YamlParser,Stream,YamlStream">parse</a>. Can be used to access anchor names while parsing a YAML character stream, but only until the document goes out of scope (i.e. until <tt class="docutils literal"><span class="pre">yamlEndDocument</span></tt> is yielded).
 
 </dd>
-<dt id="YamlPresentationStyle"><a name="YamlPresentationStyle"></a><pre><span class="Identifier">YamlPresentationStyle</span> <span class="Other">=</span> <span class="Keyword">enum</span>
-  <span class="Identifier">ypsMinimal</span><span class="Other">,</span> <span class="Identifier">ypsCanonical</span><span class="Other">,</span> <span class="Identifier">ypsDefault</span><span class="Other">,</span> <span class="Identifier">ypsJson</span><span class="Other">,</span> <span class="Identifier">ypsBlockOnly</span></pre></dt>
+<dt id="PresentationStyle"><a name="PresentationStyle"></a><pre><span class="Identifier">PresentationStyle</span> <span class="Other">=</span> <span class="Keyword">enum</span>
+  <span class="Identifier">psMinimal</span><span class="Other">,</span> <span class="Identifier">psCanonical</span><span class="Other">,</span> <span class="Identifier">psDefault</span><span class="Other">,</span> <span class="Identifier">psJson</span><span class="Other">,</span> <span class="Identifier">psBlockOnly</span></pre></dt>
 <dd>
 Different styles for YAML character stream output.<ul class="simple"><li><tt class="docutils literal"><span class="pre">ypsMinimal</span></tt>: Single-line flow-only output which tries to use as few characters as possible.</li>
 <li><tt class="docutils literal"><span class="pre">ypsCanonical</span></tt>: Canonical YAML output. Writes all tags except for the non-specific tags <tt class="docutils literal"><span class="pre">?</span></tt> and <tt class="docutils literal"><span class="pre">!</span></tt>, uses flow style, quotes all string scalars.</li>
@@ -360,7 +372,7 @@ Different styles for YAML character stream output.<ul class="simple"><li><tt cla
   <span class="Identifier">lineContent</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Comment">## \</span>
                      <span class="Comment">## content of the line where the error was encountered. Includes a</span>
                      <span class="Comment">## second line with a marker ``^`` at the position where the error</span>
-                     <span class="Comment">## was encountered, as returned by ``lexbase.getCurrentLine``.</span>
+                     <span class="Comment">## was encountered.</span>
   </pre></dt>
 <dd>
 Base class for all exceptions that may be raised during the process of loading a YAML character stream. 
@@ -393,17 +405,27 @@ Exception that may be raised by the YAML presenter when it is instructed to outp
 
 </dd>
 <dt id="YamlPresenterOutputError"><a name="YamlPresenterOutputError"></a><pre><span class="Identifier">YamlPresenterOutputError</span> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">Exception</span>
-  <span class="Identifier">cause</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">ref</span> <span class="Identifier">Exception</span>
-</pre></dt>
+  </pre></dt>
 <dd>
-Exception that may be raised by the YAML presenter. This occurs if writing character data to the output stream raises any exception. The exception that has been catched is retrievable from <tt class="docutils literal"><span class="pre">cause</span></tt>.
+Exception that may be raised by the YAML presenter. This occurs if writing character data to the output stream raises any exception. The error that has occurred is available from <tt class="docutils literal"><span class="pre">parent</span></tt>.
 
 </dd>
 <dt id="YamlPresenterStreamError"><a name="YamlPresenterStreamError"></a><pre><span class="Identifier">YamlPresenterStreamError</span> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">Exception</span>
-  <span class="Identifier">cause</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">ref</span> <span class="Identifier">Exception</span>
-</pre></dt>
+  </pre></dt>
 <dd>
-Exception that may be raised by the YAML presenter. This occurs if an exception is raised while retrieving the next item from a <a class="reference external" href="#YamlStream">YamlStream</a>. The exception that has been catched is retrievable from <tt class="docutils literal"><span class="pre">cause</span></tt>.
+Exception that may be raised by the YAML presenter. This occurs if an exception is raised while retrieving the next item from a <a class="reference external" href="#YamlStream">YamlStream</a>. The error that has occurred is available from <tt class="docutils literal"><span class="pre">parent</span></tt>.
+
+</dd>
+<dt id="YamlConstructionError"><a name="YamlConstructionError"></a><pre><span class="Identifier">YamlConstructionError</span> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">YamlLoadingError</span>
+  </pre></dt>
+<dd>
+Exception that may be raised when constructing data objects from a <a class="reference external" href="#YamlStream">YamlStream</a>. The fields <tt class="docutils literal"><span class="pre">line</span></tt>, <tt class="docutils literal"><span class="pre">column</span></tt> and <tt class="docutils literal"><span class="pre">lineContent</span></tt> are only available if the costructing proc also does parsing, because otherwise this information is not available to the costruction proc.
+
+</dd>
+<dt id="YamlConstructionStreamError"><a name="YamlConstructionStreamError"></a><pre><span class="Identifier">YamlConstructionStreamError</span> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">YamlLoadingError</span>
+  </pre></dt>
+<dd>
+Exception that may be raised by a constructor if the input <a class="reference external" href="#YamlStream">YamlStream</a> raises an error. The error that has occurred is available from <tt class="docutils literal"><span class="pre">parent</span></tt>.
 
 </dd>
 
@@ -558,23 +580,27 @@ yielded when no anchor was defined for a YAML node
 
 
 </dd>
-<dt id="initTagLibrary"><a name="initTagLibrary,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">initTagLibrary</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlTagLibrary</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dt id="$"><a name="$,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">`$`</span><span class="Other">(</span><span class="Identifier">id</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dd>
+
+
+</dd>
+<dt id="initTagLibrary"><a name="initTagLibrary,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">initTagLibrary</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 initializes the <tt class="docutils literal"><span class="pre">tags</span></tt> table and sets <tt class="docutils literal"><span class="pre">nextCustomTagId</span></tt> to <tt class="docutils literal"><span class="pre">yFirstCustomTagId</span></tt>.
 
 </dd>
-<dt id="registerUri"><a name="registerUri,YamlTagLibrary,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">registerUri</span><span class="Other">(</span><span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlTagLibrary</span><span class="Other">;</span> <span class="Identifier">uri</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dt id="registerUri"><a name="registerUri,TagLibrary,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">registerUri</span><span class="Other">(</span><span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span><span class="Other">;</span> <span class="Identifier">uri</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
-registers a custom tag URI with a <tt class="docutils literal"><span class="pre">YamlTagLibrary</span></tt>. The URI will get the <tt class="docutils literal"><span class="pre">TagId</span></tt> <tt class="docutils literal"><span class="pre">nextCustomTagId</span></tt>, which will be incremented.
+registers a custom tag URI with a <tt class="docutils literal"><span class="pre">TagLibrary</span></tt>. The URI will get the <tt class="docutils literal"><span class="pre">TagId</span></tt> <tt class="docutils literal"><span class="pre">nextCustomTagId</span></tt>, which will be incremented.
 
 </dd>
-<dt id="uri"><a name="uri,YamlTagLibrary,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">uri</span><span class="Other">(</span><span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">YamlTagLibrary</span><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
-    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dt id="uri"><a name="uri,TagLibrary,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">uri</span><span class="Other">(</span><span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 retrieve the URI a <tt class="docutils literal"><span class="pre">TagId</span></tt> maps to.
 
 </dd>
-<dt id="failsafeTagLibrary"><a name="failsafeTagLibrary,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">failsafeTagLibrary</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlTagLibrary</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dt id="initFailsafeTagLibrary"><a name="initFailsafeTagLibrary,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">initFailsafeTagLibrary</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 Contains only:<ul class="simple"><li><tt class="docutils literal"><span class="pre">!</span></tt></li>
 <li><tt class="docutils literal"><span class="pre">?</span></tt></li>
@@ -585,9 +611,9 @@ Contains only:<ul class="simple"><li><tt class="docutils literal"><span class="p
 
 
 </dd>
-<dt id="coreTagLibrary"><a name="coreTagLibrary,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">coreTagLibrary</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlTagLibrary</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dt id="initCoreTagLibrary"><a name="initCoreTagLibrary,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">initCoreTagLibrary</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
-Contains everything in <tt class="docutils literal"><span class="pre">failsafeTagLibrary</span></tt> plus:<ul class="simple"><li><tt class="docutils literal"><span class="pre">!!null</span></tt></li>
+Contains everything in <tt class="docutils literal"><span class="pre">initFailsafeTagLibrary</span></tt> plus:<ul class="simple"><li><tt class="docutils literal"><span class="pre">!!null</span></tt></li>
 <li><tt class="docutils literal"><span class="pre">!!bool</span></tt></li>
 <li><tt class="docutils literal"><span class="pre">!!int</span></tt></li>
 <li><tt class="docutils literal"><span class="pre">!!float</span></tt></li>
@@ -595,9 +621,9 @@ Contains everything in <tt class="docutils literal"><span class="pre">failsafeTa
 
 
 </dd>
-<dt id="extendedTagLibrary"><a name="extendedTagLibrary,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">extendedTagLibrary</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlTagLibrary</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dt id="initExtendedTagLibrary"><a name="initExtendedTagLibrary,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">initExtendedTagLibrary</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
-Contains everything in <tt class="docutils literal"><span class="pre">coreTagLibrary</span></tt> plus:<ul class="simple"><li><tt class="docutils literal"><span class="pre">!!omap</span></tt></li>
+Contains everything from <tt class="docutils literal"><span class="pre">initCoreTagLibrary</span></tt> plus:<ul class="simple"><li><tt class="docutils literal"><span class="pre">!!omap</span></tt></li>
 <li><tt class="docutils literal"><span class="pre">!!pairs</span></tt></li>
 <li><tt class="docutils literal"><span class="pre">!!set</span></tt></li>
 <li><tt class="docutils literal"><span class="pre">!!binary</span></tt></li>
@@ -614,7 +640,7 @@ Contains everything in <tt class="docutils literal"><span class="pre">coreTagLib
 compares all existing fields of the given items
 
 </dd>
-<dt id="$"><a name="$,YamlStreamEvent"></a><pre><span class="Keyword">proc</span> <span class="Identifier">`$`</span><span class="Other">(</span><span class="Identifier">event</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dt id="$"><a name="$,YamlStreamEvent"></a><pre><span class="Keyword">proc</span> <span class="Identifier">`$`</span><span class="Other">(</span><span class="Identifier">event</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 outputs a human-readable string describing the given event
 
@@ -651,43 +677,21 @@ outputs a human-readable string describing the given event
 
 
 </dd>
-<dt id="scalarEvent"><a name="scalarEvent,string,TagId,AnchorId,YamlTypeHint"></a><pre><span class="Keyword">proc</span> <span class="Identifier">scalarEvent</span><span class="Other">(</span><span class="Identifier">content</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">=</span> <span class="StringLit">&quot;&quot;</span><span class="Other">;</span> <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other">=</span> <span class="Identifier">yTagQuestionMark</span><span class="Other">;</span>
-                <span class="Identifier">anchor</span><span class="Other">:</span> <span class="Identifier">AnchorId</span> <span class="Other">=</span> <span class="Identifier">yAnchorNone</span><span class="Other">;</span>
-                <span class="Identifier">typeHint</span><span class="Other">:</span> <span class="Identifier">YamlTypeHint</span> <span class="Other">=</span> <span class="Identifier">yTypeUnknown</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span> <span class="Other">{.</span><span class="Identifier">inline</span><span class="Other">,</span>
-    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
-<dd>
-
-
-</dd>
-<dt id="$"><a name="$,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">`$`</span><span class="Other">(</span><span class="Identifier">id</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
-<dd>
-
-
-</dd>
-<dt id="newParser"><a name="newParser,YamlTagLibrary"></a><pre><span class="Keyword">proc</span> <span class="Identifier">newParser</span><span class="Other">(</span><span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">YamlTagLibrary</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlSequentialParser</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
-<dd>
-Instanciates a parser
-
-</dd>
-<dt id="setWarningCallback"><a name="setWarningCallback,YamlSequentialParser,YamlWarningCallback"></a><pre><span class="Keyword">proc</span> <span class="Identifier">setWarningCallback</span><span class="Other">(</span><span class="Identifier">parser</span><span class="Other">:</span> <span class="Identifier">YamlSequentialParser</span><span class="Other">;</span> <span class="Identifier">callback</span><span class="Other">:</span> <span class="Identifier">YamlWarningCallback</span><span class="Other">)</span> <span class="Other">{.</span>
-    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
-<dd>
-
-
-</dd>
-<dt id="anchor"><a name="anchor,YamlSequentialParser,AnchorId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">anchor</span><span class="Other">(</span><span class="Identifier">parser</span><span class="Other">:</span> <span class="Identifier">YamlSequentialParser</span><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <span class="Identifier">AnchorId</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
-<dd>
-Get the anchor name which an <tt class="docutils literal"><span class="pre">AnchorId</span></tt> maps to
-
-</dd>
-<dt id="parse"><a name="parse,YamlSequentialParser,Stream"></a><pre><span class="Keyword">proc</span> <span class="Identifier">parse</span><span class="Other">(</span><span class="Identifier">parser</span><span class="Other">:</span> <span class="Identifier">YamlSequentialParser</span><span class="Other">;</span> <span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other">{.</span>
-    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">YamlParserError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
-<dd>
-Parse a YAML character stream. <tt class="docutils literal"><span class="pre">s</span></tt> must be readable.
-
-</dd>
-<dt id="constructJson"><a name="constructJson,YamlStream"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructJson</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">JsonNode</span><span class="Other">]</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span>
+<dt id="scalarEvent"><a name="scalarEvent,string,TagId,AnchorId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">scalarEvent</span><span class="Other">(</span><span class="Identifier">content</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">=</span> <span class="StringLit">&quot;&quot;</span><span class="Other">;</span> <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other">=</span> <span class="Identifier">yTagQuestionMark</span><span class="Other">;</span>
+                <span class="Identifier">anchor</span><span class="Other">:</span> <span class="Identifier">AnchorId</span> <span class="Other">=</span> <span class="Identifier">yAnchorNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span> <span class="Other">{.</span><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dd>
+
+
+</dd>
+<dt id="aliasEvent"><a name="aliasEvent,AnchorId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">aliasEvent</span><span class="Other">(</span><span class="Identifier">anchor</span><span class="Other">:</span> <span class="Identifier">AnchorId</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span> <span class="Other">{.</span><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dd>
+
+
+</dd>
+<dt id="constructJson"><a name="constructJson,YamlStream"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructJson</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">JsonNode</span><span class="Other">]</span> <span class="Other">{.</span>
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span> <span class="Identifier">YamlConstructionStreamError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 <p>Construct an in-memory JSON tree from a YAML event stream. The stream may not contain any tags apart from those in <tt class="docutils literal"><span class="pre">coreTagLibrary</span></tt>. Anchors and aliases will be resolved. Maps in the input must not contain non-scalars as keys. Each element of the result represents one document in the YAML stream.</p>
 <p><strong>Warning:</strong> The special float values <tt class="docutils literal"><span class="pre">[+-]Inf</span></tt> and <tt class="docutils literal"><span class="pre">NaN</span></tt> will be parsed into Nim's JSON structure without error. However, they cannot be rendered to a JSON character stream, because these values are not part of the JSON specification. Nim's JSON implementation currently does not check for these values and will output invalid JSON when rendering one of these values into a JSON character stream.</p>
@@ -695,25 +699,57 @@ Parse a YAML character stream. <tt class="docutils literal"><span class="pre">s<
 
 </dd>
 <dt id="loadToJson"><a name="loadToJson,Stream"></a><pre><span class="Keyword">proc</span> <span class="Identifier">loadToJson</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">JsonNode</span><span class="Other">]</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">YamlParserError</span><span class="Other">,</span>
-    <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+    <span class="Identifier">YamlConstructionError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
-Uses <a class="reference external" href="#YamlSequentialParser">YamlSequentialParser</a> and <a class="reference external" href="#constructJson">constructJson</a> to construct an in-memory JSON tree from a YAML character stream.
+Uses <a class="reference external" href="#YamlParser">YamlParser</a> and <a class="reference external" href="#constructJson">constructJson</a> to construct an in-memory JSON tree from a YAML character stream.
 
 </dd>
-<dt id="present"><a name="present,YamlStream,Stream,YamlTagLibrary,YamlPresentationStyle,int"></a><pre><span class="Keyword">proc</span> <span class="Identifier">present</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">target</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">;</span> <span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">YamlTagLibrary</span><span class="Other">;</span>
-            <span class="Identifier">style</span><span class="Other">:</span> <span class="Identifier">YamlPresentationStyle</span> <span class="Other">=</span> <span class="Identifier">ypsDefault</span><span class="Other">;</span> <span class="Identifier">indentationStep</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="DecNumber">2</span><span class="Other">)</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span>
+<dt id="present"><a name="present,YamlStream,Stream,TagLibrary,PresentationStyle,int"></a><pre><span class="Keyword">proc</span> <span class="Identifier">present</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">target</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">;</span> <span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span><span class="Other">;</span>
+            <span class="Identifier">style</span><span class="Other">:</span> <span class="Identifier">PresentationStyle</span> <span class="Other">=</span> <span class="Identifier">psDefault</span><span class="Other">;</span> <span class="Identifier">indentationStep</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="DecNumber">2</span><span class="Other">)</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span>
     <span class="Identifier">YamlPresenterJsonError</span><span class="Other">,</span> <span class="Identifier">YamlPresenterOutputError</span><span class="Other">,</span> <span class="Identifier">YamlPresenterStreamError</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">WriteIOEffect</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
 Convert <tt class="docutils literal"><span class="pre">s</span></tt> to a YAML character stream and write it to <tt class="docutils literal"><span class="pre">target</span></tt>.
 
 </dd>
-<dt id="transform"><a name="transform,Stream,Stream,YamlPresentationStyle,int"></a><pre><span class="Keyword">proc</span> <span class="Identifier">transform</span><span class="Other">(</span><span class="Identifier">input</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">;</span> <span class="Identifier">output</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">;</span> <span class="Identifier">style</span><span class="Other">:</span> <span class="Identifier">YamlPresentationStyle</span><span class="Other">;</span>
+<dt id="transform"><a name="transform,Stream,Stream,PresentationStyle,int"></a><pre><span class="Keyword">proc</span> <span class="Identifier">transform</span><span class="Other">(</span><span class="Identifier">input</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">;</span> <span class="Identifier">output</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">;</span> <span class="Identifier">style</span><span class="Other">:</span> <span class="Identifier">PresentationStyle</span><span class="Other">;</span>
               <span class="Identifier">indentationStep</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="DecNumber">2</span><span class="Other">)</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">YamlParserError</span><span class="Other">,</span>
-    <span class="Identifier">YamlPresenterJsonError</span><span class="Other">,</span> <span class="Identifier">YamlPresenterOutputError</span><span class="Other">,</span> <span class="Identifier">YamlPresenterStreamError</span><span class="Other">,</span>
-    <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">WriteIOEffect</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+    <span class="Identifier">YamlPresenterJsonError</span><span class="Other">,</span> <span class="Identifier">YamlPresenterOutputError</span><span class="Other">]</span><span class="Other">,</span>
+                                      <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">WriteIOEffect</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
 <dd>
-Parser <tt class="docutils literal"><span class="pre">input</span></tt> as YAML character stream and then dump it to <tt class="docutils literal"><span class="pre">output</span></tt> without resolving any tags, anchors and aliases.
+Parser <tt class="docutils literal"><span class="pre">input</span></tt> as YAML character stream and then dump it to <tt class="docutils literal"><span class="pre">output</span></tt> while resolving non-specific tags to the ones in the YAML core tag library.
+
+</dd>
+<dt id="guessType"><a name="guessType,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">guessType</span><span class="Other">(</span><span class="Identifier">scalar</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TypeHint</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dd>
+
+
+</dd>
+<dt id="newYamlParser"><a name="newYamlParser,TagLibrary,WarningCallback"></a><pre><span class="Keyword">proc</span> <span class="Identifier">newYamlParser</span><span class="Other">(</span><span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span> <span class="Other">=</span> <span class="Identifier">initExtendedTagLibrary</span><span class="Other">(</span><span class="Other">)</span><span class="Other">;</span>
+                  <span class="Identifier">callback</span><span class="Other">:</span> <span class="Identifier">WarningCallback</span> <span class="Other">=</span> <span class="Keyword">nil</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlParser</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dd>
+
+
+</dd>
+<dt id="getLineNumber"><a name="getLineNumber,YamlParser"></a><pre><span class="Keyword">proc</span> <span class="Identifier">getLineNumber</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <span class="Identifier">YamlParser</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dd>
+
+
+</dd>
+<dt id="getColNumber"><a name="getColNumber,YamlParser"></a><pre><span class="Keyword">proc</span> <span class="Identifier">getColNumber</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <span class="Identifier">YamlParser</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dd>
+
+
+</dd>
+<dt id="getLineContent"><a name="getLineContent,YamlParser,bool"></a><pre><span class="Keyword">proc</span> <span class="Identifier">getLineContent</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <span class="Identifier">YamlParser</span><span class="Other">;</span> <span class="Identifier">marker</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other">=</span> <span class="Identifier">true</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dd>
+
+
+</dd>
+<dt id="parse"><a name="parse,YamlParser,Stream"></a><pre><span class="Keyword">proc</span> <span class="Identifier">parse</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <span class="Identifier">YamlParser</span><span class="Other">;</span> <span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other">{.</span><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">YamlParserError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">.}</span></pre></dt>
+<dd>
+
 
 </dd>
 
@@ -726,7 +762,7 @@ Parser <tt class="docutils literal"><span class="pre">input</span></tt> as YAML 
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2016-01-13 23:09:47 UTC</small>
+        <small>Made with Nim. Generated: 2016-01-24 18:29:30 UTC</small>
       </div>
     </div>
   </div>
