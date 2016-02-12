@@ -17,12 +17,79 @@
   <a href="testing.html">Testing Ground</a>
   <span>API:</span>
   <a href="yaml.html">Module yaml</a>
-  <a href="serialization.html">Module yaml.serialization</a>
 </header>
 <article id="documentId">
   <div class="container">
     <h1 class="title">NimYAML</h1>
-    <p>TBD: General information here. Possibly move text from yaml.html. Eat pizza.</p>
+    
+<h1 id="introduction">Introduction</h1><p><strong>NimYAML</strong> is a pure YAML implementation for Nim. It is able to read from and write to YAML character streams, and to serialize from and construct to native Nim types. It exclusively supports <a class="reference external" href="#http://www.yaml.org/spec/1.2/spec.html">YAML 1.2</a>.</p>
+
+<h2 id="quickstart">Quickstart</h2><p>Data used in quickstart code may not be accurate and is solely used to showcase NimYAML's features.</p>
+<pre class = "listing"><span class="Keyword">import</span> <span class="Identifier">yaml</span>
+<span class="Keyword">type</span>
+    <span class="Identifier">GenderKind</span><span class="Operator">*</span> <span class="Operator">=</span> <span class="Keyword">enum</span>
+        <span class="Identifier">male</span><span class="Punctuation">,</span> <span class="Identifier">female</span><span class="Punctuation">,</span> <span class="Identifier">other</span>
+    
+    <span class="Identifier">Person</span><span class="Operator">*</span> <span class="Operator">=</span> <span class="Keyword">object</span>
+        <span class="Identifier">name</span><span class="Operator">*:</span> <span class="Identifier">string</span>
+        <span class="Identifier">gender</span><span class="Operator">*:</span> <span class="Identifier">GenderKind</span>
+        <span class="Identifier">age</span><span class="Operator">*:</span> <span class="Identifier">int32</span>
+        <span class="Identifier">spouse</span><span class="Operator">*:</span> <span class="Keyword">ref</span> <span class="Identifier">Person</span>
+        <span class="Identifier">offspring</span><span class="Operator">*:</span> <span class="Identifier">seq</span><span class="Punctuation">[</span><span class="Keyword">ref</span> <span class="Identifier">Person</span><span class="Punctuation">]</span>
+
+<span class="Keyword">let</span> <span class="Identifier">input</span> <span class="Operator">=</span> <span class="Identifier">newStringStream</span><span class="Punctuation">(</span><span class="LongStringLit">&quot;&quot;&quot;
+%YAML 1.2
+---
+- &amp;a
+  name: Luke Skywalker
+  gender: male
+  age: 19
+  spouse: ~
+  offspring: []
+- &amp;b
+  name: Han Solo
+  gender: male
+  age: 35
+  spouse: &amp;c
+    name: Leia Organa
+    gender: female
+    age: 19
+    spouse: *b
+    offspring: []
+  offspring: []
+- *c
+-
+  name: Anakin Skywalker
+  gender: male
+  age: 42
+  spouse: ~
+  offspring: [*a, *c]
+&quot;&quot;&quot;</span><span class="Punctuation">)</span>
+<span class="Keyword">var</span> <span class="Identifier">persons</span><span class="Punctuation">:</span> <span class="Identifier">seq</span><span class="Punctuation">[</span><span class="Keyword">ref</span> <span class="Identifier">Person</span><span class="Punctuation">]</span>
+<span class="Identifier">load</span><span class="Punctuation">(</span><span class="Identifier">input</span><span class="Punctuation">,</span> <span class="Identifier">persons</span><span class="Punctuation">)</span>
+<span class="Keyword">for</span> <span class="Identifier">person</span> <span class="Keyword">in</span> <span class="Identifier">persons</span><span class="Punctuation">:</span>
+  <span class="Identifier">echo</span> <span class="Identifier">person</span><span class="Operator">.</span><span class="Identifier">name</span><span class="Punctuation">,</span> <span class="StringLit">&quot;</span><span class="EscapeSequence">\n</span><span class="StringLit">age &quot;</span><span class="Punctuation">,</span> <span class="Identifier">person</span><span class="Operator">.</span><span class="Identifier">age</span>
+  <span class="Keyword">if</span> <span class="Identifier">person</span><span class="Operator">.</span><span class="Identifier">spouse</span> <span class="Operator">!=</span> <span class="Keyword">nil</span><span class="Punctuation">:</span>
+    <span class="Identifier">echo</span> <span class="StringLit">&quot;spouse: &quot;</span><span class="Punctuation">,</span> <span class="Identifier">person</span><span class="Operator">.</span><span class="Identifier">spouse</span><span class="Operator">.</span><span class="Identifier">name</span>
+  <span class="Keyword">for</span> <span class="Identifier">child</span> <span class="Keyword">in</span> <span class="Identifier">person</span><span class="Operator">.</span><span class="Identifier">offspring</span><span class="Punctuation">:</span>
+    <span class="Keyword">case</span> <span class="Identifier">child</span><span class="Operator">.</span><span class="Identifier">gender</span>
+    <span class="Keyword">of</span> <span class="Identifier">male</span><span class="Punctuation">:</span> <span class="Identifier">echo</span> <span class="StringLit">&quot;son: &quot;</span><span class="Punctuation">,</span> <span class="Identifier">child</span><span class="Operator">.</span><span class="Identifier">name</span>
+    <span class="Keyword">of</span> <span class="Identifier">female</span><span class="Punctuation">:</span> <span class="Identifier">echo</span> <span class="StringLit">&quot;daughter: &quot;</span><span class="Punctuation">,</span> <span class="Identifier">child</span><span class="Operator">.</span><span class="Identifier">name</span>
+    <span class="Keyword">of</span> <span class="Identifier">other</span><span class="Punctuation">:</span> <span class="Identifier">echo</span> <span class="StringLit">&quot;child: &quot;</span><span class="Punctuation">,</span> <span class="Identifier">child</span><span class="Operator">.</span><span class="Identifier">name</span>
+  <span class="Identifier">echo</span> <span class="StringLit">&quot;------------------------&quot;</span>
+<span class="Identifier">dump</span><span class="Punctuation">(</span><span class="Identifier">persons</span><span class="Punctuation">,</span> <span class="Identifier">newFileStream</span><span class="Punctuation">(</span><span class="Identifier">stdout</span><span class="Punctuation">)</span><span class="Punctuation">)</span></pre>
+<h1 id="api-overview">API Overview</h1><p>NimYAML advocates parsing YAML input into native Nim types. Basic library types like integers, floats and strings, as well as all tuples, enums and objects without private fields are supported out-of-the-box. Reference types are also supported, and NimYAML is able to detect if a reference occurs more than once and will serialize it accordingly. This means that NimYAML is able to dump and load potentially cyclic objects.</p>
+<p>While loading into and dumping from native Nim types is the preferred way to use NimYAML, it also gives you complete control over each processing step, so that you can for example only use the parser and process its event stream yourself. The following diagram gives an overview of NimYAML's features based on the YAML processing pipeline. The items and terminology YAML defines is shown in <em>italic</em>, NimYAML's implementation name is shown in <strong>bold</strong>.</p>
+<object data="processing.svg" type="image/svg+xml" ></object>
+<h2 id="intermediate-representation">Intermediate Representation</h2><p>The base of all YAML processing with NimYAML is the <a class="reference external" href="yaml.html#YamlStream">YamlStream</a>. This is basically an iterator over <a class="reference external" href="yaml.html#YamlStreamEvent">YamlStreamEvent</a> objects. Every proc that represents a single stage of the loading or dumping process will either take a <tt class="docutils literal"><span class="pre">YamlStream</span></tt> as input or return a <tt class="docutils literal"><span class="pre">YamlStream</span></tt>. Procs that implement the whole process in one step hide the <tt class="docutils literal"><span class="pre">YamlStream</span></tt> from the user. Every proc that returns a <tt class="docutils literal"><span class="pre">YamlStream</span></tt> guarantees that this stream is well-formed according to the YAML specification.</p>
+<p>This stream-oriented API can efficiently be used to parse large amounts of data. The drawback is that errors in the input are only discovered while processing the <tt class="docutils literal"><span class="pre">YamlStream</span></tt>. If the <tt class="docutils literal"><span class="pre">YamlStream</span></tt> encounters an exception while producing the next event, it will throw a <tt class="docutils literal"><span class="pre">YamlStreamError</span></tt> which contains the original exception as <tt class="docutils literal"><span class="pre">parent</span></tt>. The caller should know which exceptions are possible as parents of <tt class="docutils literal"><span class="pre">YamlStream</span></tt> because they know the source of the <tt class="docutils literal"><span class="pre">YamlStream</span></tt> they provided.</p>
+
+<h2 id="loading-yaml">Loading YAML</h2><p>For parsing, a <a class="reference external" href="yaml.html#YamlParser">YamlParser</a> object is needed. This object stores some state while parsing that may be useful for error reporting to the user. The <a class="reference external" href="yaml.html#present,YamlStream,Stream,TagLibrary,PresentationStyle,int">parse</a> proc implements the YAML processing step of the same name. All syntax errors in the input character stream are processed by <tt class="docutils literal"><span class="pre">parse</span></tt>, which will raise a <tt class="docutils literal"><span class="pre">YamlParserError</span></tt> if it encounters a syntax error.</p>
+<p>Transforming a <tt class="docutils literal"><span class="pre">YamlStream</span></tt> to a native YAML object is done via <tt class="docutils literal"><span class="pre">construct</span></tt>. It skips the <tt class="docutils literal"><span class="pre">compose</span></tt> step for efficiency reasons. As Nim is statically typed, you have to know the target type when you write your loading code. This is different from YAML APIs of dynamically typed languages. If you cannot know the type of your YAML input at compile time, you have to manually process the <tt class="docutils literal"><span class="pre">YamlStream</span></tt> to serve your needs.</p>
+<p>If you want to load YAML character data directly into a native Nim variable, you can use <a class="reference external" href="yaml.html#load,Stream,K">load</a>.</p>
+
+<h2 id="dumping-yaml">Dumping YAML</h2><p>Dumping YAML is straightforward: You transform a variable into a <tt class="docutils literal"><span class="pre">YamlStream</span></tt> with <a class="reference external" href="yaml.html#represent,T,TagStyle,AnchorStyle">represent</a> and then write that to a stream using <a class="reference external" href="yaml.html#present,YamlStream,Stream,TagLibrary,PresentationStyle,int">present</a>. If you want to execute both steps at once, you can use <a class="reference external" href="yaml.html#dump,K,Stream,PresentationStyle,TagStyle,AnchorStyle,int">dump</a>.</p>
+<p>The <tt class="docutils literal"><span class="pre">present</span></tt> step allows you to specify how you want the output YAML character stream to be formatted. Amongst other options, it is possible to output pure JSON, but only if the stream does not contain any constructs that cannot be presented in JSON.</p>
 
 
 
@@ -30,7 +97,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2016-01-24 19:17:16 UTC</small>
+        <small>Made with Nim. Generated: 2016-02-12 20:45:14 UTC</small>
       </div>
     </div>
   </div>
