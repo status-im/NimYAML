@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>NimYAML - Serialization Overview</title>
+
+  <link href="docutils.css" rel="stylesheet" type="text/css"/>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+  
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,900' rel='stylesheet' type='text/css'/>
+  <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600' rel='stylesheet' type='text/css'/>
+</head>
+<body>
+<header>
+  <a class="pagetitle" href="/">NimYAML</a>
+  <a href="index.html">Home</a>
+  <a href="testing.html">Testing Ground</a>
+  <span>Docs:</span>
+  <a href="api.html">Overview</a>
+  <a href="serialization.html">Serialization</a>
+  <a href="yaml.html">Module yaml</a>
+</header>
+<article id="documentId">
+  <div class="container">
+    <h1 class="title">Serialization Overview</h1>
+    
+<h1 id="introduction">Introduction</h1><p>NimYAML tries hard to make transforming YAML characters streams to native Nim types and vice versa as easy as possible. In simple scenarios, you might not need anything else than the two procs <a class="reference external" href="yaml.html#dump,K,Stream,PresentationStyle,TagStyle,AnchorStyle,int">dump</a> and <a class="reference external" href="yaml.html#load,Stream,K">load</a>. On the other side, the process should be as customizable as possible to allow the user to tightly control how the generated YAML character stream will look and how a YAML character stream is interpreted.</p>
+<p>An important thing to remember in NimYAML is that unlike in interpreted languages like Ruby, Nim cannot load a YAML character stream without knowing the resulting type beforehand. For example, if you want to load this piece of YAML:</p>
+<pre class = "listing">%YAML 1.2
+--- !nim:system:seq(nim:system:int8)
+- 1
+- 2
+- 3</pre><p>You would need to know that it will load a <tt class="docutils literal"><span class="pre">seq[int8]</span></tt> <em>at compile time</em>. This is not really a problem because without knowing which type you will load, you cannot do anything useful with the result afterwards in the code. But it may be unfamiliar for programmers who are used to the YAML libraries of Python or Ruby.</p>
+
+<h1 id="supported-types">Supported Types</h1><p>NimYAML supports a growing number of types of Nim's <tt class="docutils literal"><span class="pre">system</span></tt> module and standard library, and it also supports user-defined object, tuple and enum types out of the box.</p>
+<p><strong>Important</strong>: NimYAML currently does not support polymorphism or variant object types. This may be added in the future.</p>
+<p>This also means that NimYAML is generally able to work with object, tuple and enum types defined in the standard library or a third-party library without further configuration.</p>
+
+<h2 id="scalar-types">Scalar Types</h2><p>The following integer types are supported by NimYAML: <tt class="docutils literal"><span class="pre">int8</span></tt>, <tt class="docutils literal"><span class="pre">int16</span></tt>, <tt class="docutils literal"><span class="pre">int32</span></tt>, <tt class="docutils literal"><span class="pre">int64</span></tt>, <tt class="docutils literal"><span class="pre">uint8</span></tt>, <tt class="docutils literal"><span class="pre">uint16</span></tt>, <tt class="docutils literal"><span class="pre">uint32</span></tt>, <tt class="docutils literal"><span class="pre">uint64</span></tt>. Note that the <tt class="docutils literal"><span class="pre">int</span></tt> type is <em>not</em> supported, since its sice varies based on the target operation system. This makes it unfit for usage within NimYAML, because a value might not round-trip between a binary for a 32-bit OS and another binary for a 64-bit OS. The same goes for <tt class="docutils literal"><span class="pre">uint</span></tt>.</p>
+<p>The floating point types <tt class="docutils literal"><span class="pre">float32</span></tt> and <tt class="docutils literal"><span class="pre">float64</span></tt> are also supported, but <tt class="docutils literal"><span class="pre">float</span></tt> is not, for the same reason.</p>
+<p><tt class="docutils literal"><span class="pre">string</span></tt> is supported and one of the few Nim types which directly map to a standard YAML type. <tt class="docutils literal"><span class="pre">char</span></tt> is also supported.</p>
+<p>To support new scalar types, you must implement the <tt class="docutils literal"><span class="pre">constructObject()</span></tt> and <tt class="docutils literal"><span class="pre">representObject()</span></tt> procs on that type (see below).</p>
+
+<h2 id="collection-types">Collection Types</h2><p>NimYAML supports Nim's <tt class="docutils literal"><span class="pre">seq</span></tt> and <tt class="docutils literal"><span class="pre">Table</span></tt> types out of the box. Unlike the native YAML types <tt class="docutils literal"><span class="pre">!!seq</span></tt> and <tt class="docutils literal"><span class="pre">!!map</span></tt>, <tt class="docutils literal"><span class="pre">seq</span></tt> and <tt class="docutils literal"><span class="pre">Table</span></tt> define the type of all their items (or keys and values). So YAML objects with heterogeneous types in them cannot be loaded to Nim collection types. For example, this sequence:</p>
+<pre class = "listing">%YAML 1.2
+--- !!seq
+- !!int 1
+- !!string foo</pre><p>Cannot be loaded to a Nim <tt class="docutils literal"><span class="pre">seq</span></tt>. For this reason, you cannot load YAML's native <tt class="docutils literal"><span class="pre">!!map</span></tt> and <tt class="docutils literal"><span class="pre">!!seq</span></tt> types directly into Nim types.</p>
+
+<h2 id="reference-types">Reference Types</h2><p>A reference to any supported non-reference type (including user defined types, see below) is supported by NimYAML. A reference type will be treated like its base type, but NimYAML is able to detect multiple references to the same object and dump the structure properly with anchors and aliases in place. It is possible to dump and load cyclic data structures without further configuration. It is possible for reference types to hold a <tt class="docutils literal"><span class="pre">nil</span></tt> value, which will be mapped to the <tt class="docutils literal"><span class="pre">!!null</span></tt> YAML scalar type.</p>
+<p>Pointer types are not supported because it seems dangerous to automatically allocate memory which the user must then manually deallocate.</p>
+
+<h2 id="user-defined-types">User Defined Types</h2><p>For an object or tuple type to be directly usable with NimYAML, the following conditions must be met:</p>
+<ul class="simple"><li>Every type contained in the object/tuple must be supported</li>
+<li>All fields of an object type must be accessible from the code position where you call NimYAML. If an object has non-public member fields, it can only be processed in the module where it is defined.</li>
+<li>The object may not contain a <tt class="docutils literal"><span class="pre">case</span></tt> clause.</li>
+<li>The object may not have a generic parameter</li>
+</ul>
+<p>NimYAML will present enum types as YAML scalars, and tuple and object types as YAML maps. Some of the conditions above may be loosened in future releases.</p>
+
+<h1 id="tags">Tags</h1><p>NimYAML uses local tags to represent Nim types that do not map directly to a YAML type. For example, <tt class="docutils literal"><span class="pre">int8</span></tt> is presented with the tag <tt class="docutils literal"><span class="pre">!nim:system:int8</span></tt>. Tags are mostly unnecessary when loading YAML data because the user already defines the target Nim type which usually defines all types of the structure. However, there is one case where a tag is necessary: A reference type with the value <tt class="docutils literal"><span class="pre">nil</span></tt> is represented in YAML as a <tt class="docutils literal"><span class="pre">!!null</span></tt> scalar. This will be automatically detected by type guessing, but if it is for example a reference to a string with the value <tt class="docutils literal"><span class="pre">&quot;~&quot;</span></tt>, it must be tagged with <tt class="docutils literal"><span class="pre">!!string</span></tt>, because otherwise, it would be loaded as <tt class="docutils literal"><span class="pre">nil</span></tt>.</p>
+<p>As you might have noticed in the example above, the YAML tag of a <tt class="docutils literal"><span class="pre">seq</span></tt> depends on its generic type parameter. The same applies to <tt class="docutils literal"><span class="pre">Table</span></tt>. So, a table that maps <tt class="docutils literal"><span class="pre">int8</span></tt> to string sequences would be presented with the tag <tt class="docutils literal"><span class="pre">!nim:tables:Table(nim:system:int8,nim:system:seq(tag:yaml.org,2002:string))</span></tt>. These tags are generated on the fly based on the types you instantiate <tt class="docutils literal"><span class="pre">Table</span></tt> or <tt class="docutils literal"><span class="pre">seq</span></tt> with.</p>
+<p>You may customize the tags used for your types by using the template <a class="reference external" href="yaml.html#setTagUriForType.t,typedesc,string">setTagUriForType</a>. It may not be applied to scalar and collection types implemented by NimYAML, but you can for example use it on a certain <tt class="docutils literal"><span class="pre">seq</span></tt> type:</p>
+<pre class = "listing"><span class="Identifier">setTagUriForType</span><span class="Punctuation">(</span><span class="Identifier">seq</span><span class="Punctuation">[</span><span class="Identifier">string</span><span class="Punctuation">]</span><span class="Punctuation">,</span> <span class="StringLit">&quot;!nim:my:seq&quot;</span><span class="Punctuation">)</span></pre>
+
+
+    <div class="row">
+      <div class="twelve-columns footer">
+        <span class="nim-sprite"></span>
+        <br/>
+        <small>Made with Nim. Generated: 2016-02-15 22:56:21 UTC</small>
+      </div>
+    </div>
+  </div>
+</article>
+</body>
+</html>
