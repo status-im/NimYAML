@@ -11,9 +11,9 @@
   <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600' rel='stylesheet' type='text/css'/>
 </head>
 <body>
-<a href="https://github.com/flyx/NimYAML"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 10;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+<a href="https://github.com/flyx/NimYAML"><img style="position: fixed; top: 0; right: 0; border: 0; z-index: 10;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
 <header>
-  <a class="pagetitle" href="/">NimYAML</a>
+  <a class="pagetitle" href="index.html">NimYAML</a>
   <a href="index.html">Home</a>
   <a href="testing.html">Testing Ground</a>
   <span>Docs:</span>
@@ -37,7 +37,11 @@
 
 <h1 id="dumping-yaml">Dumping YAML</h1><p>Dumping is preferredly done with <a class="reference external" href="yaml.html#dump,K,Stream,PresentationStyle,TagStyle,AnchorStyle,int">dump</a>, which serializes a native Nim variable to a character stream. Like <tt class="docutils literal"><span class="pre">load</span></tt>, you can use the steps involved separately.</p>
 <p>You transform a variable into a <tt class="docutils literal"><span class="pre">YamlStream</span></tt> with <a class="reference external" href="yaml.html#represent,T,TagStyle,AnchorStyle">represent</a>. Depending on the <tt class="docutils literal"><span class="pre">AnchorStyle</span></tt> you specify, this will transform <tt class="docutils literal"><span class="pre">ref</span></tt> variables with multiple instances into anchored elements and aliases (for <tt class="docutils literal"><span class="pre">asTidy</span></tt> and <tt class="docutils literal"><span class="pre">asAlways</span></tt>) or write the same element into all places it occurs (for <tt class="docutils literal"><span class="pre">asNone</span></tt>). Be aware that if you use <tt class="docutils literal"><span class="pre">asNone</span></tt>, the value you serialize might not round-trip.</p>
-<p>Transforming a <tt class="docutils literal"><span class="pre">YamlStream</span></tt> into YAML character data is done with <a class="reference external" href="yaml.html#present,YamlStream,Stream,TagLibrary,PresentationStyle,int">present</a>. You can choose from multiple presentation styles. <tt class="docutils literal"><span class="pre">psJson</span></tt> is not able to process some features of <tt class="docutils literal"><span class="pre">YamlStream</span></tt> s, the other styles support all features and are guaranteed to round-trip to the same <tt class="docutils literal"><span class="pre">YamlStream</span></tt> if you parse the generated YAML character stream again. </p>
+<p>Transforming a <tt class="docutils literal"><span class="pre">YamlStream</span></tt> into YAML character data is done with <a class="reference external" href="yaml.html#present,YamlStream,Stream,TagLibrary,PresentationStyle,int">present</a>. You can choose from multiple presentation styles. <tt class="docutils literal"><span class="pre">psJson</span></tt> is not able to process some features of <tt class="docutils literal"><span class="pre">YamlStream</span></tt> s, the other styles support all features and are guaranteed to round-trip to the same <tt class="docutils literal"><span class="pre">YamlStream</span></tt> if you parse the generated YAML character stream again.</p>
+
+<h1 id="the-document-object-model">The Document Object Model</h1><p>Much like XML, YAML also defines a <em>document object model</em>. If you cannot or do not want to load a YAML character stream to native Nim types, you can instead load it into a <tt class="docutils literal"><span class="pre">YamlDocument</span></tt>. This <tt class="docutils literal"><span class="pre">YamlDocument</span></tt> can also be serialized into a YAML character stream. All tags will be preserved exactly as they are when transforming from and to a <tt class="docutils literal"><span class="pre">YamlDocument</span></tt>. The only important thing to remember is that when a value has no tag, it will get the non-specific tag <tt class="docutils literal"><span class="pre">&quot;!&quot;</span></tt> for quoted scalars and <tt class="docutils literal"><span class="pre">&quot;?&quot;</span></tt> for all other nodes.</p>
+<p>While tags are preserved, anchors will be resolved during loading and re-added during serialization. It is allowed for a <tt class="docutils literal"><span class="pre">YamlNode</span></tt> to occur multiple times within a <tt class="docutils literal"><span class="pre">YamlDocument</span></tt>, in which case it will be serialized once and referred to afterwards via aliases.</p>
+<p>The document object model is provided for completeness, but you are encouraged to use native Nim types as start- or endpoint instead. That may be significantly faster, as every <tt class="docutils literal"><span class="pre">YamlNode</span></tt> is allocated on the heap and subject to garbage collection.</p>
 
 
 
@@ -45,7 +49,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2016-02-16 20:44:55 UTC</small>
+        <small>Made with Nim. Generated: 2016-02-25 22:45:29 UTC</small>
       </div>
     </div>
   </div>
