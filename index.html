@@ -164,11 +164,11 @@ right: *b</pre></td></tr></tbody></table>
 <span class="Keyword">var</span> <span class="Identifier">s</span> <span class="Operator">=</span> <span class="Identifier">newFileStream</span><span class="Punctuation">(</span><span class="StringLit">&quot;out.yaml&quot;</span><span class="Punctuation">,</span> <span class="Identifier">fmWrite</span><span class="Punctuation">)</span>
 <span class="Identifier">dump</span><span class="Punctuation">(</span><span class="Identifier">mob</span><span class="Punctuation">,</span> <span class="Identifier">s</span><span class="Punctuation">,</span>
      <span class="Identifier">options</span> <span class="Operator">=</span> <span class="Identifier">defineOptions</span><span class="Punctuation">(</span><span class="Identifier">tagStyle</span> <span class="Operator">=</span> <span class="Identifier">tsAll</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
-<span class="Identifier">s</span><span class="Operator">.</span><span class="Identifier">close</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre></td><td><pre class = "listing">%YAML 1.2
+<span class="Identifier">s</span><span class="Operator">.</span><span class="Identifier">close</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre></td><td><pre class = "listing">YAML 1.2
 --- !Mob
-!!str level: !nim:system:int32 42
-!!str experience: !nim:system:int32 1800
-!!str drops: !Drops [!!str Sword of Mob Slaying]</pre></td></tr></tbody></table>
+!nim:field level: !nim:system:int32 42
+!nim:field experience: !nim:system:int32 1800
+!nim:field drops: !Drops [!!str Sword of Mob Slaying]</pre></td></tr></tbody></table>
 <h2 id="dumping-nim-objects-as-json">Dumping Nim objects as JSON</h2><table class="quickstart-example"><thead><tr><th>code.nim</th>
 <th>out.yaml</th></tr></thead><tbody><tr><td><pre class = "listing"><span class="Keyword">import</span> <span class="Identifier">yaml</span>
 <span class="Keyword">type</span> <span class="Identifier">Person</span> <span class="Operator">=</span> <span class="Keyword">object</span>
@@ -214,13 +214,76 @@ right: *b</pre></td></tr></tbody></table>
     &quot;age&quot;: 12
   }
 ]</pre></td></tr></tbody></table>
+<h2 id="processing-a-sequence-of-heterogeneous-items">Processing a Sequence of Heterogeneous Items</h2><table class="quickstart-example"><thead><tr><th>code.nim</th>
+<th>in.yaml</th></tr></thead><tbody><tr><td><pre class = "listing"><span class="Keyword">import</span> <span class="Identifier">yaml</span>
+<span class="Keyword">type</span> <span class="Identifier">Person</span> <span class="Operator">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">name</span><span class="Punctuation">:</span> <span class="Identifier">string</span>
+
+<span class="Identifier">setTagUriForType</span><span class="Punctuation">(</span><span class="Identifier">Person</span><span class="Punctuation">,</span> <span class="StringLit">&quot;!nim:demo:Person&quot;</span><span class="Punctuation">,</span>
+                 <span class="Identifier">yTagPerson</span><span class="Punctuation">)</span>
+
+<span class="Keyword">var</span>
+  <span class="Identifier">s</span> <span class="Operator">=</span> <span class="Identifier">newFileStream</span><span class="Punctuation">(</span><span class="StringLit">&quot;in.yaml&quot;</span><span class="Punctuation">,</span> <span class="Identifier">fmRead</span><span class="Punctuation">)</span>
+  <span class="Identifier">context</span> <span class="Operator">=</span> <span class="Identifier">newConstructionContext</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Identifier">parser</span> <span class="Operator">=</span> <span class="Identifier">newYamlParser</span><span class="Punctuation">(</span><span class="Identifier">serializationTagLibrary</span><span class="Punctuation">)</span>
+  <span class="Identifier">events</span> <span class="Operator">=</span> <span class="Identifier">parser</span><span class="Operator">.</span><span class="Identifier">parse</span><span class="Punctuation">(</span><span class="Identifier">s</span><span class="Punctuation">)</span>
+
+<span class="Identifier">assert</span> <span class="Identifier">events</span><span class="Operator">.</span><span class="Identifier">next</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">kind</span> <span class="Operator">==</span> <span class="Identifier">yamlStartDoc</span>
+<span class="Identifier">assert</span> <span class="Identifier">events</span><span class="Operator">.</span><span class="Identifier">next</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">kind</span> <span class="Operator">==</span> <span class="Identifier">yamlStartSeq</span>
+<span class="Keyword">var</span> <span class="Identifier">nextEvent</span> <span class="Operator">=</span> <span class="Identifier">events</span><span class="Operator">.</span><span class="Identifier">peek</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+<span class="Keyword">while</span> <span class="Identifier">nextEvent</span><span class="Operator">.</span><span class="Identifier">kind</span> <span class="Operator">!=</span> <span class="Identifier">yamlEndSeq</span><span class="Punctuation">:</span>
+  <span class="Keyword">var</span> <span class="Identifier">curTag</span> <span class="Operator">=</span> <span class="Identifier">nextEvent</span><span class="Operator">.</span><span class="Identifier">tag</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+  <span class="Keyword">if</span> <span class="Identifier">curTag</span> <span class="Operator">==</span> <span class="Identifier">yTagQuestionMark</span><span class="Punctuation">:</span>
+    <span class="Comment"># we only support implicitly tagged scalar events</span>
+    <span class="Identifier">assert</span> <span class="Identifier">nextEvent</span><span class="Operator">.</span><span class="Identifier">kind</span> <span class="Operator">==</span> <span class="Identifier">yamlScalar</span>
+    <span class="Keyword">case</span> <span class="Identifier">guessType</span><span class="Punctuation">(</span><span class="Identifier">nextEvent</span><span class="Operator">.</span><span class="Identifier">scalarContent</span><span class="Punctuation">)</span>
+    <span class="Keyword">of</span> <span class="Identifier">yTypeInteger</span><span class="Punctuation">:</span> <span class="Identifier">curTag</span> <span class="Operator">=</span> <span class="Identifier">yTagInteger</span>
+    <span class="Keyword">of</span> <span class="Identifier">yTypeBoolTrue</span><span class="Punctuation">,</span> <span class="Identifier">yTypeBoolFalse</span><span class="Punctuation">:</span>
+      <span class="Identifier">curTag</span> <span class="Operator">=</span> <span class="Identifier">yTagBoolean</span>
+    <span class="Keyword">of</span> <span class="Identifier">yTypeUnknown</span><span class="Punctuation">:</span> <span class="Identifier">curTag</span> <span class="Operator">=</span> <span class="Identifier">yTagString</span>
+    <span class="Keyword">else</span><span class="Punctuation">:</span> <span class="Identifier">assert</span> <span class="Identifier">false</span><span class="Punctuation">,</span> <span class="StringLit">&quot;Type not supported!&quot;</span>
+  <span class="Keyword">elif</span> <span class="Identifier">curTag</span> <span class="Operator">==</span> <span class="Identifier">yTagExclamationMark</span><span class="Punctuation">:</span>
+    <span class="Identifier">curTag</span> <span class="Operator">=</span> <span class="Identifier">yTagString</span>
+  <span class="Keyword">case</span> <span class="Identifier">curTag</span>
+  <span class="Keyword">of</span> <span class="Identifier">yTagString</span><span class="Punctuation">:</span>
+    <span class="Keyword">var</span> <span class="Identifier">s</span><span class="Punctuation">:</span> <span class="Identifier">string</span>
+    <span class="Identifier">events</span><span class="Operator">.</span><span class="Identifier">constructChild</span><span class="Punctuation">(</span><span class="Identifier">context</span><span class="Punctuation">,</span> <span class="Identifier">s</span><span class="Punctuation">)</span>
+    <span class="Identifier">echo</span> <span class="StringLit">&quot;got string: &quot;</span><span class="Punctuation">,</span> <span class="Identifier">s</span>
+  <span class="Keyword">of</span> <span class="Identifier">yTagInteger</span><span class="Punctuation">:</span>
+    <span class="Keyword">var</span> <span class="Identifier">i</span><span class="Punctuation">:</span> <span class="Identifier">int32</span>
+    <span class="Identifier">events</span><span class="Operator">.</span><span class="Identifier">constructChild</span><span class="Punctuation">(</span><span class="Identifier">context</span><span class="Punctuation">,</span> <span class="Identifier">i</span><span class="Punctuation">)</span>
+    <span class="Identifier">echo</span> <span class="StringLit">&quot;got integer: &quot;</span><span class="Punctuation">,</span> <span class="Identifier">i</span>
+  <span class="Keyword">of</span> <span class="Identifier">yTagBoolean</span><span class="Punctuation">:</span>
+    <span class="Keyword">var</span> <span class="Identifier">b</span><span class="Punctuation">:</span> <span class="Identifier">bool</span>
+    <span class="Identifier">events</span><span class="Operator">.</span><span class="Identifier">constructChild</span><span class="Punctuation">(</span><span class="Identifier">context</span><span class="Punctuation">,</span> <span class="Identifier">b</span><span class="Punctuation">)</span>
+    <span class="Identifier">echo</span> <span class="StringLit">&quot;got boolean: &quot;</span><span class="Punctuation">,</span> <span class="Identifier">b</span>
+  <span class="Keyword">else</span><span class="Punctuation">:</span>
+    <span class="Comment"># non-standard tag ids are not available</span>
+    <span class="Comment"># at compile time</span>
+    <span class="Keyword">if</span> <span class="Identifier">curTag</span> <span class="Operator">==</span> <span class="Identifier">yTagPerson</span><span class="Punctuation">:</span>
+      <span class="Keyword">var</span> <span class="Identifier">p</span><span class="Punctuation">:</span> <span class="Identifier">Person</span>
+      <span class="Identifier">events</span><span class="Operator">.</span><span class="Identifier">constructChild</span><span class="Punctuation">(</span><span class="Identifier">context</span><span class="Punctuation">,</span> <span class="Identifier">p</span><span class="Punctuation">)</span>
+      <span class="Identifier">echo</span> <span class="StringLit">&quot;got Person with name: &quot;</span><span class="Punctuation">,</span> <span class="Identifier">p</span><span class="Operator">.</span><span class="Identifier">name</span>
+    <span class="Keyword">else</span><span class="Punctuation">:</span> <span class="Identifier">assert</span> <span class="Identifier">false</span><span class="Punctuation">,</span> <span class="StringLit">&quot;unsupported tag: &quot;</span> <span class="Operator">&amp;</span> <span class="Operator">$</span><span class="Identifier">curTag</span>
+  <span class="Identifier">nextEvent</span> <span class="Operator">=</span> <span class="Identifier">events</span><span class="Operator">.</span><span class="Identifier">peek</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+<span class="Identifier">assert</span> <span class="Identifier">events</span><span class="Operator">.</span><span class="Identifier">next</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">kind</span> <span class="Operator">==</span> <span class="Identifier">yamlEndSeq</span>
+<span class="Identifier">assert</span> <span class="Identifier">events</span><span class="Operator">.</span><span class="Identifier">next</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">kind</span> <span class="Operator">==</span> <span class="Identifier">yamlEndDoc</span>
+<span class="Identifier">assert</span> <span class="Identifier">events</span><span class="Operator">.</span><span class="Identifier">finished</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
+<span class="Identifier">s</span><span class="Operator">.</span><span class="Identifier">close</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre></td>
+<td><pre class = "listing">%YAML 1.2
+--- !!seq
+- this is a string
+- 42
+- false
+- !!str 23
+- !nim:demo:Person {name: Trillian}</pre></td></tr></tbody></table>
 
 
     <div class="row">
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2016-03-21 21:15:51 UTC</small>
+        <small>Made with Nim. Generated: 2016-03-25 23:12:19 UTC</small>
       </div>
     </div>
   </div>
