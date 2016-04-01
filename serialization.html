@@ -27,12 +27,11 @@
     
 <h1 id="introduction">Introduction</h1><p>NimYAML tries hard to make transforming YAML characters streams to native Nim types and vice versa as easy as possible. In simple scenarios, you might not need anything else than the two procs <a class="reference external" href="yaml.html#dump,K,Stream,PresentationStyle,TagStyle,AnchorStyle,int">dump</a> and <a class="reference external" href="yaml.html#load,Stream,K">load</a>. On the other side, the process should be as customizable as possible to allow the user to tightly control how the generated YAML character stream will look and how a YAML character stream is interpreted.</p>
 <p>An important thing to remember in NimYAML is that unlike in interpreted languages like Ruby, Nim cannot load a YAML character stream without knowing the resulting type beforehand. For example, if you want to load this piece of YAML:</p>
-<pre class = "listing">
-%YAML 1.2
---- !nim:system:seq(nim:system:int8)
-- 1
-- 2
-- 3</pre><p>You would need to know that it will load a <tt class="docutils literal"><span class="pre">seq[int8]</span></tt> <em>at compile time</em>. This is not really a problem because without knowing which type you will load, you cannot do anything useful with the result afterwards in the code. But it may be unfamiliar for programmers who are used to the YAML libraries of Python or Ruby.</p>
+<pre class = "listing"><span class="Directive">%YAML 1.2</span>
+<span class="Keyword">---</span> <span class="TagStart">!nim:system:seq(nim:system:int8)</span>
+<span class="Punctuation">-</span> <span class="DecNumber">1</span>
+<span class="Punctuation">-</span> <span class="DecNumber">2</span>
+<span class="Punctuation">-</span> <span class="DecNumber">3</span></pre><p>You would need to know that it will load a <tt class="docutils literal"><span class="pre">seq[int8]</span></tt> <em>at compile time</em>. This is not really a problem because without knowing which type you will load, you cannot do anything useful with the result afterwards in the code. But it may be unfamiliar for programmers who are used to the YAML libraries of Python or Ruby.</p>
 
 <h1 id="supported-types">Supported Types</h1><p>NimYAML supports a growing number of types of Nim's <tt class="docutils literal"><span class="pre">system</span></tt> module and standard library, and it also supports user-defined object, tuple and enum types out of the box.</p>
 <p><strong>Important</strong>: NimYAML currently does not support polymorphism or variant object types. This may be added in the future.</p>
@@ -44,11 +43,10 @@
 <p>To support new scalar types, you must implement the <tt class="docutils literal"><span class="pre">constructObject()</span></tt> and <tt class="docutils literal"><span class="pre">representObject()</span></tt> procs on that type (see below).</p>
 
 <h2 id="collection-types">Collection Types</h2><p>NimYAML supports Nim's <tt class="docutils literal"><span class="pre">seq</span></tt> and <tt class="docutils literal"><span class="pre">Table</span></tt> types out of the box. Unlike the native YAML types <tt class="docutils literal"><span class="pre">!!seq</span></tt> and <tt class="docutils literal"><span class="pre">!!map</span></tt>, <tt class="docutils literal"><span class="pre">seq</span></tt> and <tt class="docutils literal"><span class="pre">Table</span></tt> define the type of all their items (or keys and values). So YAML objects with heterogeneous types in them cannot be loaded to Nim collection types. For example, this sequence:</p>
-<pre class = "listing">
-%YAML 1.2
---- !!seq
-- !!int 1
-- !!string foo</pre><p>Cannot be loaded to a Nim <tt class="docutils literal"><span class="pre">seq</span></tt>. For this reason, you cannot load YAML's native <tt class="docutils literal"><span class="pre">!!map</span></tt> and <tt class="docutils literal"><span class="pre">!!seq</span></tt> types directly into Nim types.</p>
+<pre class = "listing"><span class="Directive">%YAML 1.2</span>
+<span class="Keyword">---</span> <span class="TagStart">!!seq</span>
+<span class="Punctuation">-</span> <span class="TagStart">!!int</span> <span class="DecNumber">1</span>
+<span class="Punctuation">-</span> <span class="TagStart">!!string</span> <span class="StringLit">foo</span></pre><p>Cannot be loaded to a Nim <tt class="docutils literal"><span class="pre">seq</span></tt>. For this reason, you cannot load YAML's native <tt class="docutils literal"><span class="pre">!!map</span></tt> and <tt class="docutils literal"><span class="pre">!!seq</span></tt> types directly into Nim types.</p>
 
 <h2 id="reference-types">Reference Types</h2><p>A reference to any supported non-reference type (including user defined types, see below) is supported by NimYAML. A reference type will be treated like its base type, but NimYAML is able to detect multiple references to the same object and dump the structure properly with anchors and aliases in place. It is possible to dump and load cyclic data structures without further configuration. It is possible for reference types to hold a <tt class="docutils literal"><span class="pre">nil</span></tt> value, which will be mapped to the <tt class="docutils literal"><span class="pre">!!null</span></tt> YAML scalar type.</p>
 <p>Pointer types are not supported because it seems dangerous to automatically allocate memory which the user must then manually deallocate.</p>
@@ -129,7 +127,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2016-03-20 22:58:28 UTC</small>
+        <small>Made with Nim. Generated: 2016-04-01 22:08:47 UTC</small>
       </div>
     </div>
   </div>

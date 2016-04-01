@@ -42,14 +42,14 @@
 <span class="Keyword">var</span> <span class="Identifier">s</span> <span class="Operator">=</span> <span class="Identifier">newFileStream</span><span class="Punctuation">(</span><span class="StringLit">&quot;out.yaml&quot;</span><span class="Punctuation">,</span> <span class="Identifier">fmWrite</span><span class="Punctuation">)</span>
 <span class="Identifier">dump</span><span class="Punctuation">(</span><span class="Identifier">personList</span><span class="Punctuation">,</span> <span class="Identifier">s</span><span class="Punctuation">)</span>
 <span class="Identifier">s</span><span class="Operator">.</span><span class="Identifier">close</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre></td>
-<td><pre class = "listing">%YAML 1.2
---- !nim:system:seq(nim:custom:Person)
--
-  name: Karl Koch
-  age: 23
--
-  name: Peter Pan
-  age: 12</pre></td></tr></tbody></table>
+<td><pre class = "listing"><span class="Directive">%YAML 1.2</span>
+<span class="Keyword">---</span> <span class="TagStart">!nim:system:seq(nim:custom:Person)</span>
+<span class="Punctuation">-</span>
+  <span class="StringLit">name</span><span class="Punctuation">:</span> <span class="StringLit">Karl Koch</span>
+  <span class="StringLit">age</span><span class="Punctuation">:</span> <span class="DecNumber">23</span>
+<span class="Punctuation">-</span>
+  <span class="StringLit">name</span><span class="Punctuation">:</span> <span class="StringLit">Peter Pan</span>
+  <span class="StringLit">age</span><span class="Punctuation">:</span> <span class="DecNumber">12</span></pre></td></tr></tbody></table>
 <h2 id="loading-nim-objects-from-yaml">Loading Nim objects from YAML</h2><table class="quickstart-example"><thead><tr><th>code.nim</th>
 <th>in.yaml</th></tr></thead><tbody><tr><td><pre class = "listing"><span class="Keyword">import</span> <span class="Identifier">yaml</span>
 <span class="Keyword">type</span> <span class="Identifier">Person</span> <span class="Operator">=</span> <span class="Keyword">object</span>
@@ -60,10 +60,10 @@
 <span class="Keyword">var</span> <span class="Identifier">s</span> <span class="Operator">=</span> <span class="Identifier">newFileStream</span><span class="Punctuation">(</span><span class="StringLit">&quot;in.yaml&quot;</span><span class="Punctuation">)</span>
 <span class="Identifier">load</span><span class="Punctuation">(</span><span class="Identifier">s</span><span class="Punctuation">,</span> <span class="Identifier">personList</span><span class="Punctuation">)</span>
 <span class="Identifier">s</span><span class="Operator">.</span><span class="Identifier">close</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre></td>
-<td><pre class = "listing">%YAML 1.2
----
-- { name: Karl Koch, age: 23 }
-- { name: Peter Pan, age: 12 }</pre></td></tr></tbody></table>
+<td><pre class = "listing"><span class="Directive">%YAML 1.2</span>
+<span class="Keyword">---</span>
+<span class="Punctuation">-</span> <span class="Punctuation">{</span> <span class="StringLit">name</span><span class="Punctuation">:</span> <span class="StringLit">Karl Koch</span><span class="Punctuation">,</span> <span class="StringLit">age</span><span class="Punctuation">:</span> <span class="DecNumber">23 </span><span class="Punctuation">}</span>
+<span class="Punctuation">-</span> <span class="Punctuation">{</span> <span class="StringLit">name</span><span class="Punctuation">:</span> <span class="StringLit">Peter Pan</span><span class="Punctuation">,</span> <span class="StringLit">age</span><span class="Punctuation">:</span> <span class="DecNumber">12 </span><span class="Punctuation">}</span></pre></td></tr></tbody></table>
 <h2 id="customizing-output-style">Customizing output style</h2><table class="quickstart-example"><thead><tr><th>code.nim</th>
 <th>out.yaml</th></tr></thead><tbody><tr><td><pre class = "listing"><span class="Keyword">import</span> <span class="Identifier">yaml</span>
 <span class="Keyword">type</span> <span class="Identifier">Person</span> <span class="Operator">=</span> <span class="Keyword">object</span>
@@ -80,22 +80,22 @@
     <span class="Identifier">indentationStep</span> <span class="Operator">=</span> <span class="DecNumber">3</span><span class="Punctuation">,</span>
     <span class="Identifier">newlines</span> <span class="Operator">=</span> <span class="Identifier">nlLF</span><span class="Punctuation">,</span>
     <span class="Identifier">outputVersion</span> <span class="Operator">=</span> <span class="Identifier">ov1_1</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
-<span class="Identifier">s</span><span class="Operator">.</span><span class="Identifier">close</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre></td><td><pre class = "listing">%YAML 1.1
---- !nim:system:seq(nim:custom:Person)
-[
-   !nim:custom:Person {
-      ? !!str &quot;name&quot;
-      : !!str &quot;Karl Koch&quot;,
-      ? !!str &quot;age&quot;
-      : !nim:system:int32 &quot;23&quot;
-   },
-   !nim:custom:Person {
-      ? !!str &quot;name&quot;
-      : !!str &quot;Peter Pan&quot;,
-      ? !!str &quot;age&quot;
-      : !nim:system:int32 &quot;12&quot;
-   }
-]</pre></td></tr></tbody></table>
+<span class="Identifier">s</span><span class="Operator">.</span><span class="Identifier">close</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre></td><td><pre class = "listing"><span class="Directive">%YAML 1.1</span>
+<span class="Keyword">---</span> <span class="TagStart">!nim:system:seq(nim:custom:Person)</span>
+<span class="Punctuation">[</span>
+   <span class="TagStart">!nim:custom:Person</span> <span class="Punctuation">{</span>
+      <span class="Punctuation">?</span> <span class="TagStart">!!str</span> <span class="StringLit">&quot;</span><span class="StringLit">name&quot;</span>
+      <span class="Punctuation">:</span> <span class="TagStart">!!str</span> <span class="StringLit">&quot;</span><span class="StringLit">Karl Koch&quot;</span><span class="Punctuation">,</span>
+      <span class="Punctuation">?</span> <span class="TagStart">!!str</span> <span class="StringLit">&quot;</span><span class="StringLit">age&quot;</span>
+      <span class="Punctuation">:</span> <span class="TagStart">!nim:system:int32</span> <span class="StringLit">&quot;</span><span class="StringLit">23&quot;</span>
+   <span class="Punctuation">}</span><span class="Punctuation">,</span>
+   <span class="TagStart">!nim:custom:Person</span> <span class="Punctuation">{</span>
+      <span class="Punctuation">?</span> <span class="TagStart">!!str</span> <span class="StringLit">&quot;</span><span class="StringLit">name&quot;</span>
+      <span class="Punctuation">:</span> <span class="TagStart">!!str</span> <span class="StringLit">&quot;</span><span class="StringLit">Peter Pan&quot;</span><span class="Punctuation">,</span>
+      <span class="Punctuation">?</span> <span class="TagStart">!!str</span> <span class="StringLit">&quot;</span><span class="StringLit">age&quot;</span>
+      <span class="Punctuation">:</span> <span class="TagStart">!nim:system:int32</span> <span class="StringLit">&quot;</span><span class="StringLit">12&quot;</span>
+   <span class="Punctuation">}</span>
+<span class="Punctuation">]</span></pre></td></tr></tbody></table>
 <h2 id="dumping-reference-types-and-cyclic-structures">Dumping reference types and cyclic structures</h2><table class="quickstart-example"><thead><tr><th>code.nim</th>
 <th>out.yaml</th></tr></thead><tbody><tr><td><pre class = "listing"><span class="Keyword">import</span> <span class="Identifier">yaml</span>
 <span class="Keyword">type</span>
@@ -116,17 +116,17 @@
 
 <span class="Keyword">var</span> <span class="Identifier">s</span> <span class="Operator">=</span> <span class="Identifier">newFileStream</span><span class="Punctuation">(</span><span class="StringLit">&quot;out.yaml&quot;</span><span class="Punctuation">,</span> <span class="Identifier">fmWrite</span><span class="Punctuation">)</span>
 <span class="Identifier">dump</span><span class="Punctuation">(</span><span class="Identifier">node1</span><span class="Punctuation">,</span> <span class="Identifier">s</span><span class="Punctuation">)</span>
-<span class="Identifier">s</span><span class="Operator">.</span><span class="Identifier">close</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre></td><td><pre class = "listing">%YAML 1.2
---- !nim:custom:NodeObj &amp;a
-name: Node 1
-left:
-  name: Node 2
-  left: !!null ~
-  right: &amp;b
-    name: Node 3
-    left: *a
-    right: !!null ~
-right: *b</pre></td></tr></tbody></table>
+<span class="Identifier">s</span><span class="Operator">.</span><span class="Identifier">close</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre></td><td><pre class = "listing"><span class="Directive">%YAML 1.2</span>
+<span class="Keyword">---</span> <span class="TagStart">!nim:custom:NodeObj</span> <span class="Label">&amp;a</span>
+<span class="StringLit">name</span><span class="Punctuation">:</span> <span class="StringLit">Node 1</span>
+<span class="StringLit">left</span><span class="Punctuation">:</span>
+  <span class="StringLit">name</span><span class="Punctuation">:</span> <span class="StringLit">Node 2</span>
+  <span class="StringLit">left</span><span class="Punctuation">:</span> <span class="TagStart">!!null</span> <span class="StringLit">~</span>
+  <span class="StringLit">right</span><span class="Punctuation">:</span> <span class="Label">&amp;b</span>
+    <span class="StringLit">name</span><span class="Punctuation">:</span> <span class="StringLit">Node 3</span>
+    <span class="StringLit">left</span><span class="Punctuation">:</span> <span class="Reference">*a</span>
+    <span class="StringLit">right</span><span class="Punctuation">:</span> <span class="TagStart">!!null</span> <span class="StringLit">~</span>
+<span class="StringLit">right</span><span class="Punctuation">:</span> <span class="Reference">*b</span></pre></td></tr></tbody></table>
 <h2 id="loading-reference-types-and-cyclic-structures">Loading reference types and cyclic structures</h2><table class="quickstart-example"><thead><tr><th>code.nim</th>
 <th>in.yaml</th></tr></thead><tbody><tr><td><pre class = "listing"><span class="Keyword">import</span> <span class="Identifier">yaml</span>
 <span class="Keyword">type</span>
@@ -139,17 +139,17 @@ right: *b</pre></td></tr></tbody></table>
 
 <span class="Keyword">var</span> <span class="Identifier">s</span> <span class="Operator">=</span> <span class="Identifier">newFileStream</span><span class="Punctuation">(</span><span class="StringLit">&quot;in.yaml&quot;</span><span class="Punctuation">)</span>
 <span class="Identifier">load</span><span class="Punctuation">(</span><span class="Identifier">s</span><span class="Punctuation">,</span> <span class="Identifier">node1</span><span class="Punctuation">)</span>
-<span class="Identifier">s</span><span class="Operator">.</span><span class="Identifier">close</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre></td><td><pre class = "listing">%YAML 1.2
---- !nim:custom:NodeObj &amp;a
-name: Node 1
-left:
-  name: Node 2
-  left: ~
-  right: &amp;b
-    name: Node 3
-    left: *a
-    right: ~
-right: *b</pre></td></tr></tbody></table>
+<span class="Identifier">s</span><span class="Operator">.</span><span class="Identifier">close</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre></td><td><pre class = "listing"><span class="Directive">%YAML 1.2</span>
+<span class="Keyword">---</span> <span class="TagStart">!nim:custom:NodeObj</span> <span class="Label">&amp;a</span>
+<span class="StringLit">name</span><span class="Punctuation">:</span> <span class="StringLit">Node 1</span>
+<span class="StringLit">left</span><span class="Punctuation">:</span>
+  <span class="StringLit">name</span><span class="Punctuation">:</span> <span class="StringLit">Node 2</span>
+  <span class="StringLit">left</span><span class="Punctuation">:</span> <span class="StringLit">~</span>
+  <span class="StringLit">right</span><span class="Punctuation">:</span> <span class="Label">&amp;b</span>
+    <span class="StringLit">name</span><span class="Punctuation">:</span> <span class="StringLit">Node 3</span>
+    <span class="StringLit">left</span><span class="Punctuation">:</span> <span class="Reference">*a</span>
+    <span class="StringLit">right</span><span class="Punctuation">:</span> <span class="StringLit">~</span>
+<span class="StringLit">right</span><span class="Punctuation">:</span> <span class="Reference">*b</span></pre></td></tr></tbody></table>
 <h2 id="defining-a-custom-tag-uri-for-a-type">Defining a custom tag uri for a type</h2><table class="quickstart-example"><thead><tr><th>code.nim</th>
 <th>out.yaml</th></tr></thead><tbody><tr><td><pre class = "listing"><span class="Keyword">import</span> <span class="Identifier">yaml</span>
 <span class="Keyword">type</span> <span class="Identifier">Mob</span> <span class="Operator">=</span> <span class="Keyword">object</span>
@@ -164,11 +164,11 @@ right: *b</pre></td></tr></tbody></table>
 <span class="Keyword">var</span> <span class="Identifier">s</span> <span class="Operator">=</span> <span class="Identifier">newFileStream</span><span class="Punctuation">(</span><span class="StringLit">&quot;out.yaml&quot;</span><span class="Punctuation">,</span> <span class="Identifier">fmWrite</span><span class="Punctuation">)</span>
 <span class="Identifier">dump</span><span class="Punctuation">(</span><span class="Identifier">mob</span><span class="Punctuation">,</span> <span class="Identifier">s</span><span class="Punctuation">,</span>
      <span class="Identifier">options</span> <span class="Operator">=</span> <span class="Identifier">defineOptions</span><span class="Punctuation">(</span><span class="Identifier">tagStyle</span> <span class="Operator">=</span> <span class="Identifier">tsAll</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
-<span class="Identifier">s</span><span class="Operator">.</span><span class="Identifier">close</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre></td><td><pre class = "listing">YAML 1.2
---- !Mob
-!nim:field level: !nim:system:int32 42
-!nim:field experience: !nim:system:int32 1800
-!nim:field drops: !Drops [!!str Sword of Mob Slaying]</pre></td></tr></tbody></table>
+<span class="Identifier">s</span><span class="Operator">.</span><span class="Identifier">close</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre></td><td><pre class = "listing"><span class="StringLit">YAML 1.2</span>
+<span class="Keyword">---</span> <span class="TagStart">!Mob</span>
+<span class="TagStart">!nim:field</span> <span class="StringLit">level</span><span class="Punctuation">:</span> <span class="TagStart">!nim:system:int32</span> <span class="DecNumber">42</span>
+<span class="TagStart">!nim:field</span> <span class="StringLit">experience</span><span class="Punctuation">:</span> <span class="TagStart">!nim:system:int32</span> <span class="DecNumber">1800</span>
+<span class="TagStart">!nim:field</span> <span class="StringLit">drops</span><span class="Punctuation">:</span> <span class="TagStart">!Drops</span> <span class="Punctuation">[</span><span class="TagStart">!!str</span> <span class="StringLit">Sword of Mob Slaying</span><span class="Punctuation">]</span></pre></td></tr></tbody></table>
 <h2 id="dumping-nim-objects-as-json">Dumping Nim objects as JSON</h2><table class="quickstart-example"><thead><tr><th>code.nim</th>
 <th>out.yaml</th></tr></thead><tbody><tr><td><pre class = "listing"><span class="Keyword">import</span> <span class="Identifier">yaml</span>
 <span class="Keyword">type</span> <span class="Identifier">Person</span> <span class="Operator">=</span> <span class="Keyword">object</span>
@@ -183,16 +183,16 @@ right: *b</pre></td></tr></tbody></table>
 <span class="Identifier">dump</span><span class="Punctuation">(</span><span class="Identifier">personList</span><span class="Punctuation">,</span> <span class="Identifier">s</span><span class="Punctuation">,</span>
      <span class="Identifier">options</span> <span class="Operator">=</span> <span class="Identifier">defineOptions</span><span class="Punctuation">(</span><span class="Identifier">style</span> <span class="Operator">=</span> <span class="Identifier">psJson</span><span class="Punctuation">)</span><span class="Punctuation">)</span>
 <span class="Identifier">s</span><span class="Operator">.</span><span class="Identifier">close</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre></td>
-<td><pre class = "listing">[
-  {
-    &quot;name&quot;: &quot;Karl Koch&quot;,
-    &quot;age&quot;: 23
-  },
-  {
-    &quot;name&quot;: &quot;Peter Pan&quot;,
-    &quot;age&quot;: 12
-  }
-]</pre></td></tr></tbody></table>
+<td><pre class = "listing"><span class="Punctuation">[</span>
+  <span class="Punctuation">{</span>
+    <span class="StringLit">&quot;</span><span class="StringLit">name&quot;</span><span class="Punctuation">:</span> <span class="StringLit">&quot;</span><span class="StringLit">Karl Koch&quot;</span><span class="Punctuation">,</span>
+    <span class="StringLit">&quot;</span><span class="StringLit">age&quot;</span><span class="Punctuation">:</span> <span class="DecNumber">23</span>
+  <span class="Punctuation">}</span><span class="Punctuation">,</span>
+  <span class="Punctuation">{</span>
+    <span class="StringLit">&quot;</span><span class="StringLit">name&quot;</span><span class="Punctuation">:</span> <span class="StringLit">&quot;</span><span class="StringLit">Peter Pan&quot;</span><span class="Punctuation">,</span>
+    <span class="StringLit">&quot;</span><span class="StringLit">age&quot;</span><span class="Punctuation">:</span> <span class="DecNumber">12</span>
+  <span class="Punctuation">}</span>
+<span class="Punctuation">]</span></pre></td></tr></tbody></table>
 <h2 id="loading-nim-objects-from-json">Loading Nim objects from JSON</h2><table class="quickstart-example"><thead><tr><th>code.nim</th>
 <th>in.yaml</th></tr></thead><tbody><tr><td><pre class = "listing"><span class="Keyword">import</span> <span class="Identifier">yaml</span>
 <span class="Keyword">type</span> <span class="Identifier">Person</span> <span class="Operator">=</span> <span class="Keyword">object</span>
@@ -204,16 +204,16 @@ right: *b</pre></td></tr></tbody></table>
 <span class="Keyword">var</span> <span class="Identifier">s</span> <span class="Operator">=</span> <span class="Identifier">newFileStream</span><span class="Punctuation">(</span><span class="StringLit">&quot;in.yaml&quot;</span><span class="Punctuation">)</span>
 <span class="Identifier">load</span><span class="Punctuation">(</span><span class="Identifier">s</span><span class="Punctuation">,</span> <span class="Identifier">personList</span><span class="Punctuation">)</span>
 <span class="Identifier">s</span><span class="Operator">.</span><span class="Identifier">close</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre></td>
-<td><pre class = "listing">[
-  {
-    &quot;name&quot;: &quot;Karl Koch&quot;,
-    &quot;age&quot;: 23
-  },
-  {
-    &quot;name&quot;: &quot;Peter Pan&quot;,
-    &quot;age&quot;: 12
-  }
-]</pre></td></tr></tbody></table>
+<td><pre class = "listing"><span class="Punctuation">[</span>
+  <span class="Punctuation">{</span>
+    <span class="StringLit">&quot;</span><span class="StringLit">name&quot;</span><span class="Punctuation">:</span> <span class="StringLit">&quot;</span><span class="StringLit">Karl Koch&quot;</span><span class="Punctuation">,</span>
+    <span class="StringLit">&quot;</span><span class="StringLit">age&quot;</span><span class="Punctuation">:</span> <span class="DecNumber">23</span>
+  <span class="Punctuation">}</span><span class="Punctuation">,</span>
+  <span class="Punctuation">{</span>
+    <span class="StringLit">&quot;</span><span class="StringLit">name&quot;</span><span class="Punctuation">:</span> <span class="StringLit">&quot;</span><span class="StringLit">Peter Pan&quot;</span><span class="Punctuation">,</span>
+    <span class="StringLit">&quot;</span><span class="StringLit">age&quot;</span><span class="Punctuation">:</span> <span class="DecNumber">12</span>
+  <span class="Punctuation">}</span>
+<span class="Punctuation">]</span></pre></td></tr></tbody></table>
 <h2 id="processing-a-sequence-of-heterogeneous-items">Processing a Sequence of Heterogeneous Items</h2><table class="quickstart-example"><thead><tr><th>code.nim</th>
 <th>in.yaml</th></tr></thead><tbody><tr><td><pre class = "listing"><span class="Keyword">import</span> <span class="Identifier">yaml</span>
 <span class="Keyword">type</span> <span class="Identifier">Person</span> <span class="Operator">=</span> <span class="Keyword">object</span>
@@ -270,20 +270,20 @@ right: *b</pre></td></tr></tbody></table>
 <span class="Identifier">assert</span> <span class="Identifier">events</span><span class="Operator">.</span><span class="Identifier">next</span><span class="Punctuation">(</span><span class="Punctuation">)</span><span class="Operator">.</span><span class="Identifier">kind</span> <span class="Operator">==</span> <span class="Identifier">yamlEndDoc</span>
 <span class="Identifier">assert</span> <span class="Identifier">events</span><span class="Operator">.</span><span class="Identifier">finished</span><span class="Punctuation">(</span><span class="Punctuation">)</span>
 <span class="Identifier">s</span><span class="Operator">.</span><span class="Identifier">close</span><span class="Punctuation">(</span><span class="Punctuation">)</span></pre></td>
-<td><pre class = "listing">%YAML 1.2
---- !!seq
-- this is a string
-- 42
-- false
-- !!str 23
-- !nim:demo:Person {name: Trillian}</pre></td></tr></tbody></table>
+<td><pre class = "listing"><span class="Directive">%YAML 1.2</span>
+<span class="Keyword">---</span> <span class="TagStart">!!seq</span>
+<span class="Punctuation">-</span> <span class="StringLit">this is a string</span>
+<span class="Punctuation">-</span> <span class="DecNumber">42</span>
+<span class="Punctuation">-</span> <span class="StringLit">false</span>
+<span class="Punctuation">-</span> <span class="TagStart">!!str</span> <span class="DecNumber">23</span>
+<span class="Punctuation">-</span> <span class="TagStart">!nim:demo:Person</span> <span class="Punctuation">{</span><span class="StringLit">name</span><span class="Punctuation">:</span> <span class="StringLit">Trillian</span><span class="Punctuation">}</span></pre></td></tr></tbody></table>
 
 
     <div class="row">
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2016-03-25 23:12:19 UTC</small>
+        <small>Made with Nim. Generated: 2016-04-01 22:08:47 UTC</small>
       </div>
     </div>
   </div>
