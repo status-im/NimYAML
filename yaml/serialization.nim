@@ -470,9 +470,35 @@ proc representObject*[K, V](value: OrderedTable[K, V], ts: TagStyle,
     c.put(endMapEvent())
   c.put(endSeqEvent())
 
+proc typeStringRepOf(n: NimNode): NimNode {.compileTime.} =
+  case n.kind
+  of nnkSym: result = newLit("!nim:custom:" & $n)
+  of nnkBracketExpr:
+    result = nil
+    var first = true
+    for child in n.children:
+      let typeName = if child.kind == nnkSym: newIdentNode($child) else: child
+
+      if isNil(result): result = newLit("!nim:custom:" & $typeName)
+      elif first:
+        result = infix(result, "&", infix(newLit('('), "&",
+            newCall(bindSym("safeTagUri"), newCall("yamlTag", typeName))))
+        first = false
+      else:
+        result = infix(result, "&", infix(newLit(','), "&",
+            newCall(bindSym("safeTagUri"), newCall("yamlTag", typeName))))
+    if not first: result = infix(result, "&", newLit(')'))
+  else:
+    echo "[NimYAML] Fatal error in macro: Unexpected node kind: ", n.kind
+    echo "[NimYAML] Please report this bug."
+    quit 1
+
+macro typeStringRep(t: typedesc): untyped =
+  result = typeStringRepOf(getTypeInst(t)[1])
+
 proc yamlTag*(T: typedesc[object|enum]):
     TagId {.inline, raises: [].} =
-  var uri = "!nim:custom:" & (typetraits.name(type(T)))
+  var uri = typeStringRep(T)
   try: serializationTagLibrary.tags[uri]
   except KeyError: serializationTagLibrary.registerUri(uri)
 

@@ -24,6 +24,9 @@ type
   Node = object
     value: string
     next: ref Node
+  
+  Container[T] = object
+    valA, valB: T
 
   BetterInt = distinct int
 
@@ -449,6 +452,28 @@ suite "Serialization":
     var result: Animal
     expectConstructionError(1, 32, "While constructing Animal: Missing field: \"purringIntensity\""):
       load(input, result)
+
+  test "Load custom generic object":
+    let input = "--- !nim:custom:Container(tag:yaml.org,2002:str)\nvalA: a\nvalB: b"
+    var result: Container[string]
+    load(input, result)
+    assert result.valA == "a"
+    assert result.valB == "b"
+
+  test "Dump custom generic object":
+    let input = Container[string](valA: "aa", valB: "bb")
+    let output = dump(input, tsRootOnly, asTidy, blockOnly)
+    assertStringEqual("%YAML 1.2\n" &
+        "--- !nim:custom:Container(tag:yaml.org,2002:str) \nvalA: aa\nvalB: bb", output)
+
+# TODO: currently not compiling
+#  test "Dump custom generic object - nested generics":
+#    let input = Container[Container[int]](valA: Container[int](valA: 1, valB: 2),
+#                                          valB: Container[int](valA: 3, valB: 4))
+#    let output = dump(input, tsRootOnly, asTidy, blockOnly)
+#    assertStringEqual("%YAML 1.2\n" &
+#        "--- !nim:custom:Container(nim:custom:Container(int)) \nvalA: \n" &
+#        "  valA: 1\n  valB: 2\nvalB: \n  valA: 3\n  valB: 4", output)
 
   test "Dump cyclic data structure":
     var
