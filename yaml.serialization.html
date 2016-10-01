@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>NimYAML - Module yaml.serialization</title>
+
+  <link href="docutils.css" rel="stylesheet" type="text/css"/>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,900' rel='stylesheet' type='text/css'/>
+  <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600' rel='stylesheet' type='text/css'/>
+</head>
+<body>
+<a href="https://github.com/flyx/NimYAML"><img style="position: fixed; top: 0; right: 0; border: 0; z-index: 10;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+<header>
+  <a class="pagetitle" href="index.html">NimYAML</a>
+  <a href="index.html">Home</a>
+  <a href="testing.html">Testing Ground</a>
+  <span>Docs:</span>
+  <a href="api.html">Overview</a>
+  <a href="serialization.html">Serialization</a>
+  <span>
+    <a href="#">Modules</a>
+    <ul>
+      <li><a href="yaml.html">yaml</a></li>
+      <li><a href="yaml.dom.html">yaml.dom</a></li>
+      <li><a href="yaml.hints.html">yaml.hints</a></li>
+      <li><a href="yaml.parser.html">yaml.parser</a></li>
+      <li><a href="yaml.presenter.html">yaml.presenter</a></li>
+      <li><a href="yaml.serialization.html">yaml.serialization</a></li>
+      <li><a href="yaml.stream.html">yaml.stream</a></li>
+      <li><a href="yaml.taglib.html">yaml.taglib</a></li>
+      <li><a href="yaml.tojson.html">yaml.tojson</a></li>
+    </ul>
+  </span>
+</header>
+<article id="documentId">
+  <div class="container">
+    <h1 class="title">Module yaml.serialization</h1>
+    <div class="row">
+  <div class="three columns">
+  <div>
+    Search: <input type="text" id="searchInput"
+      onkeyup="search()" />
+  </div>
+  <div>
+    Group by:
+    <select onchange="groupBy(this.value)">
+      <option value="section">Section</option>
+      <option value="type">Type</option>
+    </select>
+  </div>
+  <ul class="simple simple-toc" id="toc-list">
+<li>
+  <a class="reference reference-toplevel" href="#6" id="56">Imports</a>
+  <ul class="simple simple-toc-section">
+    
+  </ul>
+</li>
+<li>
+  <a class="reference reference-toplevel" href="#7" id="57">Types</a>
+  <ul class="simple simple-toc-section">
+      <li><a class="reference" href="#SerializationContext"
+    title="SerializationContext = ref object
+  refs*: Table[pointer, AnchorId]
+  style: AnchorStyle
+  nextAnchorId*: AnchorId
+  put*: proc (e: YamlStreamEvent)"><wbr />Serialization<wbr />Context</a></li>
+  <li><a class="reference" href="#ConstructionContext"
+    title="ConstructionContext = ref object
+  refs*: Table[AnchorId, pointer]"><wbr />Construction<wbr />Context</a></li>
+  <li><a class="reference" href="#YamlConstructionError"
+    title="YamlConstructionError = object of YamlLoadingError"><wbr />Yaml<wbr />Construction<wbr />Error</a></li>
+
+  </ul>
+</li>
+<li>
+  <a class="reference reference-toplevel" href="#12" id="62">Procs</a>
+  <ul class="simple simple-toc-section">
+      <li><a class="reference" href="#newConstructionContext,"
+    title="newConstructionContext(): ConstructionContext"><wbr />new<wbr />Construction<wbr />Context</a></li>
+  <li><a class="reference" href="#newSerializationContext,AnchorStyle,proc(YamlStreamEvent)"
+    title="newSerializationContext(s: AnchorStyle; putImpl: proc (e: YamlStreamEvent)): SerializationContext"><wbr />new<wbr />Serialization<wbr />Context</a></li>
+  <li><a class="reference" href="#yamlTag,typedesc[string]"
+    title="yamlTag[](T: typedesc[string]): TagId"><wbr />yaml<wbr />Tag</a></li>
+  <li><a class="reference" href="#constructObject,YamlStream,ConstructionContext,string"
+    title="constructObject(s: var YamlStream; c: ConstructionContext; result: var string)"><wbr />construct<wbr />Object</a></li>
+  <li><a class="reference" href="#representObject,string,TagStyle,SerializationContext,TagId"
+    title="representObject(value: string; ts: TagStyle; c: SerializationContext; tag: TagId)"><wbr />represent<wbr />Object</a></li>
+  <li><a class="reference" href="#constructObject,YamlStream,ConstructionContext,T"
+    title="constructObject[T: int8 | int16 | int32 | int64](s: var YamlStream;
+    c: ConstructionContext; result: var T)"><wbr />construct<wbr />Object</a></li>
+  <li><a class="reference" href="#constructObject,YamlStream,ConstructionContext,int"
+    title="constructObject(s: var YamlStream; c: ConstructionContext; result: var int)"><wbr />construct<wbr />Object</a></li>
+  <li><a class="reference" href="#representObject,T,TagStyle,SerializationContext,TagId"
+    title="representObject[T: int8 | int16 | int32 | int64](value: T; ts: TagStyle;
+    c: SerializationContext; tag: TagId)"><wbr />represent<wbr />Object</a></li>
+  <li><a class="reference" href="#representObject,int,TagStyle,SerializationContext,TagId"
+    title="representObject(value: int; tagStyle: TagStyle; c: SerializationContext; tag: TagId)"><wbr />represent<wbr />Object</a></li>
+  <li><a class="reference" href="#constructObject,YamlStream,ConstructionContext,T_2"
+    title="constructObject[T: uint8 | uint16 | uint32 | uint64](s: var YamlStream;
+    c: ConstructionContext; result: var T)"><wbr />construct<wbr />Object</a></li>
+  <li><a class="reference" href="#constructObject,YamlStream,ConstructionContext,uint"
+    title="constructObject(s: var YamlStream; c: ConstructionContext; result: var uint)"><wbr />construct<wbr />Object</a></li>
+  <li><a class="reference" href="#representObject,T,TagStyle,SerializationContext,TagId_2"
+    title="representObject[T: uint8 | uint16 | uint32 | uint64](value: T; ts: TagStyle;
+    c: SerializationContext; tag: TagId)"><wbr />represent<wbr />Object</a></li>
+  <li><a class="reference" href="#representObject,uint,TagStyle,SerializationContext,TagId"
+    title="representObject(value: uint; ts: TagStyle; c: SerializationContext; tag: TagId)"><wbr />represent<wbr />Object</a></li>
+  <li><a class="reference" href="#constructObject,YamlStream,ConstructionContext,T_3"
+    title="constructObject[T: float | float32 | float64](s: var YamlStream; c: ConstructionContext;
+    result: var T)"><wbr />construct<wbr />Object</a></li>
+  <li><a class="reference" href="#representObject,T,TagStyle,SerializationContext,TagId_3"
+    title="representObject[T: float | float32 | float64](value: T; ts: TagStyle;
+    c: SerializationContext; tag: TagId)"><wbr />represent<wbr />Object</a></li>
+  <li><a class="reference" href="#yamlTag,typedesc[bool]"
+    title="yamlTag[](T: typedesc[bool]): TagId"><wbr />yaml<wbr />Tag</a></li>
+  <li><a class="reference" href="#constructObject,YamlStream,ConstructionContext,bool"
+    title="constructObject(s: var YamlStream; c: ConstructionContext; result: var bool)"><wbr />construct<wbr />Object</a></li>
+  <li><a class="reference" href="#representObject,bool,TagStyle,SerializationContext,TagId"
+    title="representObject(value: bool; ts: TagStyle; c: SerializationContext; tag: TagId)"><wbr />represent<wbr />Object</a></li>
+  <li><a class="reference" href="#constructObject,YamlStream,ConstructionContext,char"
+    title="constructObject(s: var YamlStream; c: ConstructionContext; result: var char)"><wbr />construct<wbr />Object</a></li>
+  <li><a class="reference" href="#representObject,char,TagStyle,SerializationContext,TagId"
+    title="representObject(value: char; ts: TagStyle; c: SerializationContext; tag: TagId)"><wbr />represent<wbr />Object</a></li>
+  <li><a class="reference" href="#yamlTag,typedesc[seq[I]]"
+    title="yamlTag[I](T: typedesc[seq[I]]): TagId"><wbr />yaml<wbr />Tag</a></li>
+  <li><a class="reference" href="#yamlTag,typedesc[set[I]]"
+    title="yamlTag[I](T: typedesc[set[I]]): TagId"><wbr />yaml<wbr />Tag</a></li>
+  <li><a class="reference" href="#constructObject,YamlStream,ConstructionContext,seq[T]"
+    title="constructObject[T](s: var YamlStream; c: ConstructionContext; result: var seq[T])"><wbr />construct<wbr />Object</a></li>
+  <li><a class="reference" href="#constructObject,YamlStream,ConstructionContext,set[T]"
+    title="constructObject[T](s: var YamlStream; c: ConstructionContext; result: var set[T])"><wbr />construct<wbr />Object</a></li>
+  <li><a class="reference" href="#representObject,,TagStyle,SerializationContext,TagId"
+    title="representObject[T](value: seq[T] | set[T]; ts: TagStyle; c: SerializationContext;
+                   tag: TagId)"><wbr />represent<wbr />Object</a></li>
+  <li><a class="reference" href="#yamlTag,typedesc[array[I,V]]"
+    title="yamlTag[I, V](T: typedesc[array[I, V]]): TagId"><wbr />yaml<wbr />Tag</a></li>
+  <li><a class="reference" href="#constructObject,YamlStream,ConstructionContext,array[I,T]"
+    title="constructObject[I, T](s: var YamlStream; c: ConstructionContext;
+                     result: var array[I, T])"><wbr />construct<wbr />Object</a></li>
+  <li><a class="reference" href="#representObject,array[I,T],TagStyle,SerializationContext,TagId"
+    title="representObject[I, T](value: array[I, T]; ts: TagStyle; c: SerializationContext;
+                     tag: TagId)"><wbr />represent<wbr />Object</a></li>
+  <li><a class="reference" href="#yamlTag,typedesc[Table[K,V]]"
+    title="yamlTag[K, V](T: typedesc[Table[K, V]]): TagId"><wbr />yaml<wbr />Tag</a></li>
+  <li><a class="reference" href="#constructObject,YamlStream,ConstructionContext,Table[K,V]"
+    title="constructObject[K, V](s: var YamlStream; c: ConstructionContext;
+                     result: var Table[K, V])"><wbr />construct<wbr />Object</a></li>
+  <li><a class="reference" href="#representObject,Table[K,V],TagStyle,SerializationContext,TagId"
+    title="representObject[K, V](value: Table[K, V]; ts: TagStyle; c: SerializationContext;
+                     tag: TagId)"><wbr />represent<wbr />Object</a></li>
+  <li><a class="reference" href="#yamlTag,typedesc[OrderedTable[K,V]]"
+    title="yamlTag[K, V](T: typedesc[OrderedTable[K, V]]): TagId"><wbr />yaml<wbr />Tag</a></li>
+  <li><a class="reference" href="#constructObject,YamlStream,ConstructionContext,OrderedTable[K,V]"
+    title="constructObject[K, V](s: var YamlStream; c: ConstructionContext;
+                     result: var OrderedTable[K, V])"><wbr />construct<wbr />Object</a></li>
+  <li><a class="reference" href="#representObject,OrderedTable[K,V],TagStyle,SerializationContext,TagId"
+    title="representObject[K, V](value: OrderedTable[K, V]; ts: TagStyle;
+                     c: SerializationContext; tag: TagId)"><wbr />represent<wbr />Object</a></li>
+  <li><a class="reference" href="#yamlTag,typedesc[]"
+    title="yamlTag[](T: typedesc[object | enum]): TagId"><wbr />yaml<wbr />Tag</a></li>
+  <li><a class="reference" href="#yamlTag,typedesc[]_2"
+    title="yamlTag[](T: typedesc[tuple]): TagId"><wbr />yaml<wbr />Tag</a></li>
+  <li><a class="reference" href="#constructObject,YamlStream,ConstructionContext,O"
+    title="constructObject[O: object | tuple](s: var YamlStream; c: ConstructionContext;
+                                result: var O)"><wbr />construct<wbr />Object</a></li>
+  <li><a class="reference" href="#representObject,O,TagStyle,SerializationContext,TagId"
+    title="representObject[O: object | tuple](value: O; ts: TagStyle; c: SerializationContext;
+                                tag: TagId)"><wbr />represent<wbr />Object</a></li>
+  <li><a class="reference" href="#constructObject,YamlStream,ConstructionContext,O_2"
+    title="constructObject[O: enum](s: var YamlStream; c: ConstructionContext; result: var O)"><wbr />construct<wbr />Object</a></li>
+  <li><a class="reference" href="#representObject,O,TagStyle,SerializationContext,TagId_2"
+    title="representObject[O: enum](value: O; ts: TagStyle; c: SerializationContext; tag: TagId)"><wbr />represent<wbr />Object</a></li>
+  <li><a class="reference" href="#yamlTag,typedesc[ref.O]"
+    title="yamlTag[O](T: typedesc[ref O]): TagId"><wbr />yaml<wbr />Tag</a></li>
+  <li><a class="reference" href="#constructChild,YamlStream,ConstructionContext,T"
+    title="constructChild[T](s: var YamlStream; c: ConstructionContext; result: var T)"><wbr />construct<wbr />Child</a></li>
+  <li><a class="reference" href="#constructChild,YamlStream,ConstructionContext,string"
+    title="constructChild(s: var YamlStream; c: ConstructionContext; result: var string)"><wbr />construct<wbr />Child</a></li>
+  <li><a class="reference" href="#constructChild,YamlStream,ConstructionContext,seq[T]"
+    title="constructChild[T](s: var YamlStream; c: ConstructionContext; result: var seq[T])"><wbr />construct<wbr />Child</a></li>
+  <li><a class="reference" href="#constructChild,YamlStream,ConstructionContext,ref.O"
+    title="constructChild[O](s: var YamlStream; c: ConstructionContext; result: var ref O)"><wbr />construct<wbr />Child</a></li>
+  <li><a class="reference" href="#representChild,string,TagStyle,SerializationContext"
+    title="representChild(value: string; ts: TagStyle; c: SerializationContext)"><wbr />represent<wbr />Child</a></li>
+  <li><a class="reference" href="#representChild,seq[T],TagStyle,SerializationContext"
+    title="representChild[T](value: seq[T]; ts: TagStyle; c: SerializationContext)"><wbr />represent<wbr />Child</a></li>
+  <li><a class="reference" href="#representChild,ref.O,TagStyle,SerializationContext"
+    title="representChild[O](value: ref O; ts: TagStyle; c: SerializationContext)"><wbr />represent<wbr />Child</a></li>
+  <li><a class="reference" href="#representChild,O,TagStyle,SerializationContext"
+    title="representChild[O](value: O; ts: TagStyle; c: SerializationContext)"><wbr />represent<wbr />Child</a></li>
+  <li><a class="reference" href="#construct,YamlStream,T"
+    title="construct[T](s: var YamlStream; target: var T)"><wbr />construct</a></li>
+  <li><a class="reference" href="#load,,K"
+    title="load[K](input: Stream | string; target: var K)"><wbr />load</a></li>
+  <li><a class="reference" href="#loadMultiDoc,,seq[K]"
+    title="loadMultiDoc[K](input: Stream | string; target: var seq[K])"><wbr />load<wbr />Multi<wbr />Doc</a></li>
+  <li><a class="reference" href="#represent,T,TagStyle,AnchorStyle"
+    title="represent[T](value: T; ts: TagStyle = tsRootOnly; a: AnchorStyle = asTidy): YamlStream"><wbr />represent</a></li>
+  <li><a class="reference" href="#dump,K,Stream,TagStyle,AnchorStyle,PresentationOptions"
+    title="dump[K](value: K; target: Stream; tagStyle: TagStyle = tsRootOnly;
+        anchorStyle: AnchorStyle = asTidy;
+        options: PresentationOptions = defaultPresentationOptions)"><wbr />dump</a></li>
+  <li><a class="reference" href="#dump,K,TagStyle,AnchorStyle,PresentationOptions"
+    title="dump[K](value: K; tagStyle: TagStyle = tsRootOnly; anchorStyle: AnchorStyle = asTidy;
+        options: PresentationOptions = defaultPresentationOptions): string"><wbr />dump</a></li>
+
+  </ul>
+</li>
+<li>
+  <a class="reference reference-toplevel" href="#17" id="67">Templates</a>
+  <ul class="simple simple-toc-section">
+      <li><a class="reference" href="#presentTag.t,typedesc,TagStyle"
+    title="presentTag[](t: typedesc; ts: TagStyle): TagId"><wbr />present<wbr />Tag</a></li>
+  <li><a class="reference" href="#constructScalarItem.t,YamlStream,untyped,typedesc,untyped"
+    title="constructScalarItem[](s: var YamlStream; i: untyped; t: typedesc; content: untyped)"><wbr />construct<wbr />Scalar<wbr />Item</a></li>
+
+  </ul>
+</li>
+
+</ul>
+
+  </div>
+  <div class="nine columns" id="content">
+  <div id="tocRoot"></div>
+  <p class="module-desc"><p>This is the most high-level API of NimYAML. It enables you to parse YAML character streams directly into native YAML types and vice versa. It builds on top of the low-level parser and presenter APIs.</p>
+<p>It is possible to define custom construction and serialization procs for any type. Please consult the serialization guide on the NimYAML website for more information.</p>
+</p>
+  <section id="6">
+<h1><a class="toc-backref" href="#6">Imports</a></h1>
+<dl class="item">
+<a class="reference external" href="tables.html">tables</a>, <a class="reference external" href="typetraits.html">typetraits</a>, <a class="reference external" href="strutils.html">strutils</a>, <a class="reference external" href="macros.html">macros</a>, <a class="reference external" href="streams.html">streams</a>, <a class="reference external" href="parser.html">parser</a>, <a class="reference external" href="taglib.html">taglib</a>, <a class="reference external" href="presenter.html">presenter</a>, <a class="reference external" href="stream.html">stream</a>, <a class="reference external" href="../private/internal.html">../private/internal</a>, <a class="reference external" href="hints.html">hints</a>
+</dl></section>
+<section id="7">
+<h1><a class="toc-backref" href="#7">Types</a></h1>
+<dl class="item">
+<dt id="SerializationContext"><a name="SerializationContext"></a><pre><span class="Identifier">SerializationContext</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
+  <span class="Identifier">refs</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">pointer</span><span class="Other">,</span> <span class="Identifier">AnchorId</span><span class="Other">]</span>
+  <span class="Identifier">style</span><span class="Other">:</span> <span class="Identifier">AnchorStyle</span>
+  <span class="Identifier">nextAnchorId</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">AnchorId</span>
+  <span class="Identifier">put</span><span class="Operator">*</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">e</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">closure</span></div><span class="Other pragmaend">.}</span>
+</pre></dt>
+<dd>
+Context information for the process of serializing YAML from Nim values.
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L23"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="ConstructionContext"><a name="ConstructionContext"></a><pre><span class="Identifier">ConstructionContext</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
+  <span class="Identifier">refs</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">AnchorId</span><span class="Other">,</span> <span class="Identifier">pointer</span><span class="Other">]</span>
+</pre></dt>
+<dd>
+Context information for the process of constructing Nim values from YAML.
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L30"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="YamlConstructionError"><a name="YamlConstructionError"></a><pre><span class="Identifier">YamlConstructionError</span> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">YamlLoadingError</span>
+  </pre></dt>
+<dd>
+Exception that may be raised when constructing data objects from a <a class="reference external" href="#YamlStream">YamlStream</a>. The fields <tt class="docutils literal"><span class="pre">line</span></tt>, <tt class="docutils literal"><span class="pre">column</span></tt> and <tt class="docutils literal"><span class="pre">lineContent</span></tt> are only available if the costructing proc also does parsing, because otherwise this information is not available to the costruction proc.
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L34"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+
+</dl></section>
+<section id="12">
+<h1><a class="toc-backref" href="#12">Procs</a></h1>
+<dl class="item">
+<dt id="newConstructionContext"><a name="newConstructionContext,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">newConstructionContext</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L84"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="newSerializationContext"><a name="newSerializationContext,AnchorStyle,proc(YamlStreamEvent)"></a><pre><span class="Keyword">proc</span> <span class="Identifier">newSerializationContext</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">AnchorStyle</span><span class="Other">;</span> <span class="Identifier">putImpl</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">e</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">closure</span></div><span class="Other pragmaend">.}</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">SerializationContext</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L88"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="yamlTag"><a name="yamlTag,typedesc[string]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">noSideEffect</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L134"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructObject"><a name="constructObject,YamlStream,ConstructionContext,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructObject</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">string</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span> <span class="Identifier">YamlStreamError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">WriteIOEffect</span><span class="Other">,</span> <span class="Identifier">RootEffect</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+costructs a string from a YAML scalar
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L137"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="representObject"><a name="representObject,string,TagStyle,SerializationContext,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">representObject</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">ts</span><span class="Other">:</span> <span class="Identifier">TagStyle</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">SerializationContext</span><span class="Other">;</span> <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+represents a string as YAML scalar
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L144"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructObject"><a name="constructObject,YamlStream,ConstructionContext,T"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructObject</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">int8</span> <span class="Operator">|</span> <span class="Identifier">int16</span> <span class="Operator">|</span> <span class="Identifier">int32</span> <span class="Operator">|</span> <span class="Identifier">int64</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span>
+    <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span>
+    <span class="Identifier">YamlStreamError</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+constructs an integer value from a YAML scalar
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L172"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructObject"><a name="constructObject,YamlStream,ConstructionContext,int"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructObject</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">int</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span> <span class="Identifier">YamlStreamError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">inline</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">WriteIOEffect</span><span class="Other">,</span> <span class="Identifier">RootEffect</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+constructs an integer of architecture-defined length by loading it into int32 and then converting it.
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L184"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="representObject"><a name="representObject,T,TagStyle,SerializationContext,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">representObject</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">int8</span> <span class="Operator">|</span> <span class="Identifier">int16</span> <span class="Operator">|</span> <span class="Identifier">int32</span> <span class="Operator">|</span> <span class="Identifier">int64</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span> <span class="Identifier">ts</span><span class="Other">:</span> <span class="Identifier">TagStyle</span><span class="Other">;</span>
+    <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">SerializationContext</span><span class="Other">;</span> <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+represents an integer value as YAML scalar
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L193"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="representObject"><a name="representObject,int,TagStyle,SerializationContext,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">representObject</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">TagStyle</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">SerializationContext</span><span class="Other">;</span>
+                    <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlStreamError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">inline</span><span class="Other">,</span>
+                                <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+represent an integer of architecture-defined length by casting it to int32. on 64-bit systems, this may cause a RangeError.
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L198"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructObject"><a name="constructObject,YamlStream,ConstructionContext,T_2"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructObject</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">uint8</span> <span class="Operator">|</span> <span class="Identifier">uint16</span> <span class="Operator">|</span> <span class="Identifier">uint32</span> <span class="Operator">|</span> <span class="Identifier">uint64</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span>
+    <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span>
+    <span class="Identifier">YamlStreamError</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+construct an unsigned integer value from a YAML scalar
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L211"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructObject"><a name="constructObject,YamlStream,ConstructionContext,uint"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructObject</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">uint</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span> <span class="Identifier">YamlStreamError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">inline</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">WriteIOEffect</span><span class="Other">,</span> <span class="Identifier">RootEffect</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+represent an unsigned integer of architecture-defined length by loading it into uint32 and then converting it.
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L222"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="representObject"><a name="representObject,T,TagStyle,SerializationContext,TagId_2"></a><pre><span class="Keyword">proc</span> <span class="Identifier">representObject</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">uint8</span> <span class="Operator">|</span> <span class="Identifier">uint16</span> <span class="Operator">|</span> <span class="Identifier">uint32</span> <span class="Operator">|</span> <span class="Identifier">uint64</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span> <span class="Identifier">ts</span><span class="Other">:</span> <span class="Identifier">TagStyle</span><span class="Other">;</span>
+    <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">SerializationContext</span><span class="Other">;</span> <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+represents an unsigned integer value as YAML scalar
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L236"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="representObject"><a name="representObject,uint,TagStyle,SerializationContext,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">representObject</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">uint</span><span class="Other">;</span> <span class="Identifier">ts</span><span class="Other">:</span> <span class="Identifier">TagStyle</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">SerializationContext</span><span class="Other">;</span> <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlStreamError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+represent an unsigned integer of architecture-defined length by casting it to int32. on 64-bit systems, this may cause a RangeError.
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L241"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructObject"><a name="constructObject,YamlStream,ConstructionContext,T_3"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructObject</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">float</span> <span class="Operator">|</span> <span class="Identifier">float32</span> <span class="Operator">|</span> <span class="Identifier">float64</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span>
+    <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span>
+    <span class="Identifier">YamlStreamError</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+construct a float value from a YAML scalar
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L251"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="representObject"><a name="representObject,T,TagStyle,SerializationContext,TagId_3"></a><pre><span class="Keyword">proc</span> <span class="Identifier">representObject</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">float</span> <span class="Operator">|</span> <span class="Identifier">float32</span> <span class="Operator">|</span> <span class="Identifier">float64</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span> <span class="Identifier">ts</span><span class="Other">:</span> <span class="Identifier">TagStyle</span><span class="Other">;</span>
+    <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">SerializationContext</span><span class="Other">;</span> <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+represents a float value as YAML scalar
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L270"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="yamlTag"><a name="yamlTag,typedesc[bool]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">bool</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L279"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructObject"><a name="constructObject,YamlStream,ConstructionContext,bool"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructObject</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">bool</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span> <span class="Identifier">YamlStreamError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">WriteIOEffect</span><span class="Other">,</span> <span class="Identifier">RootEffect</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+constructs a bool value from a YAML scalar
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L281"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="representObject"><a name="representObject,bool,TagStyle,SerializationContext,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">representObject</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">bool</span><span class="Other">;</span> <span class="Identifier">ts</span><span class="Other">:</span> <span class="Identifier">TagStyle</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">SerializationContext</span><span class="Other">;</span> <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+represents a bool value as a YAML scalar
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L293"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructObject"><a name="constructObject,YamlStream,ConstructionContext,char"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructObject</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">char</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span> <span class="Identifier">YamlStreamError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">WriteIOEffect</span><span class="Other">,</span> <span class="Identifier">RootEffect</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+constructs a char value from a YAML scalar
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L298"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="representObject"><a name="representObject,char,TagStyle,SerializationContext,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">representObject</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">char</span><span class="Other">;</span> <span class="Identifier">ts</span><span class="Other">:</span> <span class="Identifier">TagStyle</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">SerializationContext</span><span class="Other">;</span> <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+represents a char value as YAML scalar
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L308"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="yamlTag"><a name="yamlTag,typedesc[seq[I]]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Identifier">I</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">I</span><span class="Other">]</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L313"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="yamlTag"><a name="yamlTag,typedesc[set[I]]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Identifier">I</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">set</span><span class="Other">[</span><span class="Identifier">I</span><span class="Other">]</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L317"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructObject"><a name="constructObject,YamlStream,ConstructionContext,seq[T]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructObject</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span> <span class="Identifier">YamlStreamError</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+constructs a Nim seq from a YAML sequence
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L321"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructObject"><a name="constructObject,YamlStream,ConstructionContext,set[T]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructObject</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">set</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span> <span class="Identifier">YamlStreamError</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+constructs a Nim seq from a YAML sequence
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L335"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="representObject"><a name="representObject,,TagStyle,SerializationContext,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">representObject</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span> <span class="Operator">|</span> <span class="Identifier">set</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">ts</span><span class="Other">:</span> <span class="Identifier">TagStyle</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">SerializationContext</span><span class="Other">;</span>
+                       <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span></pre></dt>
+<dd>
+represents a Nim seq as YAML sequence
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L349"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="yamlTag"><a name="yamlTag,typedesc[array[I,V]]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Identifier">I</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">array</span><span class="Other">[</span><span class="Identifier">I</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L358"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructObject"><a name="constructObject,YamlStream,ConstructionContext,array[I,T]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructObject</span><span class="Other">[</span><span class="Identifier">I</span><span class="Other">,</span> <span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span><span class="Other">;</span>
+                         <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">array</span><span class="Other">[</span><span class="Identifier">I</span><span class="Other">,</span> <span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span> <span class="Identifier">YamlStreamError</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+constructs a Nim array from a YAML sequence
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L364"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="representObject"><a name="representObject,array[I,T],TagStyle,SerializationContext,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">representObject</span><span class="Other">[</span><span class="Identifier">I</span><span class="Other">,</span> <span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">array</span><span class="Other">[</span><span class="Identifier">I</span><span class="Other">,</span> <span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">ts</span><span class="Other">:</span> <span class="Identifier">TagStyle</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">SerializationContext</span><span class="Other">;</span>
+                         <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span></pre></dt>
+<dd>
+represents a Nim array as YAML sequence
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L380"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="yamlTag"><a name="yamlTag,typedesc[Table[K,V]]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L389"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructObject"><a name="constructObject,YamlStream,ConstructionContext,Table[K,V]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructObject</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span><span class="Other">;</span>
+                         <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span> <span class="Identifier">YamlStreamError</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+constructs a Nim Table from a YAML mapping
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L398"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="representObject"><a name="representObject,Table[K,V],TagStyle,SerializationContext,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">representObject</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">ts</span><span class="Other">:</span> <span class="Identifier">TagStyle</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">SerializationContext</span><span class="Other">;</span>
+                         <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span></pre></dt>
+<dd>
+represents a Nim Table as YAML mapping
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L417"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="yamlTag"><a name="yamlTag,typedesc[OrderedTable[K,V]]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">OrderedTable</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L427"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructObject"><a name="constructObject,YamlStream,ConstructionContext,OrderedTable[K,V]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructObject</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span><span class="Other">;</span>
+                         <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">OrderedTable</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span> <span class="Identifier">YamlStreamError</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+constructs a Nim OrderedTable from a YAML mapping
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L437"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="representObject"><a name="representObject,OrderedTable[K,V],TagStyle,SerializationContext,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">representObject</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">OrderedTable</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">,</span> <span class="Identifier">V</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">ts</span><span class="Other">:</span> <span class="Identifier">TagStyle</span><span class="Other">;</span>
+                         <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">SerializationContext</span><span class="Other">;</span> <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L462"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="yamlTag"><a name="yamlTag,typedesc[]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Keyword">object</span> <span class="Operator">|</span> <span class="Keyword">enum</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L473"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="yamlTag"><a name="yamlTag,typedesc[]_2"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L479"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructObject"><a name="constructObject,YamlStream,ConstructionContext,O"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructObject</span><span class="Other">[</span><span class="Identifier">O</span><span class="Other">:</span> <span class="Keyword">object</span> <span class="Operator">|</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span><span class="Other">;</span>
+                                    <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">O</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span> <span class="Identifier">YamlStreamError</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+constructs a Nim object or tuple from a YAML mapping
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L614"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="representObject"><a name="representObject,O,TagStyle,SerializationContext,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">representObject</span><span class="Other">[</span><span class="Identifier">O</span><span class="Other">:</span> <span class="Keyword">object</span> <span class="Operator">|</span> <span class="Keyword">tuple</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">O</span><span class="Other">;</span> <span class="Identifier">ts</span><span class="Other">:</span> <span class="Identifier">TagStyle</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">SerializationContext</span><span class="Other">;</span>
+                                    <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span></pre></dt>
+<dd>
+represents a Nim object or tuple as YAML mapping
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L671"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructObject"><a name="constructObject,YamlStream,ConstructionContext,O_2"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructObject</span><span class="Other">[</span><span class="Identifier">O</span><span class="Other">:</span> <span class="Keyword">enum</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">O</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span> <span class="Identifier">YamlStreamError</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+constructs a Nim enum from a YAML scalar
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L686"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="representObject"><a name="representObject,O,TagStyle,SerializationContext,TagId_2"></a><pre><span class="Keyword">proc</span> <span class="Identifier">representObject</span><span class="Other">[</span><span class="Identifier">O</span><span class="Other">:</span> <span class="Keyword">enum</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">O</span><span class="Other">;</span> <span class="Identifier">ts</span><span class="Other">:</span> <span class="Identifier">TagStyle</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">SerializationContext</span><span class="Other">;</span>
+                            <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+represents a Nim enum as YAML scalar
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L700"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="yamlTag"><a name="yamlTag,typedesc[ref.O]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Identifier">O</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Keyword">ref</span> <span class="Identifier">O</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L705"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructChild"><a name="constructChild,YamlStream,ConstructionContext,T"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructChild</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span> <span class="Identifier">YamlStreamError</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Constructs an arbitrary Nim value from a part of a YAML stream. The stream will advance until after the finishing token that was used for constructing the value. The <tt class="docutils literal"><span class="pre">ConstructionContext</span></tt> is needed for potential child objects which may be refs.
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L746"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructChild"><a name="constructChild,YamlStream,ConstructionContext,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructChild</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">string</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span> <span class="Identifier">YamlStreamError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">WriteIOEffect</span><span class="Other">,</span> <span class="Identifier">RootEffect</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Constructs a Nim value that is a string from a part of a YAML stream. This specialization takes care of possible nil strings.
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L808"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructChild"><a name="constructChild,YamlStream,ConstructionContext,seq[T]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructChild</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span> <span class="Identifier">YamlStreamError</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Constructs a Nim value that is a string from a part of a YAML stream. This specialization takes care of possible nil seqs.
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L823"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructChild"><a name="constructChild,YamlStream,ConstructionContext,ref.O"></a><pre><span class="Keyword">proc</span> <span class="Identifier">constructChild</span><span class="Other">[</span><span class="Identifier">O</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">ConstructionContext</span><span class="Other">;</span> <span class="Identifier">result</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Keyword">ref</span> <span class="Identifier">O</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlStreamError</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Constructs an arbitrary Nim value from a part of a YAML stream. The stream will advance until after the finishing token that was used for constructing the value. The object may be constructed from an alias node which will be resolved using the <tt class="docutils literal"><span class="pre">ConstructionContext</span></tt>.
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L838"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="representChild"><a name="representChild,string,TagStyle,SerializationContext"></a><pre><span class="Keyword">proc</span> <span class="Identifier">representChild</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">ts</span><span class="Other">:</span> <span class="Identifier">TagStyle</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">SerializationContext</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span>
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Represents a Nim string. Supports nil strings.
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L871"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="representChild"><a name="representChild,seq[T],TagStyle,SerializationContext"></a><pre><span class="Keyword">proc</span> <span class="Identifier">representChild</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">ts</span><span class="Other">:</span> <span class="Identifier">TagStyle</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">SerializationContext</span><span class="Other">)</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L875"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="representChild"><a name="representChild,ref.O,TagStyle,SerializationContext"></a><pre><span class="Keyword">proc</span> <span class="Identifier">representChild</span><span class="Other">[</span><span class="Identifier">O</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Keyword">ref</span> <span class="Identifier">O</span><span class="Other">;</span> <span class="Identifier">ts</span><span class="Other">:</span> <span class="Identifier">TagStyle</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">SerializationContext</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Represents an arbitrary Nim reference value as YAML object. The object may be represented as alias node if it is already present in the <tt class="docutils literal"><span class="pre">SerializationContext</span></tt>.
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L879"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="representChild"><a name="representChild,O,TagStyle,SerializationContext"></a><pre><span class="Keyword">proc</span> <span class="Identifier">representChild</span><span class="Other">[</span><span class="Identifier">O</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">O</span><span class="Other">;</span> <span class="Identifier">ts</span><span class="Other">:</span> <span class="Identifier">TagStyle</span><span class="Other">;</span> <span class="Identifier">c</span><span class="Other">:</span> <span class="Identifier">SerializationContext</span><span class="Other">)</span></pre></dt>
+<dd>
+Represents an arbitrary Nim object as YAML object.
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L916"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="construct"><a name="construct,YamlStream,T"></a><pre><span class="Keyword">proc</span> <span class="Identifier">construct</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">target</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">T</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlStreamError</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Constructs a Nim value from a YAML stream.
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L930"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="load"><a name="load,,K"></a><pre><span class="Keyword">proc</span> <span class="Identifier">load</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">input</span><span class="Other">:</span> <span class="Identifier">Stream</span> <span class="Operator">|</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">target</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">K</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlConstructionError</span><span class="Other">,</span> <span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">YamlParserError</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Loads a Nim value from a YAML character stream.
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L954"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="loadMultiDoc"><a name="loadMultiDoc,,seq[K]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">loadMultiDoc</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">input</span><span class="Other">:</span> <span class="Identifier">Stream</span> <span class="Operator">|</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">target</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">]</span><span class="Other">)</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L967"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="represent"><a name="represent,T,TagStyle,AnchorStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">represent</span><span class="Other">[</span><span class="Identifier">T</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">T</span><span class="Other">;</span> <span class="Identifier">ts</span><span class="Other">:</span> <span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Identifier">tsRootOnly</span><span class="Other">;</span> <span class="Identifier">a</span><span class="Other">:</span> <span class="Identifier">AnchorStyle</span> <span class="Other">=</span> <span class="Identifier">asTidy</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span></pre></dt>
+<dd>
+Represents a Nim value as <tt class="docutils literal"><span class="pre">YamlStream</span></tt>
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L992"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="dump"><a name="dump,K,Stream,TagStyle,AnchorStyle,PresentationOptions"></a><pre><span class="Keyword">proc</span> <span class="Identifier">dump</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">K</span><span class="Other">;</span> <span class="Identifier">target</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Identifier">tsRootOnly</span><span class="Other">;</span>
+            <span class="Identifier">anchorStyle</span><span class="Other">:</span> <span class="Identifier">AnchorStyle</span> <span class="Other">=</span> <span class="Identifier">asTidy</span><span class="Other">;</span>
+            <span class="Identifier">options</span><span class="Other">:</span> <span class="Identifier">PresentationOptions</span> <span class="Other">=</span> <span class="Identifier">defaultPresentationOptions</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlPresenterJsonError</span><span class="Other">,</span> <span class="Identifier">YamlPresenterOutputError</span><span class="Other">,</span> <span class="Identifier">YamlStreamError</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Dump a Nim value as YAML character stream.
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L1011"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="dump"><a name="dump,K,TagStyle,AnchorStyle,PresentationOptions"></a><pre><span class="Keyword">proc</span> <span class="Identifier">dump</span><span class="Other">[</span><span class="Identifier">K</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">K</span><span class="Other">;</span> <span class="Identifier">tagStyle</span><span class="Other">:</span> <span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Identifier">tsRootOnly</span><span class="Other">;</span>
+            <span class="Identifier">anchorStyle</span><span class="Other">:</span> <span class="Identifier">AnchorStyle</span> <span class="Other">=</span> <span class="Identifier">asTidy</span><span class="Other">;</span>
+            <span class="Identifier">options</span><span class="Other">:</span> <span class="Identifier">PresentationOptions</span> <span class="Other">=</span> <span class="Identifier">defaultPresentationOptions</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span></pre></dt>
+<dd>
+Dump a Nim value as YAML into a string
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L1024"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+
+</dl></section>
+<section id="17">
+<h1><a class="toc-backref" href="#17">Templates</a></h1>
+<dl class="item">
+<dt id="presentTag"><a name="presentTag.t,typedesc,TagStyle"></a><pre><span class="Keyword">template</span> <span class="Identifier">presentTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">t</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">;</span> <span class="Identifier">ts</span><span class="Other">:</span> <span class="Identifier">TagStyle</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span></pre></dt>
+<dd>
+Get the TagId that represents the given type in the given style
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L94"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="constructScalarItem"><a name="constructScalarItem.t,YamlStream,untyped,typedesc,untyped"></a><pre><span class="Keyword">template</span> <span class="Identifier">constructScalarItem</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">i</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">;</span> <span class="Identifier">t</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">;</span>
+                              <span class="Identifier">content</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">)</span></pre></dt>
+<dd>
+Helper template for implementing <tt class="docutils literal"><span class="pre">constructObject</span></tt> for types that are constructed from a scalar. <tt class="docutils literal"><span class="pre">i</span></tt> is the identifier that holds the scalar as <tt class="docutils literal"><span class="pre">YamlStreamEvent</span></tt> in the content. Exceptions raised in the content will be automatically catched and wrapped in <tt class="docutils literal"><span class="pre">YamlConstructionError</span></tt>, which will then be raised.
+&nbsp;&nbsp;<a
+href="/yaml/serialization.nim#L115"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+
+</dl></section>
+
+  </div>
+</div>
+
+    <div class="row">
+      <div class="twelve-columns footer">
+        <span class="nim-sprite"></span>
+        <br/>
+        <small>Made with Nim. Generated: 2016-10-01 15:20:06 UTC</small>
+      </div>
+    </div>
+  </div>
+</article>
+</body>
+</html>

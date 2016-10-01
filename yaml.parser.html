@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>NimYAML - Module yaml.parser</title>
+
+  <link href="docutils.css" rel="stylesheet" type="text/css"/>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,900' rel='stylesheet' type='text/css'/>
+  <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600' rel='stylesheet' type='text/css'/>
+</head>
+<body>
+<a href="https://github.com/flyx/NimYAML"><img style="position: fixed; top: 0; right: 0; border: 0; z-index: 10;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+<header>
+  <a class="pagetitle" href="index.html">NimYAML</a>
+  <a href="index.html">Home</a>
+  <a href="testing.html">Testing Ground</a>
+  <span>Docs:</span>
+  <a href="api.html">Overview</a>
+  <a href="serialization.html">Serialization</a>
+  <span>
+    <a href="#">Modules</a>
+    <ul>
+      <li><a href="yaml.html">yaml</a></li>
+      <li><a href="yaml.dom.html">yaml.dom</a></li>
+      <li><a href="yaml.hints.html">yaml.hints</a></li>
+      <li><a href="yaml.parser.html">yaml.parser</a></li>
+      <li><a href="yaml.presenter.html">yaml.presenter</a></li>
+      <li><a href="yaml.serialization.html">yaml.serialization</a></li>
+      <li><a href="yaml.stream.html">yaml.stream</a></li>
+      <li><a href="yaml.taglib.html">yaml.taglib</a></li>
+      <li><a href="yaml.tojson.html">yaml.tojson</a></li>
+    </ul>
+  </span>
+</header>
+<article id="documentId">
+  <div class="container">
+    <h1 class="title">Module yaml.parser</h1>
+    <div class="row">
+  <div class="three columns">
+  <div>
+    Search: <input type="text" id="searchInput"
+      onkeyup="search()" />
+  </div>
+  <div>
+    Group by:
+    <select onchange="groupBy(this.value)">
+      <option value="section">Section</option>
+      <option value="type">Type</option>
+    </select>
+  </div>
+  <ul class="simple simple-toc" id="toc-list">
+<li>
+  <a class="reference reference-toplevel" href="#6" id="56">Imports</a>
+  <ul class="simple simple-toc-section">
+    
+  </ul>
+</li>
+<li>
+  <a class="reference reference-toplevel" href="#7" id="57">Types</a>
+  <ul class="simple simple-toc-section">
+      <li><a class="reference" href="#WarningCallback"
+    title="WarningCallback = proc (line, column: int; lineContent: string; message: string)"><wbr />Warning<wbr />Callback</a></li>
+  <li><a class="reference" href="#YamlParser"
+    title="YamlParser = ref object
+  tagLib: TagLibrary
+  callback: WarningCallback
+  anchors: Table[string, AnchorId]"><wbr />Yaml<wbr />Parser</a></li>
+  <li><a class="reference" href="#YamlLoadingError"
+    title="YamlLoadingError = object of Exception
+  line*: int                   ## line number (1-based) where the error was encountered
+  column*: int                 ## column number (1-based) where the error was encountered
+  lineContent*: string ## \
+                     ## content of the line where the error was encountered. Includes a
+                     ## second line with a marker ``^`` at the position where the error
+                     ## was encountered."><wbr />Yaml<wbr />Loading<wbr />Error</a></li>
+  <li><a class="reference" href="#YamlParserError"
+    title="YamlParserError = object of YamlLoadingError"><wbr />Yaml<wbr />Parser<wbr />Error</a></li>
+
+  </ul>
+</li>
+<li>
+  <a class="reference reference-toplevel" href="#12" id="62">Procs</a>
+  <ul class="simple simple-toc-section">
+      <li><a class="reference" href="#newYamlParser,TagLibrary,WarningCallback"
+    title="newYamlParser(tagLib: TagLibrary = initExtendedTagLibrary();
+              callback: WarningCallback = nil): YamlParser"><wbr />new<wbr />Yaml<wbr />Parser</a></li>
+  <li><a class="reference" href="#parse,YamlParser,Stream"
+    title="parse(p: YamlParser; s: Stream): YamlStream"><wbr />parse</a></li>
+  <li><a class="reference" href="#parse,YamlParser,string"
+    title="parse(p: YamlParser; str: string): YamlStream"><wbr />parse</a></li>
+
+  </ul>
+</li>
+
+</ul>
+
+  </div>
+  <div class="nine columns" id="content">
+  <div id="tocRoot"></div>
+  <p class="module-desc"><p>This is the low-level parser API. A <tt class="docutils literal"><span class="pre">YamlParser</span></tt> enables you to parse any non-nil string or Stream object as YAML character stream.</p>
+</p>
+  <section id="6">
+<h1><a class="toc-backref" href="#6">Imports</a></h1>
+<dl class="item">
+<a class="reference external" href="tables.html">tables</a>, <a class="reference external" href="strutils.html">strutils</a>, <a class="reference external" href="macros.html">macros</a>, <a class="reference external" href="streams.html">streams</a>, <a class="reference external" href="taglib.html">taglib</a>, <a class="reference external" href="stream.html">stream</a>, <a class="reference external" href="../private/lex.html">../private/lex</a>, <a class="reference external" href="../private/internal.html">../private/internal</a>
+</dl></section>
+<section id="7">
+<h1><a class="toc-backref" href="#7">Types</a></h1>
+<dl class="item">
+<dt id="WarningCallback"><a name="WarningCallback"></a><pre><span class="Identifier">WarningCallback</span> <span class="Other">=</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">line</span><span class="Other">,</span> <span class="Identifier">column</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">lineContent</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">message</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span></pre></dt>
+<dd>
+Callback for parser warnings. Currently, this callback may be called on two occasions while parsing a YAML document stream:<ul class="simple"><li>If the version number in the <tt class="docutils literal"><span class="pre">%YAML</span></tt> directive does not match <tt class="docutils literal"><span class="pre">1.2</span></tt>.</li>
+<li>If there is an unknown directive encountered.</li>
+</ul>
+
+&nbsp;&nbsp;<a
+href="/yaml/parser.nim#L18"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="YamlParser"><a name="YamlParser"></a><pre><span class="Identifier">YamlParser</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
+  <span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span>
+  <span class="Identifier">callback</span><span class="Other">:</span> <span class="Identifier">WarningCallback</span>
+  <span class="Identifier">anchors</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">,</span> <span class="Identifier">AnchorId</span><span class="Other">]</span>
+</pre></dt>
+<dd>
+A parser object. Retains its <tt class="docutils literal"><span class="pre">TagLibrary</span></tt> across calls to <a class="reference external" href="#parse,YamlParser,Stream">parse</a>. Can be used to access anchor names while parsing a YAML character stream, but only until the document goes out of scope (i.e. until <tt class="docutils literal"><span class="pre">yamlEndDocument</span></tt> is yielded).
+&nbsp;&nbsp;<a
+href="/yaml/parser.nim#L27"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="YamlLoadingError"><a name="YamlLoadingError"></a><pre><span class="Identifier">YamlLoadingError</span> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">Exception</span>
+  <span class="Identifier">line</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>                   <span class="Comment">## line number (1-based) where the error was encountered</span>
+  <span class="Identifier">column</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>                 <span class="Comment">## column number (1-based) where the error was encountered</span>
+  <span class="Identifier">lineContent</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Comment">## \</span>
+                     <span class="Comment">## content of the line where the error was encountered. Includes a</span>
+                     <span class="Comment">## second line with a marker ``^`` at the position where the error</span>
+                     <span class="Comment">## was encountered.</span>
+  </pre></dt>
+<dd>
+Base class for all exceptions that may be raised during the process of loading a YAML character stream.
+&nbsp;&nbsp;<a
+href="/yaml/parser.nim#L64"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="YamlParserError"><a name="YamlParserError"></a><pre><span class="Identifier">YamlParserError</span> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">YamlLoadingError</span>
+  </pre></dt>
+<dd>
+<p>A parser error is raised if the character stream that is parsed is not a valid YAML character stream. This stream cannot and will not be parsed wholly nor partially and all events that have been emitted by the YamlStream the parser provides should be discarded.</p>
+<p>A character stream is invalid YAML if and only if at least one of the following conditions apply:</p>
+<ul class="simple"><li>There are invalid characters in an element whose contents is restricted to a limited set of characters. For example, there are characters in a tag URI which are not valid URI characters.</li>
+<li>An element has invalid indentation. This can happen for example if a block list element indicated by <tt class="docutils literal"><span class="pre">&quot;- &quot;</span></tt> is less indented than the element in the previous line, but there is no block sequence list open at the same indentation level.</li>
+<li>The YAML structure is invalid. For example, an explicit block map indicated by <tt class="docutils literal"><span class="pre">&quot;? &quot;</span></tt> and <tt class="docutils literal"><span class="pre">&quot;: &quot;</span></tt> may not suddenly have a block sequence item (<tt class="docutils literal"><span class="pre">&quot;- &quot;</span></tt>) at the same indentation level. Another possible violation is closing a flow style object with the wrong closing character (<tt class="docutils literal"><span class="pre">}</span></tt>, <tt class="docutils literal"><span class="pre">]</span></tt>) or not closing it at all.</li>
+<li>A custom tag shorthand is used that has not previously been declared with a <tt class="docutils literal"><span class="pre">%TAG</span></tt> directive.</li>
+<li>Multiple tags or anchors are defined for the same node.</li>
+<li>An alias is used which does not map to any anchor that has previously been declared in the same document.</li>
+<li>An alias has a tag or anchor associated with it.</li>
+</ul>
+<p>Some elements in this list are vague. For a detailed description of a valid YAML character stream, see the YAML specification.</p>
+
+&nbsp;&nbsp;<a
+href="/yaml/parser.nim#L74"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+
+</dl></section>
+<section id="12">
+<h1><a class="toc-backref" href="#12">Procs</a></h1>
+<dl class="item">
+<dt id="newYamlParser"><a name="newYamlParser,TagLibrary,WarningCallback"></a><pre><span class="Keyword">proc</span> <span class="Identifier">newYamlParser</span><span class="Other">(</span><span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span> <span class="Other">=</span> <span class="Identifier">initExtendedTagLibrary</span><span class="Other">(</span><span class="Other">)</span><span class="Other">;</span>
+                  <span class="Identifier">callback</span><span class="Other">:</span> <span class="Identifier">WarningCallback</span> <span class="Other">=</span> <span class="Keyword">nil</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlParser</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Creates a YAML parser. if <tt class="docutils literal"><span class="pre">callback</span></tt> is not <tt class="docutils literal"><span class="pre">nil</span></tt>, it will be called whenever the parser yields a warning.
+&nbsp;&nbsp;<a
+href="/yaml/parser.nim#L105"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="parse"><a name="parse,YamlParser,Stream"></a><pre><span class="Keyword">proc</span> <span class="Identifier">parse</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <span class="Identifier">YamlParser</span><span class="Other">;</span> <span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlParserError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ReadIOEffect</span><span class="Other">,</span> <span class="Identifier">RootEffect</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Parse the given stream as YAML character stream.
+&nbsp;&nbsp;<a
+href="/yaml/parser.nim#L1034"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="parse"><a name="parse,YamlParser,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">parse</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <span class="Identifier">YamlParser</span><span class="Other">;</span> <span class="Identifier">str</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlParserError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Parse the given string as YAML character stream.
+&nbsp;&nbsp;<a
+href="/yaml/parser.nim#L1050"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+
+</dl></section>
+
+  </div>
+</div>
+
+    <div class="row">
+      <div class="twelve-columns footer">
+        <span class="nim-sprite"></span>
+        <br/>
+        <small>Made with Nim. Generated: 2016-10-01 15:20:04 UTC</small>
+      </div>
+    </div>
+  </div>
+</article>
+</body>
+</html>

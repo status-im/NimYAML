@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>NimYAML - Module yaml.presenter</title>
+
+  <link href="docutils.css" rel="stylesheet" type="text/css"/>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,900' rel='stylesheet' type='text/css'/>
+  <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600' rel='stylesheet' type='text/css'/>
+</head>
+<body>
+<a href="https://github.com/flyx/NimYAML"><img style="position: fixed; top: 0; right: 0; border: 0; z-index: 10;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+<header>
+  <a class="pagetitle" href="index.html">NimYAML</a>
+  <a href="index.html">Home</a>
+  <a href="testing.html">Testing Ground</a>
+  <span>Docs:</span>
+  <a href="api.html">Overview</a>
+  <a href="serialization.html">Serialization</a>
+  <span>
+    <a href="#">Modules</a>
+    <ul>
+      <li><a href="yaml.html">yaml</a></li>
+      <li><a href="yaml.dom.html">yaml.dom</a></li>
+      <li><a href="yaml.hints.html">yaml.hints</a></li>
+      <li><a href="yaml.parser.html">yaml.parser</a></li>
+      <li><a href="yaml.presenter.html">yaml.presenter</a></li>
+      <li><a href="yaml.serialization.html">yaml.serialization</a></li>
+      <li><a href="yaml.stream.html">yaml.stream</a></li>
+      <li><a href="yaml.taglib.html">yaml.taglib</a></li>
+      <li><a href="yaml.tojson.html">yaml.tojson</a></li>
+    </ul>
+  </span>
+</header>
+<article id="documentId">
+  <div class="container">
+    <h1 class="title">Module yaml.presenter</h1>
+    <div class="row">
+  <div class="three columns">
+  <div>
+    Search: <input type="text" id="searchInput"
+      onkeyup="search()" />
+  </div>
+  <div>
+    Group by:
+    <select onchange="groupBy(this.value)">
+      <option value="section">Section</option>
+      <option value="type">Type</option>
+    </select>
+  </div>
+  <ul class="simple simple-toc" id="toc-list">
+<li>
+  <a class="reference reference-toplevel" href="#6" id="56">Imports</a>
+  <ul class="simple simple-toc-section">
+    
+  </ul>
+</li>
+<li>
+  <a class="reference reference-toplevel" href="#7" id="57">Types</a>
+  <ul class="simple simple-toc-section">
+      <li><a class="reference" href="#PresentationStyle"
+    title="PresentationStyle = enum
+  psMinimal, psCanonical, psDefault, psJson, psBlockOnly"><wbr />Presentation<wbr />Style</a></li>
+  <li><a class="reference" href="#TagStyle"
+    title="TagStyle = enum
+  tsNone, tsRootOnly, tsAll"><wbr />Tag<wbr />Style</a></li>
+  <li><a class="reference" href="#AnchorStyle"
+    title="AnchorStyle = enum
+  asNone, asTidy, asAlways"><wbr />Anchor<wbr />Style</a></li>
+  <li><a class="reference" href="#NewLineStyle"
+    title="NewLineStyle = enum
+  nlLF, nlCRLF, nlOSDefault"><wbr />New<wbr />Line<wbr />Style</a></li>
+  <li><a class="reference" href="#OutputYamlVersion"
+    title="OutputYamlVersion = enum
+  ov1_2, ov1_1, ovNone"><wbr />Output<wbr />Yaml<wbr />Version</a></li>
+  <li><a class="reference" href="#PresentationOptions"
+    title="PresentationOptions = object
+  style*: PresentationStyle
+  indentationStep*: int
+  newlines*: NewLineStyle
+  outputVersion*: OutputYamlVersion"><wbr />Presentation<wbr />Options</a></li>
+  <li><a class="reference" href="#YamlPresenterJsonError"
+    title="YamlPresenterJsonError = object of Exception"><wbr />Yaml<wbr />Presenter<wbr />Json<wbr />Error</a></li>
+  <li><a class="reference" href="#YamlPresenterOutputError"
+    title="YamlPresenterOutputError = object of Exception"><wbr />Yaml<wbr />Presenter<wbr />Output<wbr />Error</a></li>
+
+  </ul>
+</li>
+<li>
+  <a class="reference reference-toplevel" href="#10" id="60">Consts</a>
+  <ul class="simple simple-toc-section">
+      <li><a class="reference" href="#defaultPresentationOptions"
+    title="defaultPresentationOptions = PresentationOptions(style: psDefault,
+    indentationStep: 2, newlines: nlOSDefault)"><wbr />default<wbr />Presentation<wbr />Options</a></li>
+
+  </ul>
+</li>
+<li>
+  <a class="reference reference-toplevel" href="#12" id="62">Procs</a>
+  <ul class="simple simple-toc-section">
+      <li><a class="reference" href="#defineOptions,PresentationStyle,int,NewLineStyle,OutputYamlVersion"
+    title="defineOptions(style: PresentationStyle = psDefault; indentationStep: int = 2;
+              newlines: NewLineStyle = nlOSDefault;
+              outputVersion: OutputYamlVersion = ov1_2): PresentationOptions"><wbr />define<wbr />Options</a></li>
+  <li><a class="reference" href="#present,YamlStream,Stream,TagLibrary,PresentationOptions"
+    title="present(s: var YamlStream; target: Stream; tagLib: TagLibrary;
+        options: PresentationOptions = defaultPresentationOptions)"><wbr />present</a></li>
+  <li><a class="reference" href="#present,YamlStream,TagLibrary,PresentationOptions"
+    title="present(s: var YamlStream; tagLib: TagLibrary;
+        options: PresentationOptions = defaultPresentationOptions): string"><wbr />present</a></li>
+  <li><a class="reference" href="#transform,,Stream,PresentationOptions"
+    title="transform[](input: Stream | string; output: Stream;
+            options: PresentationOptions = defaultPresentationOptions)"><wbr />transform</a></li>
+  <li><a class="reference" href="#transform,,PresentationOptions"
+    title="transform[](input: Stream | string;
+            options: PresentationOptions = defaultPresentationOptions): string"><wbr />transform</a></li>
+
+  </ul>
+</li>
+
+</ul>
+
+  </div>
+  <div class="nine columns" id="content">
+  <div id="tocRoot"></div>
+  <p class="module-desc"><p>This is the presenter API, used for generating YAML character streams.</p>
+</p>
+  <section id="6">
+<h1><a class="toc-backref" href="#6">Imports</a></h1>
+<dl class="item">
+<a class="reference external" href="streams.html">streams</a>, <a class="reference external" href="queues.html">queues</a>, <a class="reference external" href="strutils.html">strutils</a>, <a class="reference external" href="taglib.html">taglib</a>, <a class="reference external" href="stream.html">stream</a>, <a class="reference external" href="../private/internal.html">../private/internal</a>, <a class="reference external" href="hints.html">hints</a>, <a class="reference external" href="parser.html">parser</a>, <a class="reference external" href="stream.html">stream</a>
+</dl></section>
+<section id="7">
+<h1><a class="toc-backref" href="#7">Types</a></h1>
+<dl class="item">
+<dt id="PresentationStyle"><a name="PresentationStyle"></a><pre><span class="Identifier">PresentationStyle</span> <span class="Other">=</span> <span class="Keyword">enum</span>
+  <span class="Identifier">psMinimal</span><span class="Other">,</span> <span class="Identifier">psCanonical</span><span class="Other">,</span> <span class="Identifier">psDefault</span><span class="Other">,</span> <span class="Identifier">psJson</span><span class="Other">,</span> <span class="Identifier">psBlockOnly</span></pre></dt>
+<dd>
+Different styles for YAML character stream output.<ul class="simple"><li><tt class="docutils literal"><span class="pre">ypsMinimal</span></tt>: Single-line flow-only output which tries to use as few characters as possible.</li>
+<li><tt class="docutils literal"><span class="pre">ypsCanonical</span></tt>: Canonical YAML output. Writes all tags except for the non-specific tags <tt class="docutils literal"><span class="pre">?</span></tt> and <tt class="docutils literal"><span class="pre">!</span></tt>, uses flow style, quotes all string scalars.</li>
+<li><tt class="docutils literal"><span class="pre">ypsDefault</span></tt>: Tries to be as human-readable as possible. Uses block style by default, but tries to condense mappings and sequences which only contain scalar nodes into a single line using flow style.</li>
+<li><tt class="docutils literal"><span class="pre">ypsJson</span></tt>: Omits the <tt class="docutils literal"><span class="pre">%YAML</span></tt> directive and the <tt class="docutils literal"><span class="pre">---</span></tt> marker. Uses flow style. Flattens anchors and aliases, omits tags. Output will be parseable as JSON. <tt class="docutils literal"><span class="pre">YamlStream</span></tt> to dump may only contain one document.</li>
+<li><tt class="docutils literal"><span class="pre">ypsBlockOnly</span></tt>: Formats all output in block style, does not use flow style at all.</li>
+</ul>
+
+&nbsp;&nbsp;<a
+href="/yaml/presenter.nim#L17"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="TagStyle"><a name="TagStyle"></a><pre><span class="Identifier">TagStyle</span> <span class="Other">=</span> <span class="Keyword">enum</span>
+  <span class="Identifier">tsNone</span><span class="Other">,</span> <span class="Identifier">tsRootOnly</span><span class="Other">,</span> <span class="Identifier">tsAll</span></pre></dt>
+<dd>
+Whether object should be serialized with explicit tags.<ul class="simple"><li><tt class="docutils literal"><span class="pre">tsNone</span></tt>: No tags will be outputted unless necessary.</li>
+<li><tt class="docutils literal"><span class="pre">tsRootOnly</span></tt>: A tag will only be outputted for the root tag and where necessary.</li>
+<li><tt class="docutils literal"><span class="pre">tsAll</span></tt>: Tags will be outputted for every object.</li>
+</ul>
+
+&nbsp;&nbsp;<a
+href="/yaml/presenter.nim#L37"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="AnchorStyle"><a name="AnchorStyle"></a><pre><span class="Identifier">AnchorStyle</span> <span class="Other">=</span> <span class="Keyword">enum</span>
+  <span class="Identifier">asNone</span><span class="Other">,</span> <span class="Identifier">asTidy</span><span class="Other">,</span> <span class="Identifier">asAlways</span></pre></dt>
+<dd>
+How ref object should be serialized.<ul class="simple"><li><tt class="docutils literal"><span class="pre">asNone</span></tt>: No anchors will be outputted. Values present at multiple places in the content that should be serialized will be fully serialized at every occurence. If the content is cyclic, this will lead to an endless loop!</li>
+<li><tt class="docutils literal"><span class="pre">asTidy</span></tt>: Anchors will only be generated for objects that actually occur more than once in the content to be serialized. This is a bit slower and needs more memory than <tt class="docutils literal"><span class="pre">asAlways</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">asAlways</span></tt>: Achors will be generated for every ref object in the content to be serialized, regardless of whether the object is referenced again afterwards</li>
+</ul>
+
+&nbsp;&nbsp;<a
+href="/yaml/presenter.nim#L46"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="NewLineStyle"><a name="NewLineStyle"></a><pre><span class="Identifier">NewLineStyle</span> <span class="Other">=</span> <span class="Keyword">enum</span>
+  <span class="Identifier">nlLF</span><span class="Other">,</span> <span class="Identifier">nlCRLF</span><span class="Other">,</span> <span class="Identifier">nlOSDefault</span></pre></dt>
+<dd>
+What kind of newline sequence is used when presenting.<ul class="simple"><li><tt class="docutils literal"><span class="pre">nlLF</span></tt>: Use a single linefeed char as newline.</li>
+<li><tt class="docutils literal"><span class="pre">nlCRLF</span></tt>: Use a sequence of carriage return and linefeed as newline.</li>
+<li><tt class="docutils literal"><span class="pre">nlOSDefault</span></tt>: Use the target operation system's default newline sequence (CRLF on Windows, LF everywhere else).</li>
+</ul>
+
+&nbsp;&nbsp;<a
+href="/yaml/presenter.nim#L61"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="OutputYamlVersion"><a name="OutputYamlVersion"></a><pre><span class="Identifier">OutputYamlVersion</span> <span class="Other">=</span> <span class="Keyword">enum</span>
+  <span class="Identifier">ov1_2</span><span class="Other">,</span> <span class="Identifier">ov1_1</span><span class="Other">,</span> <span class="Identifier">ovNone</span></pre></dt>
+<dd>
+<p>Specify which YAML version number the presenter shall emit. The presenter will always emit content that is valid YAML 1.1, but by default will write a directive <tt class="docutils literal"><span class="pre">%YAML 1.2</span></tt>. For compatibility with other YAML implementations, it is possible to change this here.</p>
+<p>It is also possible to specify that the presenter shall not emit any YAML version. The generated content is then guaranteed to be valid YAML 1.1 and 1.2 (but not 1.0 or any newer YAML version).</p>
+
+&nbsp;&nbsp;<a
+href="/yaml/presenter.nim#L71"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="PresentationOptions"><a name="PresentationOptions"></a><pre><span class="Identifier">PresentationOptions</span> <span class="Other">=</span> <span class="Keyword">object</span>
+  <span class="Identifier">style</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">PresentationStyle</span>
+  <span class="Identifier">indentationStep</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">int</span>
+  <span class="Identifier">newlines</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">NewLineStyle</span>
+  <span class="Identifier">outputVersion</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">OutputYamlVersion</span>
+</pre></dt>
+<dd>
+Options for generating a YAML character stream
+&nbsp;&nbsp;<a
+href="/yaml/presenter.nim#L82"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="YamlPresenterJsonError"><a name="YamlPresenterJsonError"></a><pre><span class="Identifier">YamlPresenterJsonError</span> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">Exception</span>
+  </pre></dt>
+<dd>
+Exception that may be raised by the YAML presenter when it is instructed to output JSON, but is unable to do so. This may occur if:<ul class="simple"><li>The given <a class="reference external" href="#YamlStream">YamlStream</a> contains a map which has any non-scalar type as key.</li>
+<li>Any float scalar bears a <tt class="docutils literal"><span class="pre">NaN</span></tt> or positive/negative infinity value</li>
+</ul>
+
+&nbsp;&nbsp;<a
+href="/yaml/presenter.nim#L89"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="YamlPresenterOutputError"><a name="YamlPresenterOutputError"></a><pre><span class="Identifier">YamlPresenterOutputError</span> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">Exception</span>
+  </pre></dt>
+<dd>
+Exception that may be raised by the YAML presenter. This occurs if writing character data to the output stream raises any exception. The error that has occurred is available from <tt class="docutils literal"><span class="pre">parent</span></tt>.
+&nbsp;&nbsp;<a
+href="/yaml/presenter.nim#L97"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+
+</dl></section>
+<section id="10">
+<h1><a class="toc-backref" href="#10">Consts</a></h1>
+<dl class="item">
+<dt id="defaultPresentationOptions"><a name="defaultPresentationOptions"></a><pre><span class="Identifier">defaultPresentationOptions</span> <span class="Other">=</span> <span class="Identifier">PresentationOptions</span><span class="Other">(</span><span class="Identifier">style</span><span class="Other">:</span> <span class="DecNumber">psDefault</span><span class="Other">,</span>
+    <span class="Identifier">indentationStep</span><span class="Other">:</span> <span class="DecNumber">2</span><span class="Other">,</span> <span class="Identifier">newlines</span><span class="Other">:</span> <span class="DecNumber">nlOSDefault</span><span class="Other">)</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/presenter.nim#L113"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+
+</dl></section>
+<section id="12">
+<h1><a class="toc-backref" href="#12">Procs</a></h1>
+<dl class="item">
+<dt id="defineOptions"><a name="defineOptions,PresentationStyle,int,NewLineStyle,OutputYamlVersion"></a><pre><span class="Keyword">proc</span> <span class="Identifier">defineOptions</span><span class="Other">(</span><span class="Identifier">style</span><span class="Other">:</span> <span class="Identifier">PresentationStyle</span> <span class="Other">=</span> <span class="Identifier">psDefault</span><span class="Other">;</span> <span class="Identifier">indentationStep</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other">=</span> <span class="DecNumber">2</span><span class="Other">;</span>
+                  <span class="Identifier">newlines</span><span class="Other">:</span> <span class="Identifier">NewLineStyle</span> <span class="Other">=</span> <span class="Identifier">nlOSDefault</span><span class="Other">;</span>
+                  <span class="Identifier">outputVersion</span><span class="Other">:</span> <span class="Identifier">OutputYamlVersion</span> <span class="Other">=</span> <span class="Identifier">ov1_2</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">PresentationOptions</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Define a set of options for presentation. Convenience proc that requires you to only set those values that should not equal the default.
+&nbsp;&nbsp;<a
+href="/yaml/presenter.nim#L117"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="present"><a name="present,YamlStream,Stream,TagLibrary,PresentationOptions"></a><pre><span class="Keyword">proc</span> <span class="Identifier">present</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">target</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">;</span> <span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span><span class="Other">;</span>
+            <span class="Identifier">options</span><span class="Other">:</span> <span class="Identifier">PresentationOptions</span> <span class="Other">=</span> <span class="Identifier">defaultPresentationOptions</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span>
+    <span class="Identifier">YamlPresenterJsonError</span><span class="Other">,</span> <span class="Identifier">YamlPresenterOutputError</span><span class="Other">,</span> <span class="Identifier">YamlStreamError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">WriteIOEffect</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Convert <tt class="docutils literal"><span class="pre">s</span></tt> to a YAML character stream and write it to <tt class="docutils literal"><span class="pre">target</span></tt>.
+&nbsp;&nbsp;<a
+href="/yaml/presenter.nim#L709"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="present"><a name="present,YamlStream,TagLibrary,PresentationOptions"></a><pre><span class="Keyword">proc</span> <span class="Identifier">present</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span><span class="Other">;</span>
+            <span class="Identifier">options</span><span class="Other">:</span> <span class="Identifier">PresentationOptions</span> <span class="Other">=</span> <span class="Identifier">defaultPresentationOptions</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span>
+    <span class="Identifier">YamlPresenterJsonError</span><span class="Other">,</span> <span class="Identifier">YamlPresenterOutputError</span><span class="Other">,</span> <span class="Identifier">YamlStreamError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">WriteIOEffect</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Convert <tt class="docutils literal"><span class="pre">s</span></tt> to a YAML character stream and return it as string.
+&nbsp;&nbsp;<a
+href="/yaml/presenter.nim#L717"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="transform"><a name="transform,,Stream,PresentationOptions"></a><pre><span class="Keyword">proc</span> <span class="Identifier">transform</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">input</span><span class="Other">:</span> <span class="Identifier">Stream</span> <span class="Operator">|</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">output</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">;</span>
+                <span class="Identifier">options</span><span class="Other">:</span> <span class="Identifier">PresentationOptions</span> <span class="Other">=</span> <span class="Identifier">defaultPresentationOptions</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span>
+    <span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">YamlParserError</span><span class="Other">,</span> <span class="Identifier">YamlPresenterJsonError</span><span class="Other">,</span> <span class="Identifier">YamlPresenterOutputError</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Parser <tt class="docutils literal"><span class="pre">input</span></tt> as YAML character stream and then dump it to <tt class="docutils literal"><span class="pre">output</span></tt> while resolving non-specific tags to the ones in the YAML core tag library.
+&nbsp;&nbsp;<a
+href="/yaml/presenter.nim#L766"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="transform"><a name="transform,,PresentationOptions"></a><pre><span class="Keyword">proc</span> <span class="Identifier">transform</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">input</span><span class="Other">:</span> <span class="Identifier">Stream</span> <span class="Operator">|</span> <span class="Identifier">string</span><span class="Other">;</span>
+                <span class="Identifier">options</span><span class="Other">:</span> <span class="Identifier">PresentationOptions</span> <span class="Other">=</span> <span class="Identifier">defaultPresentationOptions</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span>
+    <span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">YamlParserError</span><span class="Other">,</span> <span class="Identifier">YamlPresenterJsonError</span><span class="Other">,</span> <span class="Identifier">YamlPresenterOutputError</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Parser <tt class="docutils literal"><span class="pre">input</span></tt> as YAML character stream, resolves non-specific tags to the ones in the YAML core tag library, and then returns a serialized YAML string that represents the stream.
+&nbsp;&nbsp;<a
+href="/yaml/presenter.nim#L775"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+
+</dl></section>
+
+  </div>
+</div>
+
+    <div class="row">
+      <div class="twelve-columns footer">
+        <span class="nim-sprite"></span>
+        <br/>
+        <small>Made with Nim. Generated: 2016-10-01 15:20:05 UTC</small>
+      </div>
+    </div>
+  </div>
+</article>
+</body>
+</html>
