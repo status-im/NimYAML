@@ -1,4 +1,3 @@
-=====================================================
 NimYAML -- YAML implementation in Nim.
 
 Copyright (C) 2015 Felix Krause. All rights reserved.
