@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>NimYAML - Serialization Schema</title>
+
+  <link href="docutils.css" rel="stylesheet" type="text/css"/>
+  <link href="style.css" rel="stylesheet" type="text/css"/>
+
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,900' rel='stylesheet' type='text/css'/>
+  <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600' rel='stylesheet' type='text/css'/>
+</head>
+<body>
+<a href="https://github.com/flyx/NimYAML"><img style="position: fixed; top: 0; right: 0; border: 0; z-index: 10;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+<header>
+  <a class="pagetitle" href="index.html">NimYAML</a>
+  <a href="index.html">Home</a>
+  <a href="testing.html">Testing Ground</a>
+  <span>Docs:</span>
+  <a href="api.html">Overview</a>
+  <span>
+    <a href="#">Serialization</a>
+    <ul>
+      <li><a href="serialization.html">Overview</a></li>
+      <li><a href="schema.html">Schema</a></li>
+    </ul>
+  </span>
+  <span>
+    <a href="#">Modules</a>
+    <ul class="monospace">
+      <li><a href="yaml.html">yaml</a></li>
+      <li><a href="yaml.dom.html">yaml.dom</a></li>
+      <li><a href="yaml.hints.html">yaml.hints</a></li>
+      <li><a href="yaml.parser.html">yaml.parser</a></li>
+      <li><a href="yaml.presenter.html">yaml.presenter</a></li>
+      <li><a href="yaml.serialization.html">yaml.serialization</a></li>
+      <li><a href="yaml.stream.html">yaml.stream</a></li>
+      <li><a href="yaml.taglib.html">yaml.taglib</a></li>
+      <li><a href="yaml.tojson.html">yaml.tojson</a></li>
+    </ul>
+  </span>
+</header>
+<article id="documentId">
+  <div class="container">
+    <h1 class="title">Serialization Schema</h1>
+    <p>This document details the existing mappings in NimYAML from Nim types to YAML tags. Throughout this document, there are two <em>tag shorthands</em> being used:</p>
+<table border="1" class="docutils"><tr><th>Shorthand</th><th>Expansion</th></tr>
+<tr><td><tt class="docutils literal"><span class="pre">!!</span></tt></td><td><tt class="docutils literal"><span class="pre">tag:yaml.org,2002:</span></tt></td></tr>
+<tr><td><tt class="docutils literal"><span class="pre">!n!</span></tt></td><td><tt class="docutils literal"><span class="pre">tag:nimyaml.org,2016:</span></tt></td></tr>
+</table><p>The first one is defined by the YAML specification and is used for types from the YAML failsafe, JSON or core schema. The second one is defined by NimYAML and is used for types from the Nim standard library.</p>
+<p>The YAML tag system has no understanding of generics. This means that NimYAML must map every generic type instance to a YAML tag that describes that exact type instance. For example, a <tt class="docutils literal"><span class="pre">seq[string]</span></tt> is mapped to the tag <tt class="docutils literal"><span class="pre">!n!system:seq(tag:yaml.org;2002:string)</span></tt>.</p>
+<p>As you can see, the expanded tag handle of the generic type parameter is added to the tag of the generic type. To be compliant with the YAML spec, the following modifications are made:</p>
+<ul class="simple"><li>Any exclamation marks are removed from the expanded tag. An exclamation mark may only occur at the beginning of the tag as defined by the YAML spec.</li>
+<li>Any commas are replaces by semicolons, because they may not occur in a tag apart from within the tag handle expansion.</li>
+</ul>
+<p>If a type takes multiple generic parameters, the tag handles are separated by semicolons within the parentheses. Note that this does not guarantee unique tag handles for every type, but it is currently seen as good enough.</p>
+<p>Note that user-defined generic types are currently not officially supported by NimYAML. Only the generic collection types explicitly listed here use this mechanism for crafting YAML tags.</p>
+
+<h1 id="scalar-types">Scalar Types</h1><p>The following table defines all non-composed, atomar types that are mapped to YAML types by NimYAML.</p>
+<table border="1" class="docutils"><tr><th>Nim type</th><th>YAML tag</th></tr>
+<tr><td>char</td><td><tt class="docutils literal"><span class="pre">!n!system:char</span></tt></td></tr>
+<tr><td>string</td><td><tt class="docutils literal"><span class="pre">!!string</span></tt> (or <tt class="docutils literal"><span class="pre">!n!nil:string</span></tt> if nil)</td></tr>
+<tr><td>int</td><td><tt class="docutils literal"><span class="pre">!n!system:int32</span></tt> (independent on target architecture)</td></tr>
+<tr><td>int8</td><td><tt class="docutils literal"><span class="pre">!n!system:int8</span></tt></td></tr>
+<tr><td>int16</td><td><tt class="docutils literal"><span class="pre">!n!system:int16</span></tt></td></tr>
+<tr><td>int32</td><td><tt class="docutils literal"><span class="pre">!n!system:int32</span></tt></td></tr>
+<tr><td>int64</td><td><tt class="docutils literal"><span class="pre">!n!system:int64</span></tt></td></tr>
+<tr><td>uint</td><td><tt class="docutils literal"><span class="pre">!n!system:uint32</span></tt> (independent from target architecture)</td></tr>
+<tr><td>uint8</td><td><tt class="docutils literal"><span class="pre">!n!system:uint8</span></tt></td></tr>
+<tr><td>uint16</td><td><tt class="docutils literal"><span class="pre">!n!system:uint16</span></tt></td></tr>
+<tr><td>uint32</td><td><tt class="docutils literal"><span class="pre">!n!system:uint32</span></tt></td></tr>
+<tr><td>uint64</td><td><tt class="docutils literal"><span class="pre">!n!system:uint64</span></tt></td></tr>
+<tr><td>float</td><td><tt class="docutils literal"><span class="pre">!n!system:float64</span></tt></td></tr>
+<tr><td>float32</td><td><tt class="docutils literal"><span class="pre">!n!system:float32</span></tt></td></tr>
+<tr><td>float64</td><td><tt class="docutils literal"><span class="pre">!n!system:float64</span></tt></td></tr>
+<tr><td>bool</td><td><tt class="docutils literal"><span class="pre">!!bool</span></tt></td></tr>
+<tr><td>Time</td><td><tt class="docutils literal"><span class="pre">!!timestamp</span></tt></td></tr>
+</table><p>Apart from these standard library types, NimYAML also supports all enum types as scalar types. They will be serialized to their string representation.</p>
+<p>Apart from the types listed here and enum tyes, no atomar types are supported.</p>
+
+<h1 id="collection-types">Collection Types</h1><p>Collection types in Nim are typically generic. As such, they take their contained types as parameters inside parentheses as explained above. The following types are supported:</p>
+<table border="1" class="docutils"><tr><th>Nim type</th><th>YAML tag</th><th>YAML structure</th></tr>
+<tr><td>array</td><td><tt class="docutils literal"><span class="pre">!n!system:array(?;?)</span></tt> (first parameter like <tt class="docutils literal"><span class="pre">0..5</span></tt>)</td><td>sequence</td></tr>
+<tr><td>seq</td><td><tt class="docutils literal"><span class="pre">!n!system:seq(?)</span></tt> (or <tt class="docutils literal"><span class="pre">!n!nil:seq</span></tt> if nil)</td><td>sequence</td></tr>
+<tr><td>set</td><td><tt class="docutils literal"><span class="pre">!n!system:set(?)</span></tt></td><td>sequence</td></tr>
+<tr><td>Table</td><td><tt class="docutils literal"><span class="pre">!n!tables:Table(?;?)</span></tt></td><td>mapping</td></tr>
+<tr><td>OrderedTable</td><td><tt class="docutils literal"><span class="pre">!n!tables:OrderedTable(?;?)</span></tt></td><td>sequence of single-pair mappings</td></tr>
+</table>
+<h1 id="standard-yaml-types">Standard YAML Types</h1><p>NimYAML does not support all types defined in the YAML specification, <strong>not even those of the failsafe schema</strong>. The reason is that the failsafe schema is designed for dynamic type systems where a sequence can contain arbitrarily typed values. This is not fully translatable into a static type system. NimYAML does support some mechanisms to make working with heterogeneous collection structures easier, see <a class="reference external" href="serialization.html">Serialization Overview</a>.</p>
+<p>Note that because the specification only defines that an implementation <em>should</em> implement the failsafe schema, NimYAML is still compliant; it has valid reasons not to implement the schema.</p>
+<p>This is a full list of all types defined in the YAML specification or the <a class="reference external" href="http://www.yaml.org/type/">YAML type registry</a>. It gives an overview of which types are supported by NimYAML, which may be supported in the future and which will never be supported.</p>
+<table border="1" class="docutils"><tr><th>YAML type</th><th>Status</th></tr>
+<tr><td><tt class="docutils literal"><span class="pre">!!map</span></tt></td><td>Cannot be supported</td></tr>
+<tr><td><tt class="docutils literal"><span class="pre">!!omap</span></tt></td><td>Cannot be supported</td></tr>
+<tr><td><tt class="docutils literal"><span class="pre">!!pairs</span></tt></td><td>Cannot be supported</td></tr>
+<tr><td><tt class="docutils literal"><span class="pre">!!set</span></tt></td><td>Cannot be supported</td></tr>
+<tr><td><tt class="docutils literal"><span class="pre">!!seq</span></tt></td><td>Cannot be supported</td></tr>
+<tr><td><tt class="docutils literal"><span class="pre">!!binary</span></tt></td><td>Currently not supported</td></tr>
+<tr><td><tt class="docutils literal"><span class="pre">!!bool</span></tt></td><td>Maps to Nim's <tt class="docutils literal"><span class="pre">bool</span></tt> type</td></tr>
+<tr><td><tt class="docutils literal"><span class="pre">!!float</span></tt></td><td>Not supported (user can choose)</td></tr>
+<tr><td><tt class="docutils literal"><span class="pre">!!int</span></tt></td><td>Not supported (user can choose)</td></tr>
+<tr><td><tt class="docutils literal"><span class="pre">!!merge</span></tt></td><td>Not supported and unlikely to be implemented</td></tr>
+<tr><td><tt class="docutils literal"><span class="pre">!!null</span></tt></td><td>Used for reference types that are <tt class="docutils literal"><span class="pre">nil</span></tt></td></tr>
+<tr><td><tt class="docutils literal"><span class="pre">!!str</span></tt></td><td>Maps to Nim's <tt class="docutils literal"><span class="pre">string</span></tt> type</td></tr>
+<tr><td><tt class="docutils literal"><span class="pre">!!timestamp</span></tt></td><td>Maps to Nim's <tt class="docutils literal"><span class="pre">Time</span></tt> type</td></tr>
+<tr><td><tt class="docutils literal"><span class="pre">!!value</span></tt></td><td>Not supported and unlikely to be implemented</td></tr>
+<tr><td><tt class="docutils literal"><span class="pre">!!yaml</span></tt></td><td>Not supported and unlikely to be implemented</td></tr>
+</table><p><tt class="docutils literal"><span class="pre">!!int</span></tt> and <tt class="docutils literal"><span class="pre">!!float</span></tt> are not supported out of the box to let the user choose where to map them (for example, <tt class="docutils literal"><span class="pre">!!int</span></tt> may map to <tt class="docutils literal"><span class="pre">int32</span></tt> or <tt class="docutils literal"><span class="pre">int64</span></tt>, or the the generic <tt class="docutils literal"><span class="pre">int</span></tt> whose size is platform-dependent). If one wants to use <tt class="docutils literal"><span class="pre">!!int``or ``!!float</span></tt>, the process is to create a <tt class="docutils literal"><span class="pre">distinct</span></tt> type derived from the desired base type and then set its tag using <tt class="docutils literal"><span class="pre">setTagUri</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">!!merge</span></tt> and <tt class="docutils literal"><span class="pre">!!value</span></tt> are not supported because the semantics of these types would make a multi-pass loading process necessary and if one takes the tag system seriously, <tt class="docutils literal"><span class="pre">!!merge</span></tt> can only be used with YAML's collection types, which, as explained above, cannot be supported.</p>
+
+
+
+    <div class="row">
+      <div class="twelve-columns footer">
+        <span class="nim-sprite"></span>
+        <br/>
+        <small>Made with Nim. Generated: 2016-11-08 21:32:27 UTC</small>
+      </div>
+    </div>
+  </div>
+</article>
+</body>
+</html>
