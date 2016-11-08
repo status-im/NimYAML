@@ -6,138 +6,166 @@
 
   <link href="docutils.css" rel="stylesheet" type="text/css"/>
   <link href="style.css" rel="stylesheet" type="text/css"/>
-  
+
   <link href='http://fonts.googleapis.com/css?family=Raleway:400,600,900' rel='stylesheet' type='text/css'/>
   <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600' rel='stylesheet' type='text/css'/>
 </head>
 <body>
-  <header>
-    <a class="pagetitle" href="index.html">NimYAML</a>
-    <a href="index.html">Home</a>
-    <a href="testing.html">Testing Ground</a>
-    <span>Docs:</span>
-    <a href="api.html">Overview</a>
-    <a href="serialization.html">Serialization</a>
-    <a href="yaml.html">Module yaml</a>
-  </header>
-  <article id="documentId">
-    <div class="container">
-      <h1 class="title">Testing Ground</h1>
-      <p>Input is being processed on the fly by a friendly web service and
-         Output is updated as you type.</p>
-    </div>
-  </article>
-  <section id="testingground">
-    <table style="width: 100%; table-layout: fixed">
-      <thead>
-        <tr>
-          <th>Input</th>
-          <th>Output</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td style="width: 50%; height: 550px; vertical-align: top;">
-            <textarea id="yaml-input" style="width: 100%; height: 100%">
+<a href="https://github.com/flyx/NimYAML"><img style="position: fixed; top: 0; right: 0; border: 0; z-index: 10;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+<header>
+  <a class="pagetitle" href="index.html">NimYAML</a>
+  <a href="index.html">Home</a>
+  <a href="testing.html">Testing Ground</a>
+  <span>Docs:</span>
+  <a href="api.html">Overview</a>
+  <span>
+    <a href="#">Serialization</a>
+    <ul>
+      <li><a href="serialization.html">Overview</a></li>
+      <li><a href="schema.html">Schema</a></li>
+    </ul>
+  </span>
+  <span>
+    <a href="#">Modules</a>
+    <ul class="monospace">
+      <li><a href="yaml.html">yaml</a></li>
+      <li><a href="yaml.dom.html">yaml.dom</a></li>
+      <li><a href="yaml.hints.html">yaml.hints</a></li>
+      <li><a href="yaml.parser.html">yaml.parser</a></li>
+      <li><a href="yaml.presenter.html">yaml.presenter</a></li>
+      <li><a href="yaml.serialization.html">yaml.serialization</a></li>
+      <li><a href="yaml.stream.html">yaml.stream</a></li>
+      <li><a href="yaml.taglib.html">yaml.taglib</a></li>
+      <li><a href="yaml.tojson.html">yaml.tojson</a></li>
+    </ul>
+  </span>
+</header>
+<article id="documentId">
+  <div class="container">
+    <h1 class="title">Testing Ground</h1>
+    <p>Input is being processed on the fly by a friendly web service and output is updated as you type.</p>
+<section id="testingground">
+  <table style="width: 100%; table-layout: fixed">
+    <thead>
+      <tr>
+        <th>Input</th>
+        <th>Output</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="width: 50%; height: 550px; vertical-align: top;">
+          <textarea id="yaml-input" style="width: 100%; height: 100%">
 - test some
 - {YAML: here}
 - foo: bar
   ? [1, 2, 3]
   : !!str "string"
-- 
+-
   ? &amp;a anchor
   : !!bool yes
   ? reference to anchor
   : *a</textarea>
-          </td>
-          <td style="width: 50%; vertical-align: top; height: 550px; padding-left: 10px">
-            <div style="width:100%; height:100%; overflow: scroll">
-              <pre id="yaml-output" style="width: 100%"/>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div id="style-options">
-      <div class="style-option">Output style:</div>
-      <div class="style-option">
-        <input type="radio" name="style" id="style-minimal" value="minimal"/>
-        <label for="style-minimal">Minimal</label>
-      </div>
-      <div class="style-option">
-        <input type="radio" name="style" id="style-default" value="default"/>
-        <label for="style-default">Default</label>
-      </div>
-      <div class="style-option">
-        <input type="radio" name="style" id="style-canonical" value="canonical" checked="checked"/>
-        <label for="style-canonical">Canonical</label>
-      </div>
-      <div class="style-option">
-        <input type="radio" name="style" id="style-block" value="block"/>
-        <label for="style-block">Block Only</label>
-      </div>
-      <div class="style-option">
-        <input type="radio" name="style" id="style-json" value="json"/>
-        <label for="style-json">JSON</label>
-      </div>
-      <div class="style-option">
-        <input type="radio" name="style" id="style-tokens" value="tokens"/>
-        <label for="style-tokens">Tokens</label>
-      </div>
+        </td>
+        <td style="width: 50%; vertical-align: top; height: 550px; padding-left: 10px">
+          <div style="width:100%; height:100%; overflow: scroll">
+            <pre id="yaml-output" style="width: 100%"/>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div id="style-options">
+    <div class="style-option">Output style:</div>
+    <div class="style-option">
+      <input type="radio" name="style" id="style-minimal" value="minimal"/>
+      <label for="style-minimal">Minimal</label>
     </div>
-  </section>
-  <script type="text/javascript">
-    function setTextContent(element, text) {
-      element.innerHTML = text;
-    }
-    function parse() {
-      var r = new XMLHttpRequest();
-      var params = "style=" + encodeURIComponent(document.querySelector(
-        "input[name=style]:checked").value) + "&input=" + encodeURIComponent(
-        document.getElementById("yaml-input").value);
-      r.open("POST", "http://flyx.org:5000", true);
-      r.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      r.onreadystatechange = function() {
-        if (r.readyState == 4) {
-          var output = document.getElementById("yaml-output");
-          if (r.status == 200) {
-            var result = JSON.parse(r.responseText);
-            switch(result.code) {
-            case 0:
-              setTextContent(output, result.output);
-              output.style.color = "black";
-              break;
-            case 1:
-              setTextContent(output, "Parser error at line " + result.line +
-                  ", column " + result.column + ":\n" + result.message +
-                  "\n\n" + result.detail);
-              output.style.color = "orange";
-              break;
-            case 2:
-              setTextContent(output, "Presenter error:\n" + result.message);
-              output.style.color = "orange";
-              break;
-            }
-          } else if (r.status == 0) {
-            setTextContent(output,
-              "YAML parser server does not seem to be available.");
-            output.style.color = "red";
-          } else {
-            setTextContent(output, "Status: " + r.status +
-              "\nException occurred on server:\n\n" + r.responseText);
-            output.style.color = "red";
+    <div class="style-option">
+      <input type="radio" name="style" id="style-default" value="default"/>
+      <label for="style-default">Default</label>
+    </div>
+    <div class="style-option">
+      <input type="radio" name="style" id="style-canonical" value="canonical" checked="checked"/>
+      <label for="style-canonical">Canonical</label>
+    </div>
+    <div class="style-option">
+      <input type="radio" name="style" id="style-block" value="block"/>
+      <label for="style-block">Block Only</label>
+    </div>
+    <div class="style-option">
+      <input type="radio" name="style" id="style-json" value="json"/>
+      <label for="style-json">JSON</label>
+    </div>
+    <div class="style-option">
+      <input type="radio" name="style" id="style-tokens" value="tokens"/>
+      <label for="style-tokens">Tokens</label>
+    </div>
+  </div>
+</section>
+<script type="text/javascript">
+  function setTextContent(element, text) {
+    element.innerHTML = text;
+  }
+  function parse() {
+    var r = new XMLHttpRequest();
+    var params = "style=" + encodeURIComponent(document.querySelector(
+      "input[name=style]:checked").value) + "&input=" + encodeURIComponent(
+      document.getElementById("yaml-input").value);
+    r.open("POST", "http://flyx.org:5000", true);
+    r.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    r.onreadystatechange = function() {
+      if (r.readyState == 4) {
+        var output = document.getElementById("yaml-output");
+        if (r.status == 200) {
+          var result = JSON.parse(r.responseText);
+          switch(result.code) {
+          case 0:
+            setTextContent(output, result.output);
+            output.style.color = "black";
+            break;
+          case 1:
+            setTextContent(output, "Parser error at line " + result.line +
+                ", column " + result.column + ":\n" + result.message +
+                "\n\n" + result.detail);
+            output.style.color = "orange";
+            break;
+          case 2:
+            setTextContent(output, "Presenter error:\n" + result.message);
+            output.style.color = "orange";
+            break;
           }
+        } else if (r.status == 0) {
+          setTextContent(output,
+            "YAML parser server does not seem to be available.");
+          output.style.color = "red";
+        } else {
+          setTextContent(output, "Status: " + r.status +
+            "\nException occurred on server:\n\n" + r.responseText);
+          output.style.color = "red";
         }
       }
-      r.send(params);
     }
-    document.getElementById("yaml-input").addEventListener('input', parse,
-        false);
-    var radios = document.querySelectorAll("input[name=style]");
-    for (var i = 0; i < radios.length; ++i) {
-      radios[i].onclick = parse;
-    }
-    parse();
-  </script>
+    r.send(params);
+  }
+  document.getElementById("yaml-input").addEventListener('input', parse,
+      false);
+  var radios = document.querySelectorAll("input[name=style]");
+  for (var i = 0; i < radios.length; ++i) {
+    radios[i].onclick = parse;
+  }
+  parse();
+</script>
+
+
+    <div class="row">
+      <div class="twelve-columns footer">
+        <span class="nim-sprite"></span>
+        <br/>
+        <small>Made with Nim. Generated: 2016-11-08 21:32:27 UTC</small>
+      </div>
+    </div>
+  </div>
+</article>
 </body>
 </html>

@@ -18,10 +18,16 @@
   <a href="testing.html">Testing Ground</a>
   <span>Docs:</span>
   <a href="api.html">Overview</a>
-  <a href="serialization.html">Serialization</a>
+  <span>
+    <a href="#">Serialization</a>
+    <ul>
+      <li><a href="serialization.html">Overview</a></li>
+      <li><a href="schema.html">Schema</a></li>
+    </ul>
+  </span>
   <span>
     <a href="#">Modules</a>
-    <ul>
+    <ul class="monospace">
       <li><a href="yaml.html">yaml</a></li>
       <li><a href="yaml.dom.html">yaml.dom</a></li>
       <li><a href="yaml.hints.html">yaml.hints</a></li>
@@ -46,7 +52,7 @@
 <span class="Punctuation">-</span> <span class="DecNumber">2</span>
 <span class="Punctuation">-</span> <span class="DecNumber">3</span></pre><p>You would need to know that it will load a <tt class="docutils literal"><span class="pre">seq[int8]</span></tt> <em>at compile time</em>. This is not really a problem because without knowing which type you will load, you cannot do anything useful with the result afterwards in the code. But it may be unfamiliar for programmers who are used to the YAML libraries of Python or Ruby.</p>
 
-<h1 id="supported-types">Supported Types</h1><p>NimYAML supports a growing number of types of Nim's <tt class="docutils literal"><span class="pre">system</span></tt> module and standard library, and it also supports user-defined object, tuple and enum types out of the box.</p>
+<h1 id="supported-types">Supported Types</h1><p>NimYAML supports a growing number of types of Nim's <tt class="docutils literal"><span class="pre">system</span></tt> module and standard library, and it also supports user-defined object, tuple and enum types out of the box. A complete list of explicitly supported types is available in <a class="reference external" href="schema.html">Schema</a>.</p>
 <p><strong>Important</strong>: NimYAML currently does not support polymorphism. This may be added in the future.</p>
 <p>This also means that NimYAML is generally able to work with object, tuple and enum types defined in the standard library or a third-party library without further configuration, given that all fields of the object are accessible at the code point where NimYAML's facilities are invoked.</p>
 
@@ -63,7 +69,7 @@
 <p>Nim <tt class="docutils literal"><span class="pre">seq</span></tt> types may be <tt class="docutils literal"><span class="pre">nil</span></tt>. This is handled by serializing them to an empty scalar with the tag <tt class="docutils literal"><span class="pre">!nim:nil:seq</span></tt>.</p>
 
 <h2 id="reference-types">Reference Types</h2><p>A reference to any supported non-reference type (including user defined types, see below) is supported by NimYAML. A reference type will be treated like its base type, but NimYAML is able to detect multiple references to the same object and dump the structure properly with anchors and aliases in place. It is possible to dump and load cyclic data structures without further configuration. It is possible for reference types to hold a <tt class="docutils literal"><span class="pre">nil</span></tt> value, which will be mapped to the <tt class="docutils literal"><span class="pre">!!null</span></tt> YAML scalar type.</p>
-<p>Pointer types are not supported because it seems dangerous to automatically allocate memory which the user must then manually deallocate.</p>
+<p><tt class="docutils literal"><span class="pre">ptr</span></tt> types are not supported because it seems dangerous to automatically allocate memory which the user must then manually deallocate.</p>
 
 <h2 id="user-defined-types">User Defined Types</h2><p>For an object or tuple type to be directly usable with NimYAML, the following conditions must be met:</p>
 <ul class="simple"><li>Every type contained in the object/tuple must be supported</li>
@@ -124,9 +130,25 @@
 <p>When dumping the sequence, NimYAML will always annotate a tag to each value it outputs. This is to avoid possible ambiguity when loading. If a branch without a field exists, it is represented as a <tt class="docutils literal"><span class="pre">!!null</span></tt> value.</p>
 
 <h1 id="tags">Tags</h1><p>NimYAML uses local tags to represent Nim types that do not map directly to a YAML type. For example, <tt class="docutils literal"><span class="pre">int8</span></tt> is presented with the tag <tt class="docutils literal"><span class="pre">!nim:system:int8</span></tt>. Tags are mostly unnecessary when loading YAML data because the user already defines the target Nim type which usually defines all types of the structure. However, there is one case where a tag is necessary: A reference type with the value <tt class="docutils literal"><span class="pre">nil</span></tt> is represented in YAML as a <tt class="docutils literal"><span class="pre">!!null</span></tt> scalar. This will be automatically detected by type guessing, but if it is for example a reference to a string with the value <tt class="docutils literal"><span class="pre">&quot;~&quot;</span></tt>, it must be tagged with <tt class="docutils literal"><span class="pre">!!string</span></tt>, because otherwise, it would be loaded as <tt class="docutils literal"><span class="pre">nil</span></tt>.</p>
-<p>As you might have noticed in the example above, the YAML tag of a <tt class="docutils literal"><span class="pre">seq</span></tt> depends on its generic type parameter. The same applies to <tt class="docutils literal"><span class="pre">Table</span></tt>. So, a table that maps <tt class="docutils literal"><span class="pre">int8</span></tt> to string sequences would be presented with the tag <tt class="docutils literal"><span class="pre">!nim:tables:Table(nim:system:int8,nim:system:seq(tag:yaml.org,2002:string))</span></tt>. These tags are generated on the fly based on the types you instantiate <tt class="docutils literal"><span class="pre">Table</span></tt> or <tt class="docutils literal"><span class="pre">seq</span></tt> with.</p>
+<p>As you might have noticed in the example above, the YAML tag of a <tt class="docutils literal"><span class="pre">seq</span></tt> depends on its generic type parameter. The same applies to <tt class="docutils literal"><span class="pre">Table</span></tt>. So, a table that maps <tt class="docutils literal"><span class="pre">int8</span></tt> to string sequences would be presented with the tag <tt class="docutils literal"><span class="pre">!n!tables:Table(tag:nimyaml.org,2016:int8,tag:nimyaml.org,2016:system:seq(tag:yaml.org,2002:string))</span></tt>. These tags are generated on the fly based on the types you instantiate <tt class="docutils literal"><span class="pre">Table</span></tt> or <tt class="docutils literal"><span class="pre">seq</span></tt> with.</p>
 <p>You may customize the tags used for your types by using the template <a class="reference external" href="yaml.html#setTagUri.t,typedesc,string">setTagUri</a>. It may not be applied to scalar and collection types implemented by NimYAML, but you can for example use it on a certain <tt class="docutils literal"><span class="pre">seq</span></tt> type:</p>
 <pre class = "listing"><span class="Identifier">setTagUri</span><span class="Punctuation">(</span><span class="Identifier">seq</span><span class="Punctuation">[</span><span class="Identifier">string</span><span class="Punctuation">]</span><span class="Punctuation">,</span> <span class="StringLit">&quot;!nim:my:seq&quot;</span><span class="Punctuation">)</span></pre>
+<h1 id="customizing-field-handling">Customizing Field Handling</h1><p>NimYAML allows the user to specify special handling of certain object fields. This configuration will be applied at compile time when NimYAML generates the (de)serialization code for an object type. It is important that the configuration happens before any YAML operations (e.g. <tt class="docutils literal"><span class="pre">load</span></tt> or <tt class="docutils literal"><span class="pre">dump</span></tt>) are executed on a variable of the object type.</p>
+
+<h2 id="transient-fields">Transient Fields</h2><p>It may happen that certain fields of an object type are transient, i.e. they are used in a way that makes (de)serializing them unnecessary. Such fields can be marked as transient. This will cause them not to be serialized to YAML. They will also not be accepted when loading the object.</p>
+<p>Example:</p>
+<pre class = "listing"><span class="Keyword">type</span> <span class="Identifier">MyObject</span><span class="Punctuation">:</span> <span class="Keyword">object</span>
+  <span class="Identifier">storable</span><span class="Punctuation">:</span> <span class="Identifier">string</span>
+  <span class="Identifier">temporary</span><span class="Punctuation">:</span> <span class="Identifier">string</span>
+
+<span class="Identifier">markAsTransient</span><span class="Punctuation">(</span><span class="Identifier">MyObject</span><span class="Punctuation">,</span> <span class="Identifier">temporary</span><span class="Punctuation">)</span></pre>
+<h2 id="default-values">Default Values</h2><p>When you load YAML that has been written by a human, you might want to allow the user to omit certain fields, which should then be filled with a default value. You can do that like this:</p>
+<pre class = "listing"><span class="Keyword">type</span> <span class="Identifier">MyObject</span><span class="Punctuation">:</span> <span class="Keyword">object</span>
+  <span class="Identifier">required</span><span class="Punctuation">:</span> <span class="Identifier">string</span>
+  <span class="Identifier">optional</span><span class="Punctuation">:</span> <span class="Identifier">string</span>
+
+<span class="Identifier">setDefaultValue</span><span class="Punctuation">(</span><span class="Identifier">MyObject</span><span class="Punctuation">,</span> <span class="Identifier">optional</span><span class="Punctuation">,</span> <span class="StringLit">&quot;default value&quot;</span><span class="Punctuation">)</span></pre><p>Whenever <tt class="docutils literal"><span class="pre">MyObject</span></tt> now is loaded and the input stream does not contain the field <tt class="docutils literal"><span class="pre">optional</span></tt>, that field will be set to the value <tt class="docutils literal"><span class="pre">&quot;default value&quot;</span></tt>.</p>
+
 <h1 id="customize-serialization">Customize Serialization</h1><p>It is possible to customize the serialization of a type. For this, you need to implement two procs, <tt class="docutils literal"><span class="pre">constructObject̀</span></tt> and <tt class="docutils literal"><span class="pre">representObject</span></tt>. If you only need to process the type in one direction (loading or dumping), you can omit the other proc.</p>
 
 <h2 id="constructobject">constructObject</h2><pre class = "listing"><span class="Keyword">proc</span> <span class="Identifier">constructObject</span><span class="Operator">*</span><span class="Punctuation">(</span><span class="Identifier">s</span><span class="Punctuation">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Punctuation">,</span> <span class="Identifier">c</span><span class="Punctuation">:</span> <span class="Identifier">ConstructionContext</span><span class="Punctuation">,</span>
@@ -184,7 +206,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2016-10-01 15:20:07 UTC</small>
+        <small>Made with Nim. Generated: 2016-11-08 21:32:27 UTC</small>
       </div>
     </div>
   </div>

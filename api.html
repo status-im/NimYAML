@@ -18,10 +18,16 @@
   <a href="testing.html">Testing Ground</a>
   <span>Docs:</span>
   <a href="api.html">Overview</a>
-  <a href="serialization.html">Serialization</a>
+  <span>
+    <a href="#">Serialization</a>
+    <ul>
+      <li><a href="serialization.html">Overview</a></li>
+      <li><a href="schema.html">Schema</a></li>
+    </ul>
+  </span>
   <span>
     <a href="#">Modules</a>
-    <ul>
+    <ul class="monospace">
       <li><a href="yaml.html">yaml</a></li>
       <li><a href="yaml.dom.html">yaml.dom</a></li>
       <li><a href="yaml.hints.html">yaml.hints</a></li>
@@ -54,7 +60,7 @@
 
 <h1 id="the-document-object-model">The Document Object Model</h1><p>Much like XML, YAML also defines a <em>document object model</em>. If you cannot or do not want to load a YAML character stream to native Nim types, you can instead load it into a <a class="reference external" href="yaml.dom.html#YamlDocument">YamlDocument</a>. This <tt class="docutils literal"><span class="pre">YamlDocument</span></tt> can also be serialized into a YAML character stream. All tags will be preserved exactly as they are when transforming from and to a <tt class="docutils literal"><span class="pre">YamlDocument</span></tt>. The only important thing to remember is that when a value has no tag, it will get the non-specific tag <tt class="docutils literal"><span class="pre">&quot;!&quot;</span></tt> for quoted scalars and <tt class="docutils literal"><span class="pre">&quot;?&quot;</span></tt> for all other nodes.</p>
 <p>While tags are preserved, anchors will be resolved during loading and re-added during serialization. It is allowed for a <tt class="docutils literal"><span class="pre">YamlNode</span></tt> to occur multiple times within a <tt class="docutils literal"><span class="pre">YamlDocument</span></tt>, in which case it will be serialized once and referred to afterwards via aliases.</p>
-<p>The document object model is provided for completeness, but you are encouraged to use native Nim types as start- or endpoint instead. That may be significantly faster, as every <tt class="docutils literal"><span class="pre">YamlNode</span></tt> is allocated on the heap and subject to garbage collection.</p>
+<p>The document object model is provided for completeness, but you are encouraged to use native Nim types as start- or endpoint instead. That may be significantly faster, as every <tt class="docutils literal"><span class="pre">YamlNode</span></tt> is allocated on the heap and subject to garbage collection. </p>
 
 
 
@@ -62,7 +68,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2016-10-01 15:20:07 UTC</small>
+        <small>Made with Nim. Generated: 2016-11-08 21:32:27 UTC</small>
       </div>
     </div>
   </div>

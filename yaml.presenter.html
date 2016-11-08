@@ -18,10 +18,16 @@
   <a href="testing.html">Testing Ground</a>
   <span>Docs:</span>
   <a href="api.html">Overview</a>
-  <a href="serialization.html">Serialization</a>
+  <span>
+    <a href="#">Serialization</a>
+    <ul>
+      <li><a href="serialization.html">Overview</a></li>
+      <li><a href="schema.html">Schema</a></li>
+    </ul>
+  </span>
   <span>
     <a href="#">Modules</a>
-    <ul>
+    <ul class="monospace">
       <li><a href="yaml.html">yaml</a></li>
       <li><a href="yaml.dom.html">yaml.dom</a></li>
       <li><a href="yaml.hints.html">yaml.hints</a></li>
@@ -261,7 +267,7 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 Convert <tt class="docutils literal"><span class="pre">s</span></tt> to a YAML character stream and write it to <tt class="docutils literal"><span class="pre">target</span></tt>.
 &nbsp;&nbsp;<a
-href="/yaml/presenter.nim#L709"
+href="/yaml/presenter.nim#L714"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="present"><a name="present,YamlStream,TagLibrary,PresentationOptions"></a><pre><span class="Keyword">proc</span> <span class="Identifier">present</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span><span class="Other">;</span>
@@ -271,7 +277,7 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 Convert <tt class="docutils literal"><span class="pre">s</span></tt> to a YAML character stream and return it as string.
 &nbsp;&nbsp;<a
-href="/yaml/presenter.nim#L717"
+href="/yaml/presenter.nim#L722"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="transform"><a name="transform,,Stream,PresentationOptions"></a><pre><span class="Keyword">proc</span> <span class="Identifier">transform</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">input</span><span class="Other">:</span> <span class="Identifier">Stream</span> <span class="Operator">|</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">output</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">;</span>
@@ -280,7 +286,7 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 Parser <tt class="docutils literal"><span class="pre">input</span></tt> as YAML character stream and then dump it to <tt class="docutils literal"><span class="pre">output</span></tt> while resolving non-specific tags to the ones in the YAML core tag library.
 &nbsp;&nbsp;<a
-href="/yaml/presenter.nim#L766"
+href="/yaml/presenter.nim#L771"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="transform"><a name="transform,,PresentationOptions"></a><pre><span class="Keyword">proc</span> <span class="Identifier">transform</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">input</span><span class="Other">:</span> <span class="Identifier">Stream</span> <span class="Operator">|</span> <span class="Identifier">string</span><span class="Other">;</span>
@@ -289,7 +295,7 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 Parser <tt class="docutils literal"><span class="pre">input</span></tt> as YAML character stream, resolves non-specific tags to the ones in the YAML core tag library, and then returns a serialized YAML string that represents the stream.
 &nbsp;&nbsp;<a
-href="/yaml/presenter.nim#L775"
+href="/yaml/presenter.nim#L780"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 
@@ -302,7 +308,7 @@ class="link-seesrc" target="_blank">Source</a>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2016-10-01 15:20:05 UTC</small>
+        <small>Made with Nim. Generated: 2016-11-08 21:32:30 UTC</small>
       </div>
     </div>
   </div>

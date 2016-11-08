@@ -18,10 +18,16 @@
   <a href="testing.html">Testing Ground</a>
   <span>Docs:</span>
   <a href="api.html">Overview</a>
-  <a href="serialization.html">Serialization</a>
+  <span>
+    <a href="#">Serialization</a>
+    <ul>
+      <li><a href="serialization.html">Overview</a></li>
+      <li><a href="schema.html">Schema</a></li>
+    </ul>
+  </span>
   <span>
     <a href="#">Modules</a>
-    <ul>
+    <ul class="monospace">
       <li><a href="yaml.html">yaml</a></li>
       <li><a href="yaml.dom.html">yaml.dom</a></li>
       <li><a href="yaml.hints.html">yaml.hints</a></li>
@@ -66,7 +72,7 @@
     title="TagLibrary = ref object
   tags*: Table[string, TagId]
   nextCustomTagId*: TagId
-  secondaryPrefix*: string"><wbr />Tag<wbr />Library</a></li>
+  tagHandles: Table[string, string]"><wbr />Tag<wbr />Library</a></li>
 
   </ul>
 </li>
@@ -121,32 +127,36 @@
     title="yTagNimNilString: TagId = 101"><wbr />y<wbr />Tag<wbr />Nim<wbr />Nil<wbr />String</a></li>
   <li><a class="reference" href="#yTagNimNilSeq"
     title="yTagNimNilSeq: TagId = 102"><wbr />y<wbr />Tag<wbr />Nim<wbr />Nil<wbr />Seq</a></li>
+  <li><a class="reference" href="#yFirstStaticTagId"
+    title="yFirstStaticTagId: TagId = 1000"><wbr />y<wbr />First<wbr />Static<wbr />Tag<wbr />Id</a></li>
   <li><a class="reference" href="#yFirstCustomTagId"
-    title="yFirstCustomTagId: TagId = 1000"><wbr />y<wbr />First<wbr />Custom<wbr />Tag<wbr />Id</a></li>
+    title="yFirstCustomTagId: TagId = 10000"><wbr />y<wbr />First<wbr />Custom<wbr />Tag<wbr />Id</a></li>
   <li><a class="reference" href="#yamlTagRepositoryPrefix"
     title="yamlTagRepositoryPrefix = &quot;tag:yaml.org,2002:&quot;"><wbr />yaml<wbr />Tag<wbr />Repository<wbr />Prefix</a></li>
+  <li><a class="reference" href="#nimyamlTagRepositoryPrefix"
+    title="nimyamlTagRepositoryPrefix = &quot;tag:nimyaml.org,2016:&quot;"><wbr />nimyaml<wbr />Tag<wbr />Repository<wbr />Prefix</a></li>
   <li><a class="reference" href="#yTagNimChar"
-    title="yTagNimChar = 100"><wbr />y<wbr />Tag<wbr />Nim<wbr />Char</a></li>
+    title="yTagNimChar = 1000"><wbr />y<wbr />Tag<wbr />Nim<wbr />Char</a></li>
   <li><a class="reference" href="#yTagNimInt8"
-    title="yTagNimInt8 = 101"><wbr />y<wbr />Tag<wbr />Nim<wbr />Int8</a></li>
+    title="yTagNimInt8 = 1001"><wbr />y<wbr />Tag<wbr />Nim<wbr />Int8</a></li>
   <li><a class="reference" href="#yTagNimInt16"
-    title="yTagNimInt16 = 102"><wbr />y<wbr />Tag<wbr />Nim<wbr />Int16</a></li>
+    title="yTagNimInt16 = 1002"><wbr />y<wbr />Tag<wbr />Nim<wbr />Int16</a></li>
   <li><a class="reference" href="#yTagNimInt32"
-    title="yTagNimInt32 = 103"><wbr />y<wbr />Tag<wbr />Nim<wbr />Int32</a></li>
+    title="yTagNimInt32 = 1003"><wbr />y<wbr />Tag<wbr />Nim<wbr />Int32</a></li>
   <li><a class="reference" href="#yTagNimInt64"
-    title="yTagNimInt64 = 104"><wbr />y<wbr />Tag<wbr />Nim<wbr />Int64</a></li>
+    title="yTagNimInt64 = 1004"><wbr />y<wbr />Tag<wbr />Nim<wbr />Int64</a></li>
   <li><a class="reference" href="#yTagNimUInt8"
-    title="yTagNimUInt8 = 105"><wbr />y<wbr />Tag<wbr />Nim<wbr />UInt8</a></li>
+    title="yTagNimUInt8 = 1005"><wbr />y<wbr />Tag<wbr />Nim<wbr />UInt8</a></li>
   <li><a class="reference" href="#yTagNimUInt16"
-    title="yTagNimUInt16 = 106"><wbr />y<wbr />Tag<wbr />Nim<wbr />UInt16</a></li>
+    title="yTagNimUInt16 = 1006"><wbr />y<wbr />Tag<wbr />Nim<wbr />UInt16</a></li>
   <li><a class="reference" href="#yTagNimUInt32"
-    title="yTagNimUInt32 = 107"><wbr />y<wbr />Tag<wbr />Nim<wbr />UInt32</a></li>
+    title="yTagNimUInt32 = 1007"><wbr />y<wbr />Tag<wbr />Nim<wbr />UInt32</a></li>
   <li><a class="reference" href="#yTagNimUInt64"
-    title="yTagNimUInt64 = 108"><wbr />y<wbr />Tag<wbr />Nim<wbr />UInt64</a></li>
+    title="yTagNimUInt64 = 1008"><wbr />y<wbr />Tag<wbr />Nim<wbr />UInt64</a></li>
   <li><a class="reference" href="#yTagNimFloat32"
-    title="yTagNimFloat32 = 109"><wbr />y<wbr />Tag<wbr />Nim<wbr />Float32</a></li>
+    title="yTagNimFloat32 = 1009"><wbr />y<wbr />Tag<wbr />Nim<wbr />Float32</a></li>
   <li><a class="reference" href="#yTagNimFloat64"
-    title="yTagNimFloat64 = 110"><wbr />y<wbr />Tag<wbr />Nim<wbr />Float64</a></li>
+    title="yTagNimFloat64 = 1010"><wbr />y<wbr />Tag<wbr />Nim<wbr />Float64</a></li>
 
   </ul>
 </li>
@@ -174,27 +184,41 @@
   <li><a class="reference" href="#initSerializationTagLibrary,"
     title="initSerializationTagLibrary(): TagLibrary"><wbr />init<wbr />Serialization<wbr />Tag<wbr />Library</a></li>
   <li><a class="reference" href="#yamlTag,"
-    title="yamlTag[](T125098: typedesc[char]): TagId"><wbr />yaml<wbr />Tag</a></li>
+    title="yamlTag[](T126499: typedesc[char]): TagId"><wbr />yaml<wbr />Tag</a></li>
   <li><a class="reference" href="#yamlTag,_2"
-    title="yamlTag[](T125237: typedesc[int8]): TagId"><wbr />yaml<wbr />Tag</a></li>
+    title="yamlTag[](T126824: typedesc[int8]): TagId"><wbr />yaml<wbr />Tag</a></li>
   <li><a class="reference" href="#yamlTag,_3"
-    title="yamlTag[](T125437: typedesc[int16]): TagId"><wbr />yaml<wbr />Tag</a></li>
+    title="yamlTag[](T127224: typedesc[int16]): TagId"><wbr />yaml<wbr />Tag</a></li>
   <li><a class="reference" href="#yamlTag,_4"
-    title="yamlTag[](T125637: typedesc[int32]): TagId"><wbr />yaml<wbr />Tag</a></li>
+    title="yamlTag[](T127624: typedesc[int32]): TagId"><wbr />yaml<wbr />Tag</a></li>
   <li><a class="reference" href="#yamlTag,_5"
-    title="yamlTag[](T125837: typedesc[int64]): TagId"><wbr />yaml<wbr />Tag</a></li>
+    title="yamlTag[](T128024: typedesc[int64]): TagId"><wbr />yaml<wbr />Tag</a></li>
   <li><a class="reference" href="#yamlTag,_6"
-    title="yamlTag[](T126037: typedesc[uint8]): TagId"><wbr />yaml<wbr />Tag</a></li>
+    title="yamlTag[](T128424: typedesc[uint8]): TagId"><wbr />yaml<wbr />Tag</a></li>
   <li><a class="reference" href="#yamlTag,_7"
-    title="yamlTag[](T126237: typedesc[uint16]): TagId"><wbr />yaml<wbr />Tag</a></li>
+    title="yamlTag[](T128824: typedesc[uint16]): TagId"><wbr />yaml<wbr />Tag</a></li>
   <li><a class="reference" href="#yamlTag,_8"
-    title="yamlTag[](T126437: typedesc[uint32]): TagId"><wbr />yaml<wbr />Tag</a></li>
+    title="yamlTag[](T129224: typedesc[uint32]): TagId"><wbr />yaml<wbr />Tag</a></li>
   <li><a class="reference" href="#yamlTag,_9"
-    title="yamlTag[](T126637: typedesc[uint64]): TagId"><wbr />yaml<wbr />Tag</a></li>
+    title="yamlTag[](T129624: typedesc[uint64]): TagId"><wbr />yaml<wbr />Tag</a></li>
   <li><a class="reference" href="#yamlTag,_10"
-    title="yamlTag[](T126837: typedesc[float32]): TagId"><wbr />yaml<wbr />Tag</a></li>
+    title="yamlTag[](T130024: typedesc[float32]): TagId"><wbr />yaml<wbr />Tag</a></li>
   <li><a class="reference" href="#yamlTag,_11"
-    title="yamlTag[](T127037: typedesc[float64]): TagId"><wbr />yaml<wbr />Tag</a></li>
+    title="yamlTag[](T130424: typedesc[float64]): TagId"><wbr />yaml<wbr />Tag</a></li>
+  <li><a class="reference" href="#registerHandle,TagLibrary,string,string"
+    title="registerHandle(tagLib: TagLibrary; handle, prefix: string)"><wbr />register<wbr />Handle</a></li>
+  <li><a class="reference" href="#searchHandle,TagLibrary,string"
+    title="searchHandle(tagLib: TagLibrary; tag: string): tuple[handle: string, len: int]"><wbr />search<wbr />Handle</a></li>
+  <li><a class="reference" href="#nimTag,string"
+    title="nimTag(suffix: string): string"><wbr />nim<wbr />Tag</a></li>
+
+  </ul>
+</li>
+<li>
+  <a class="reference reference-toplevel" href="#14" id="64">Iterators</a>
+  <ul class="simple simple-toc-section">
+      <li><a class="reference" href="#handles.i,TagLibrary"
+    title="handles(tagLib: TagLibrary): tuple[prefix, handle: string]"><wbr />handles</a></li>
 
   </ul>
 </li>
@@ -205,8 +229,6 @@
     title="setTagUri[](t: typedesc; uri: string): typed"><wbr />set<wbr />Tag<wbr />Uri</a></li>
   <li><a class="reference" href="#setTagUri.t,typedesc,string,untyped"
     title="setTagUri[](t: typedesc; uri: string; idName: untyped): typed"><wbr />set<wbr />Tag<wbr />Uri</a></li>
-  <li><a class="reference" href="#markAsImplicit.t,typedesc"
-    title="markAsImplicit[](t: typedesc): typed"><wbr />mark<wbr />As<wbr />Implicit</a></li>
 
   </ul>
 </li>
@@ -221,7 +243,7 @@
   <section id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a class="reference external" href="tables.html">tables</a>, <a class="reference external" href="macros.html">macros</a>, <a class="reference external" href="hashes.html">hashes</a>
+<a class="reference external" href="tables.html">tables</a>, <a class="reference external" href="macros.html">macros</a>, <a class="reference external" href="hashes.html">hashes</a>, <a class="reference external" href="strutils.html">strutils</a>
 </dl></section>
 <section id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
@@ -239,7 +261,7 @@ class="link-seesrc" target="_blank">Source</a>
 <dt id="TagLibrary"><a name="TagLibrary"></a><pre><span class="Identifier">TagLibrary</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span>
   <span class="Identifier">tags</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">,</span> <span class="Identifier">TagId</span><span class="Other">]</span>
   <span class="Identifier">nextCustomTagId</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">TagId</span>
-  <span class="Identifier">secondaryPrefix</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
+  <span class="Identifier">tagHandles</span><span class="Other">:</span> <span class="Identifier">Table</span><span class="Other">[</span><span class="Identifier">string</span><span class="Other">,</span> <span class="Identifier">string</span><span class="Other">]</span>
 </pre></dt>
 <dd>
 <p>A <tt class="docutils literal"><span class="pre">TagLibrary</span></tt> maps tag URIs to <tt class="docutils literal"><span class="pre">TagId</span></tt> s.</p>
@@ -262,7 +284,7 @@ contains all local tags that are used for type serialization. Does not contain a
 <p>Should not be modified manually. Will be extended by <a class="reference external" href="#serializable,stmt,stmt">serializable</a>.</p>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L211"
+href="/yaml/taglib.nim#L218"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 
@@ -427,96 +449,111 @@ for seqs that are nil. This tag is used regardless of the seq's generic type par
 href="/yaml/taglib.nim#L93"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yFirstCustomTagId"><a name="yFirstCustomTagId"></a><pre><span class="Identifier">yFirstCustomTagId</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other">=</span> <span class="DecNumber">1000</span></pre></dt>
+<dt id="yFirstStaticTagId"><a name="yFirstStaticTagId"></a><pre><span class="Identifier">yFirstStaticTagId</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other">=</span> <span class="DecNumber">1000</span></pre></dt>
+<dd>
+
+The first <tt class="docutils literal"><span class="pre">TagId</span></tt> assigned by the <tt class="docutils literal"><span class="pre">setTagId</span></tt> templates.
+&nbsp;&nbsp;<a
+href="/yaml/taglib.nim#L97"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="yFirstCustomTagId"><a name="yFirstCustomTagId"></a><pre><span class="Identifier">yFirstCustomTagId</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other">=</span> <span class="DecNumber">10000</span></pre></dt>
 <dd>
 
 The first <tt class="docutils literal"><span class="pre">TagId</span></tt> which should be assigned to an URI that does not exist in the <tt class="docutils literal"><span class="pre">YamlTagLibrary</span></tt> which is used for parsing.
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L97"
+href="/yaml/taglib.nim#L100"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="yamlTagRepositoryPrefix"><a name="yamlTagRepositoryPrefix"></a><pre><span class="Identifier">yamlTagRepositoryPrefix</span> <span class="Other">=</span> <span class="StringLit">&quot;tag:yaml.org,2002:&quot;</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L101"
+href="/yaml/taglib.nim#L104"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yTagNimChar"><a name="yTagNimChar"></a><pre><span class="Identifier">yTagNimChar</span> <span class="Other">=</span> <span class="DecNumber">100</span></pre></dt>
+<dt id="nimyamlTagRepositoryPrefix"><a name="nimyamlTagRepositoryPrefix"></a><pre><span class="Identifier">nimyamlTagRepositoryPrefix</span> <span class="Other">=</span> <span class="StringLit">&quot;tag:nimyaml.org,2016:&quot;</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L248"
+href="/yaml/taglib.nim#L105"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yTagNimInt8"><a name="yTagNimInt8"></a><pre><span class="Identifier">yTagNimInt8</span> <span class="Other">=</span> <span class="DecNumber">101</span></pre></dt>
+<dt id="yTagNimChar"><a name="yTagNimChar"></a><pre><span class="Identifier">yTagNimChar</span> <span class="Other">=</span> <span class="DecNumber">1000</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L248"
+href="/yaml/taglib.nim#L255"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yTagNimInt16"><a name="yTagNimInt16"></a><pre><span class="Identifier">yTagNimInt16</span> <span class="Other">=</span> <span class="DecNumber">102</span></pre></dt>
+<dt id="yTagNimInt8"><a name="yTagNimInt8"></a><pre><span class="Identifier">yTagNimInt8</span> <span class="Other">=</span> <span class="DecNumber">1001</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L248"
+href="/yaml/taglib.nim#L255"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yTagNimInt32"><a name="yTagNimInt32"></a><pre><span class="Identifier">yTagNimInt32</span> <span class="Other">=</span> <span class="DecNumber">103</span></pre></dt>
+<dt id="yTagNimInt16"><a name="yTagNimInt16"></a><pre><span class="Identifier">yTagNimInt16</span> <span class="Other">=</span> <span class="DecNumber">1002</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L248"
+href="/yaml/taglib.nim#L255"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yTagNimInt64"><a name="yTagNimInt64"></a><pre><span class="Identifier">yTagNimInt64</span> <span class="Other">=</span> <span class="DecNumber">104</span></pre></dt>
+<dt id="yTagNimInt32"><a name="yTagNimInt32"></a><pre><span class="Identifier">yTagNimInt32</span> <span class="Other">=</span> <span class="DecNumber">1003</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L248"
+href="/yaml/taglib.nim#L255"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yTagNimUInt8"><a name="yTagNimUInt8"></a><pre><span class="Identifier">yTagNimUInt8</span> <span class="Other">=</span> <span class="DecNumber">105</span></pre></dt>
+<dt id="yTagNimInt64"><a name="yTagNimInt64"></a><pre><span class="Identifier">yTagNimInt64</span> <span class="Other">=</span> <span class="DecNumber">1004</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L248"
+href="/yaml/taglib.nim#L255"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yTagNimUInt16"><a name="yTagNimUInt16"></a><pre><span class="Identifier">yTagNimUInt16</span> <span class="Other">=</span> <span class="DecNumber">106</span></pre></dt>
+<dt id="yTagNimUInt8"><a name="yTagNimUInt8"></a><pre><span class="Identifier">yTagNimUInt8</span> <span class="Other">=</span> <span class="DecNumber">1005</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L248"
+href="/yaml/taglib.nim#L255"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yTagNimUInt32"><a name="yTagNimUInt32"></a><pre><span class="Identifier">yTagNimUInt32</span> <span class="Other">=</span> <span class="DecNumber">107</span></pre></dt>
+<dt id="yTagNimUInt16"><a name="yTagNimUInt16"></a><pre><span class="Identifier">yTagNimUInt16</span> <span class="Other">=</span> <span class="DecNumber">1006</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L248"
+href="/yaml/taglib.nim#L255"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yTagNimUInt64"><a name="yTagNimUInt64"></a><pre><span class="Identifier">yTagNimUInt64</span> <span class="Other">=</span> <span class="DecNumber">108</span></pre></dt>
+<dt id="yTagNimUInt32"><a name="yTagNimUInt32"></a><pre><span class="Identifier">yTagNimUInt32</span> <span class="Other">=</span> <span class="DecNumber">1007</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L248"
+href="/yaml/taglib.nim#L255"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yTagNimFloat32"><a name="yTagNimFloat32"></a><pre><span class="Identifier">yTagNimFloat32</span> <span class="Other">=</span> <span class="DecNumber">109</span></pre></dt>
+<dt id="yTagNimUInt64"><a name="yTagNimUInt64"></a><pre><span class="Identifier">yTagNimUInt64</span> <span class="Other">=</span> <span class="DecNumber">1008</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L248"
+href="/yaml/taglib.nim#L255"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yTagNimFloat64"><a name="yTagNimFloat64"></a><pre><span class="Identifier">yTagNimFloat64</span> <span class="Other">=</span> <span class="DecNumber">110</span></pre></dt>
+<dt id="yTagNimFloat32"><a name="yTagNimFloat32"></a><pre><span class="Identifier">yTagNimFloat32</span> <span class="Other">=</span> <span class="DecNumber">1009</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L248"
+href="/yaml/taglib.nim#L255"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="yTagNimFloat64"><a name="yTagNimFloat64"></a><pre><span class="Identifier">yTagNimFloat64</span> <span class="Other">=</span> <span class="DecNumber">1010</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/taglib.nim#L255"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 
@@ -528,42 +565,42 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L103"
+href="/yaml/taglib.nim#L107"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="hash"><a name="hash,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">hash</span><span class="Other">(</span><span class="Identifier">id</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Hash</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">borrow</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L104"
+href="/yaml/taglib.nim#L108"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="$"><a name="$,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">`$`</span><span class="Other">(</span><span class="Identifier">id</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L106"
+href="/yaml/taglib.nim#L110"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="initTagLibrary"><a name="initTagLibrary,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">initTagLibrary</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 initializes the <tt class="docutils literal"><span class="pre">tags</span></tt> table and sets <tt class="docutils literal"><span class="pre">nextCustomTagId</span></tt> to <tt class="docutils literal"><span class="pre">yFirstCustomTagId</span></tt>.
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L128"
+href="/yaml/taglib.nim#L132"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="registerUri"><a name="registerUri,TagLibrary,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">registerUri</span><span class="Other">(</span><span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span><span class="Other">;</span> <span class="Identifier">uri</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 registers a custom tag URI with a <tt class="docutils literal"><span class="pre">TagLibrary</span></tt>. The URI will get the <tt class="docutils literal"><span class="pre">TagId</span></tt> <tt class="docutils literal"><span class="pre">nextCustomTagId</span></tt>, which will be incremented.
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L136"
+href="/yaml/taglib.nim#L140"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="uri"><a name="uri,TagLibrary,TagId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">uri</span><span class="Other">(</span><span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span><span class="Other">;</span> <span class="Identifier">id</span><span class="Other">:</span> <span class="Identifier">TagId</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 retrieve the URI a <tt class="docutils literal"><span class="pre">TagId</span></tt> maps to.
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L143"
+href="/yaml/taglib.nim#L147"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="initFailsafeTagLibrary"><a name="initFailsafeTagLibrary,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">initFailsafeTagLibrary</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
@@ -576,7 +613,7 @@ Contains only:<ul class="simple"><li><tt class="docutils literal"><span class="p
 </ul>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L149"
+href="/yaml/taglib.nim#L156"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="initCoreTagLibrary"><a name="initCoreTagLibrary,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">initCoreTagLibrary</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
@@ -588,7 +625,7 @@ Contains everything in <tt class="docutils literal"><span class="pre">initFailsa
 </ul>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L163"
+href="/yaml/taglib.nim#L170"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="initExtendedTagLibrary"><a name="initExtendedTagLibrary,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">initExtendedTagLibrary</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
@@ -604,91 +641,126 @@ Contains everything from <tt class="docutils literal"><span class="pre">initCore
 </ul>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L175"
+href="/yaml/taglib.nim#L182"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="initSerializationTagLibrary"><a name="initSerializationTagLibrary,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">initSerializationTagLibrary</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L195"
+href="/yaml/taglib.nim#L201"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yamlTag"><a name="yamlTag,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">125098</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">char</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dt id="yamlTag"><a name="yamlTag,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">126499</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">char</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 autogenerated
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L253"
+href="/yaml/taglib.nim#L262"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yamlTag"><a name="yamlTag,_2"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">125237</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">int8</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dt id="yamlTag"><a name="yamlTag,_2"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">126824</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">int8</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 autogenerated
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L253"
+href="/yaml/taglib.nim#L262"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yamlTag"><a name="yamlTag,_3"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">125437</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">int16</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dt id="yamlTag"><a name="yamlTag,_3"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">127224</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">int16</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 autogenerated
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L253"
+href="/yaml/taglib.nim#L262"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yamlTag"><a name="yamlTag,_4"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">125637</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">int32</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dt id="yamlTag"><a name="yamlTag,_4"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">127624</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">int32</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 autogenerated
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L253"
+href="/yaml/taglib.nim#L262"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yamlTag"><a name="yamlTag,_5"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">125837</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">int64</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dt id="yamlTag"><a name="yamlTag,_5"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">128024</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">int64</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 autogenerated
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L253"
+href="/yaml/taglib.nim#L262"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yamlTag"><a name="yamlTag,_6"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">126037</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">uint8</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dt id="yamlTag"><a name="yamlTag,_6"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">128424</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">uint8</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 autogenerated
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L253"
+href="/yaml/taglib.nim#L262"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yamlTag"><a name="yamlTag,_7"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">126237</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">uint16</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dt id="yamlTag"><a name="yamlTag,_7"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">128824</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">uint16</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 autogenerated
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L253"
+href="/yaml/taglib.nim#L262"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yamlTag"><a name="yamlTag,_8"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">126437</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">uint32</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dt id="yamlTag"><a name="yamlTag,_8"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">129224</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">uint32</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 autogenerated
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L253"
+href="/yaml/taglib.nim#L262"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yamlTag"><a name="yamlTag,_9"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">126637</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">uint64</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dt id="yamlTag"><a name="yamlTag,_9"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">129624</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">uint64</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 autogenerated
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L253"
+href="/yaml/taglib.nim#L262"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yamlTag"><a name="yamlTag,_10"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">126837</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">float32</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dt id="yamlTag"><a name="yamlTag,_10"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">130024</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">float32</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 autogenerated
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L253"
+href="/yaml/taglib.nim#L262"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="yamlTag"><a name="yamlTag,_11"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">127037</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">float64</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dt id="yamlTag"><a name="yamlTag,_11"></a><pre><span class="Keyword">proc</span> <span class="Identifier">yamlTag</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">T</span><span class="DecNumber">130424</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">[</span><span class="Identifier">float64</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 autogenerated
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L253"
+href="/yaml/taglib.nim#L262"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="registerHandle"><a name="registerHandle,TagLibrary,string,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">registerHandle</span><span class="Other">(</span><span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span><span class="Other">;</span> <span class="Identifier">handle</span><span class="Other">,</span> <span class="Identifier">prefix</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Registers a handle for a prefix. When presenting any tag that starts with this prefix, the handle is used instead. Also causes the presenter to output a TAG directive for the handle.
+&nbsp;&nbsp;<a
+href="/yaml/taglib.nim#L294"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="searchHandle"><a name="searchHandle,TagLibrary,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">searchHandle</span><span class="Other">(</span><span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span><span class="Other">;</span> <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">handle</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">,</span> <span class="Identifier">len</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">]</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+search in the registered tag handles for one whose prefix matches the start of the given tag. If multiple registered handles match, the one with the longest prefix is returned. If no registered handle matches, (nil, 0) is returned.
+&nbsp;&nbsp;<a
+href="/yaml/taglib.nim#L300"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="nimTag"><a name="nimTag,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">nimTag</span><span class="Other">(</span><span class="Identifier">suffix</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+prepends NimYAML's tag repository prefix to the given suffix. For example, <tt class="docutils literal"><span class="pre">nimTag(&quot;system:char&quot;)</span></tt> yields <tt class="docutils literal"><span class="pre">&quot;tag:nimyaml.org,2016:system:char&quot;</span></tt>.
+&nbsp;&nbsp;<a
+href="/yaml/taglib.nim#L318"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+
+</dl></section>
+<section id="14">
+<h1><a class="toc-backref" href="#14">Iterators</a></h1>
+<dl class="item">
+<dt id="handles"><a name="handles.i,TagLibrary"></a><pre><span class="Keyword">iterator</span> <span class="Identifier">handles</span><span class="Other">(</span><span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">prefix</span><span class="Other">,</span> <span class="Identifier">handle</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">]</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+iterate over registered tag handles that may be used as shortcuts (e.g. <tt class="docutils literal"><span class="pre">!n!</span></tt> for <tt class="docutils literal"><span class="pre">tag:nimyaml.org,2016:</span></tt>)
+&nbsp;&nbsp;<a
+href="/yaml/taglib.nim#L313"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 
@@ -700,21 +772,14 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 Associate the given uri with a certain type. This uri is used as YAML tag when loading and dumping values of this type.
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L227"
+href="/yaml/taglib.nim#L234"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="setTagUri"><a name="setTagUri.t,typedesc,string,untyped"></a><pre><span class="Keyword">template</span> <span class="Identifier">setTagUri</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">t</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">;</span> <span class="Identifier">uri</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">idName</span><span class="Other">:</span> <span class="Identifier">untyped</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">typed</span></pre></dt>
 <dd>
 Like <a class="reference external" href="#setTagUri.t,typedesc,string">setTagUri</a>, but lets you choose a symbol for the <a class="reference external" href="#TagId">TagId</a> of the uri. This is only necessary if you want to implement serialization / construction yourself.
 &nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L242"
-class="link-seesrc" target="_blank">Source</a>
-</dd>
-<dt id="markAsImplicit"><a name="markAsImplicit.t,typedesc"></a><pre><span class="Keyword">template</span> <span class="Identifier">markAsImplicit</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">t</span><span class="Other">:</span> <span class="Identifier">typedesc</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">typed</span></pre></dt>
-<dd>
-Mark a variant object type as implicit. This requires the type to consist of nothing but a case expression and each branch of the case expression containing exactly one field - with the exception that one branch may contain zero fields.
-&nbsp;&nbsp;<a
-href="/yaml/taglib.nim#L271"
+href="/yaml/taglib.nim#L249"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 
@@ -727,7 +792,7 @@ class="link-seesrc" target="_blank">Source</a>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2016-10-01 15:20:06 UTC</small>
+        <small>Made with Nim. Generated: 2016-11-08 21:32:31 UTC</small>
       </div>
     </div>
   </div>
