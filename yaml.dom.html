@@ -76,8 +76,8 @@
   tag*: string
   case kind*: YamlNodeKind
   of yScalar: content*: string
-  of ySequence: children*: seq[YamlNode]
-  of yMapping: pairs*: seq[tuple[key, value: YamlNode]]"><wbr />Yaml<wbr />Node<wbr />Obj</a></li>
+  of ySequence: elems*: seq[YamlNode]
+  of yMapping: fields*: TableRef[YamlNode, YamlNode]"><wbr />Yaml<wbr />Node<wbr />Obj</a></li>
   <li><a class="reference" href="#YamlDocument"
     title="YamlDocument = object
   root*: YamlNode"><wbr />Yaml<wbr />Document</a></li>
@@ -87,23 +87,55 @@
 <li>
   <a class="reference reference-toplevel" href="#12" id="62">Procs</a>
   <ul class="simple simple-toc-section">
-      <li><a class="reference" href="#newYamlNode,string,string"
+      <li><a class="reference" href="#hash,YamlNode not nil"
+    title="hash(o: YamlNode): Hash"><wbr />hash</a></li>
+  <li><a class="reference" href="#==,YamlNode not nil,YamlNode not nil"
+    title="`==`(x, y: YamlNode): bool"><wbr />`==`</a></li>
+  <li><a class="reference" href="#$,YamlNode not nil"
+    title="`$`(n: YamlNode): string"><wbr />`$`</a></li>
+  <li><a class="reference" href="#newYamlNode,string,string"
     title="newYamlNode(content: string; tag: string = &quot;?&quot;): YamlNode"><wbr />new<wbr />Yaml<wbr />Node</a></li>
   <li><a class="reference" href="#newYamlNode,openArray[YamlNode not nil],string"
-    title="newYamlNode(children: openArray[YamlNode]; tag: string = &quot;?&quot;): YamlNode"><wbr />new<wbr />Yaml<wbr />Node</a></li>
-  <li><a class="reference" href="#newYamlNode,openArray[tuple[YamlNode not nil,YamlNode not nil]],string"
-    title="newYamlNode(pairs: openArray[tuple[key, value: YamlNode]]; tag: string = &quot;?&quot;): YamlNode"><wbr />new<wbr />Yaml<wbr />Node</a></li>
+    title="newYamlNode(elems: openArray[YamlNode]; tag: string = &quot;?&quot;): YamlNode"><wbr />new<wbr />Yaml<wbr />Node</a></li>
+  <li><a class="reference" href="#newYamlNode,openArray[],string"
+    title="newYamlNode(fields: openArray[(YamlNode, YamlNode)]; tag: string = &quot;?&quot;): YamlNode"><wbr />new<wbr />Yaml<wbr />Node</a></li>
   <li><a class="reference" href="#initYamlDoc,YamlNode not nil"
     title="initYamlDoc(root: YamlNode): YamlDocument"><wbr />init<wbr />Yaml<wbr />Doc</a></li>
   <li><a class="reference" href="#compose,YamlStream,TagLibrary"
     title="compose(s: var YamlStream; tagLib: TagLibrary): YamlDocument"><wbr />compose</a></li>
-  <li><a class="reference" href="#loadDOM,"
-    title="loadDOM[](s: Stream | string): YamlDocument"><wbr />load<wbr />DOM</a></li>
+  <li><a class="reference" href="#loadDom,"
+    title="loadDom(s: Stream | string): YamlDocument"><wbr />load<wbr />Dom</a></li>
   <li><a class="reference" href="#serialize,YamlDocument,TagLibrary,AnchorStyle"
     title="serialize(doc: YamlDocument; tagLib: TagLibrary; a: AnchorStyle = asTidy): YamlStream"><wbr />serialize</a></li>
-  <li><a class="reference" href="#dumpDOM,YamlDocument,Stream,AnchorStyle,PresentationOptions"
-    title="dumpDOM(doc: YamlDocument; target: Stream; anchorStyle: AnchorStyle = asTidy;
-        options: PresentationOptions = defaultPresentationOptions)"><wbr />dump<wbr />DOM</a></li>
+  <li><a class="reference" href="#dumpDom,YamlDocument,Stream,AnchorStyle,PresentationOptions"
+    title="dumpDom(doc: YamlDocument; target: Stream; anchorStyle: AnchorStyle = asTidy;
+        options: PresentationOptions = defaultPresentationOptions)"><wbr />dump<wbr />Dom</a></li>
+  <li><a class="reference" href="#[],YamlNode not nil,int"
+    title="`[]`(node: YamlNode; i: int): YamlNode"><wbr />`[]`</a></li>
+  <li><a class="reference" href="#[]=,YamlNode not nil,int,YamlNode not nil"
+    title="`[]=`(node: var YamlNode; i: int; val: YamlNode)"><wbr />`[]=`</a></li>
+  <li><a class="reference" href="#[],YamlNode not nil,YamlNode not nil"
+    title="`[]`(node: YamlNode; key: YamlNode): YamlNode"><wbr />`[]`</a></li>
+  <li><a class="reference" href="#[]=,YamlNode not nil,YamlNode not nil,YamlNode not nil"
+    title="`[]=`(node: YamlNode; key: YamlNode; value: YamlNode)"><wbr />`[]=`</a></li>
+  <li><a class="reference" href="#[],YamlNode not nil,string"
+    title="`[]`(node: YamlNode; key: string): YamlNode"><wbr />`[]`</a></li>
+  <li><a class="reference" href="#len,YamlNode not nil"
+    title="len(node: YamlNode): int"><wbr />len</a></li>
+
+  </ul>
+</li>
+<li>
+  <a class="reference reference-toplevel" href="#14" id="64">Iterators</a>
+  <ul class="simple simple-toc-section">
+      <li><a class="reference" href="#items.i,YamlNode not nil"
+    title="items(node: YamlNode): YamlNode"><wbr />items</a></li>
+  <li><a class="reference" href="#mitems.i,YamlNode not nil"
+    title="mitems(node: var YamlNode): YamlNode"><wbr />mitems</a></li>
+  <li><a class="reference" href="#pairs.i,YamlNode not nil"
+    title="pairs(node: YamlNode): tuple[key, value: YamlNode]"><wbr />pairs</a></li>
+  <li><a class="reference" href="#mpairs.i,YamlNode not nil"
+    title="mpairs(node: var YamlNode): tuple[key: YamlNode, value: var YamlNode]"><wbr />mpairs</a></li>
 
   </ul>
 </li>
@@ -114,12 +146,13 @@
   <div class="nine columns" id="content">
   <div id="tocRoot"></div>
   <p class="module-desc"><p>This is the DOM API, which enables you to load YAML into a tree-like structure. It can also dump the structure back to YAML. Formally, it represents the <em>Representation Graph</em> as defined in the YAML specification.</p>
-<p>The main interface of this API are <tt class="docutils literal"><span class="pre">loadDOM</span></tt> and <tt class="docutils literal"><span class="pre">dumpDOM</span></tt>. The other exposed procs are low-level and useful if you want to load or generate parts of a <tt class="docutils literal"><span class="pre">YamlStream</span></tt>.</p>
+<p>The main interface of this API are <tt class="docutils literal"><span class="pre">loadDom</span></tt> and <tt class="docutils literal"><span class="pre">dumpDom</span></tt>. The other exposed procs are low-level and useful if you want to load or generate parts of a <tt class="docutils literal"><span class="pre">YamlStream</span></tt>.</p>
+<p>The <tt class="docutils literal"><span class="pre">YamlNode</span></tt> objects in the DOM can be used similarly to the <tt class="docutils literal"><span class="pre">JsonNode</span></tt> objects of Nim's <a class="reference external" href="http://nim-lang.org/docs/json.html">json module</a>.</p>
 </p>
   <section id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a class="reference external" href="tables.html">tables</a>, <a class="reference external" href="streams.html">streams</a>, <a class="reference external" href="stream.html">stream</a>, <a class="reference external" href="taglib.html">taglib</a>, <a class="reference external" href="serialization.html">serialization</a>, <a class="reference external" href="../private/internal.html">../private/internal</a>, <a class="reference external" href="parser.html">parser</a>, <a class="reference external" href="presenter.html">presenter</a>
+<a class="reference external" href="tables.html">tables</a>, <a class="reference external" href="streams.html">streams</a>, <a class="reference external" href="hashes.html">hashes</a>, <a class="reference external" href="sets.html">sets</a>, <a class="reference external" href="strutils.html">strutils</a>, <a class="reference external" href="stream.html">stream</a>, <a class="reference external" href="taglib.html">taglib</a>, <a class="reference external" href="serialization.html">serialization</a>, <a class="reference external" href="private/internal.html">private/internal</a>, <a class="reference external" href="parser.html">parser</a>, <a class="reference external" href="presenter.html">presenter</a>
 </dl></section>
 <section id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
@@ -129,27 +162,27 @@
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/dom.nim#L24"
+href="/yaml/dom.nim#L27"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="YamlNode"><a name="YamlNode"></a><pre><span class="Identifier">YamlNode</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Identifier">YamlNodeObj</span> <span class="Keyword">not</span> <span class="Keyword">nil</span></pre></dt>
 <dd>
 Represents a node in a <tt class="docutils literal"><span class="pre">YamlDocument</span></tt>.
 &nbsp;&nbsp;<a
-href="/yaml/dom.nim#L27"
+href="/yaml/dom.nim#L30"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="YamlNodeObj"><a name="YamlNodeObj"></a><pre><span class="Identifier">YamlNodeObj</span> <span class="Other">=</span> <span class="Keyword">object</span>
   <span class="Identifier">tag</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
   <span class="Keyword">case</span> <span class="Identifier">kind</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">YamlNodeKind</span>
   <span class="Keyword">of</span> <span class="Identifier">yScalar</span><span class="Other">:</span> <span class="Identifier">content</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
-  <span class="Keyword">of</span> <span class="Identifier">ySequence</span><span class="Other">:</span> <span class="Identifier">children</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">YamlNode</span><span class="Other">]</span>
-  <span class="Keyword">of</span> <span class="Identifier">yMapping</span><span class="Other">:</span> <span class="Identifier">pairs</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">key</span><span class="Other">,</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">YamlNode</span><span class="Other">]</span><span class="Other">]</span>
+  <span class="Keyword">of</span> <span class="Identifier">ySequence</span><span class="Other">:</span> <span class="Identifier">elems</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">YamlNode</span><span class="Other">]</span>
+  <span class="Keyword">of</span> <span class="Identifier">yMapping</span><span class="Other">:</span> <span class="Identifier">fields</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">TableRef</span><span class="Other">[</span><span class="Identifier">YamlNode</span><span class="Other">,</span> <span class="Identifier">YamlNode</span><span class="Other">]</span>
   </pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/dom.nim#L30"
+href="/yaml/dom.nim#L33"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="YamlDocument"><a name="YamlDocument"></a><pre><span class="Identifier">YamlDocument</span> <span class="Other">=</span> <span class="Keyword">object</span>
@@ -158,7 +191,7 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 Represents a YAML document.
 &nbsp;&nbsp;<a
-href="/yaml/dom.nim#L37"
+href="/yaml/dom.nim#L41"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 
@@ -166,34 +199,55 @@ class="link-seesrc" target="_blank">Source</a>
 <section id="12">
 <h1><a class="toc-backref" href="#12">Procs</a></h1>
 <dl class="item">
+<dt id="hash"><a name="hash,YamlNode not nil"></a><pre><span class="Keyword">proc</span> <span class="Identifier">hash</span><span class="Other">(</span><span class="Identifier">o</span><span class="Other">:</span> <span class="Identifier">YamlNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Hash</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/dom.nim#L45"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="=="><a name="==,YamlNode not nil,YamlNode not nil"></a><pre><span class="Keyword">proc</span> <span class="Identifier">`==`</span><span class="Other">(</span><span class="Identifier">x</span><span class="Other">,</span> <span class="Identifier">y</span><span class="Other">:</span> <span class="Identifier">YamlNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/dom.nim#L94"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="$"><a name="$,YamlNode not nil"></a><pre><span class="Keyword">proc</span> <span class="Identifier">`$`</span><span class="Other">(</span><span class="Identifier">n</span><span class="Other">:</span> <span class="Identifier">YamlNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/dom.nim#L98"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
 <dt id="newYamlNode"><a name="newYamlNode,string,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">newYamlNode</span><span class="Other">(</span><span class="Identifier">content</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">=</span> <span class="StringLit">&quot;?&quot;</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlNode</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/dom.nim#L41"
+href="/yaml/dom.nim#L119"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="newYamlNode"><a name="newYamlNode,openArray[YamlNode not nil],string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">newYamlNode</span><span class="Other">(</span><span class="Identifier">children</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">YamlNode</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">=</span> <span class="StringLit">&quot;?&quot;</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlNode</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+<dt id="newYamlNode"><a name="newYamlNode,openArray[YamlNode not nil],string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">newYamlNode</span><span class="Other">(</span><span class="Identifier">elems</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Identifier">YamlNode</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">=</span> <span class="StringLit">&quot;?&quot;</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlNode</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/yaml/dom.nim#L122"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="newYamlNode"><a name="newYamlNode,openArray[],string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">newYamlNode</span><span class="Other">(</span><span class="Identifier">fields</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Other">(</span><span class="Identifier">YamlNode</span><span class="Other">,</span> <span class="Identifier">YamlNode</span><span class="Other">)</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">=</span> <span class="StringLit">&quot;?&quot;</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlNode</span> <span class="Other pragmabegin">{.</span><div class="pragma">
     <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/dom.nim#L44"
-class="link-seesrc" target="_blank">Source</a>
-</dd>
-<dt id="newYamlNode"><a name="newYamlNode,openArray[tuple[YamlNode not nil,YamlNode not nil]],string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">newYamlNode</span><span class="Other">(</span><span class="Identifier">pairs</span><span class="Other">:</span> <span class="Identifier">openArray</span><span class="Other">[</span><span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">key</span><span class="Other">,</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">YamlNode</span><span class="Other">]</span><span class="Other">]</span><span class="Other">;</span> <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">=</span> <span class="StringLit">&quot;?&quot;</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlNode</span> <span class="Other pragmabegin">{.</span><div class="pragma">
-    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
-<dd>
-
-&nbsp;&nbsp;<a
-href="/yaml/dom.nim#L48"
+href="/yaml/dom.nim#L126"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="initYamlDoc"><a name="initYamlDoc,YamlNode not nil"></a><pre><span class="Keyword">proc</span> <span class="Identifier">initYamlDoc</span><span class="Other">(</span><span class="Identifier">root</span><span class="Other">:</span> <span class="Identifier">YamlNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlDocument</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/dom.nim#L52"
+href="/yaml/dom.nim#L130"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="compose"><a name="compose,YamlStream,TagLibrary"></a><pre><span class="Keyword">proc</span> <span class="Identifier">compose</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlDocument</span> <span class="Other pragmabegin">{.</span><div class="pragma">
@@ -202,15 +256,15 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/dom.nim#L99"
+href="/yaml/dom.nim#L184"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="loadDOM"><a name="loadDOM,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">loadDOM</span><span class="Other">[</span><span class="Other">]</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">Stream</span> <span class="Operator">|</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlDocument</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+<dt id="loadDom"><a name="loadDom,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">loadDom</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">Stream</span> <span class="Operator">|</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlDocument</span> <span class="Other pragmabegin">{.</span><div class="pragma">
     <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">YamlParserError</span><span class="Other">,</span> <span class="Identifier">YamlConstructionError</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/dom.nim#L109"
+href="/yaml/dom.nim#L194"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="serialize"><a name="serialize,YamlDocument,TagLibrary,AnchorStyle"></a><pre><span class="Keyword">proc</span> <span class="Identifier">serialize</span><span class="Other">(</span><span class="Identifier">doc</span><span class="Other">:</span> <span class="Identifier">YamlDocument</span><span class="Other">;</span> <span class="Identifier">tagLib</span><span class="Other">:</span> <span class="Identifier">TagLibrary</span><span class="Other">;</span> <span class="Identifier">a</span><span class="Other">:</span> <span class="Identifier">AnchorStyle</span> <span class="Other">=</span> <span class="Identifier">asTidy</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other pragmabegin">{.</span><div class="pragma">
@@ -218,17 +272,93 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/dom.nim#L166"
+href="/yaml/dom.nim#L279"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
-<dt id="dumpDOM"><a name="dumpDOM,YamlDocument,Stream,AnchorStyle,PresentationOptions"></a><pre><span class="Keyword">proc</span> <span class="Identifier">dumpDOM</span><span class="Other">(</span><span class="Identifier">doc</span><span class="Other">:</span> <span class="Identifier">YamlDocument</span><span class="Other">;</span> <span class="Identifier">target</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">;</span> <span class="Identifier">anchorStyle</span><span class="Other">:</span> <span class="Identifier">AnchorStyle</span> <span class="Other">=</span> <span class="Identifier">asTidy</span><span class="Other">;</span>
+<dt id="dumpDom"><a name="dumpDom,YamlDocument,Stream,AnchorStyle,PresentationOptions"></a><pre><span class="Keyword">proc</span> <span class="Identifier">dumpDom</span><span class="Other">(</span><span class="Identifier">doc</span><span class="Other">:</span> <span class="Identifier">YamlDocument</span><span class="Other">;</span> <span class="Identifier">target</span><span class="Other">:</span> <span class="Identifier">Stream</span><span class="Other">;</span> <span class="Identifier">anchorStyle</span><span class="Other">:</span> <span class="Identifier">AnchorStyle</span> <span class="Other">=</span> <span class="Identifier">asTidy</span><span class="Other">;</span>
             <span class="Identifier">options</span><span class="Other">:</span> <span class="Identifier">PresentationOptions</span> <span class="Other">=</span> <span class="Identifier">defaultPresentationOptions</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span>
     <span class="Identifier">YamlPresenterJsonError</span><span class="Other">,</span> <span class="Identifier">YamlPresenterOutputError</span><span class="Other">,</span> <span class="Identifier">YamlStreamError</span><span class="Other">]</span><span class="Other">,</span>
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">WriteIOEffect</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 Dump a YamlDocument as YAML character stream.
 &nbsp;&nbsp;<a
-href="/yaml/dom.nim#L185"
+href="/yaml/dom.nim#L298"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="[]"><a name="[],YamlNode not nil,int"></a><pre><span class="Keyword">proc</span> <span class="Identifier">`[]`</span><span class="Other">(</span><span class="Identifier">node</span><span class="Other">:</span> <span class="Identifier">YamlNode</span><span class="Other">;</span> <span class="Identifier">i</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlNode</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Get the node at index <em>i</em> from a sequence. <em>node</em> must be a <em>ySequence</em>.
+&nbsp;&nbsp;<a
+href="/yaml/dom.nim#L310"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="[]="><a name="[]=,YamlNode not nil,int,YamlNode not nil"></a><pre><span class="Keyword">proc</span> <span class="Identifier">`[]=`</span><span class="Other">(</span><span class="Identifier">node</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlNode</span><span class="Other">;</span> <span class="Identifier">i</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">val</span><span class="Other">:</span> <span class="Identifier">YamlNode</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Set the node at index <em>i</em> of a sequence. <em>node</em> must be a <em>ySequence</em>.
+&nbsp;&nbsp;<a
+href="/yaml/dom.nim#L315"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="[]"><a name="[],YamlNode not nil,YamlNode not nil"></a><pre><span class="Keyword">proc</span> <span class="Identifier">`[]`</span><span class="Other">(</span><span class="Identifier">node</span><span class="Other">:</span> <span class="Identifier">YamlNode</span><span class="Other">;</span> <span class="Identifier">key</span><span class="Other">:</span> <span class="Identifier">YamlNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlNode</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Get the value for a key in a mapping. <em>node</em> must be a <em>yMapping</em>.
+&nbsp;&nbsp;<a
+href="/yaml/dom.nim#L320"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="[]="><a name="[]=,YamlNode not nil,YamlNode not nil,YamlNode not nil"></a><pre><span class="Keyword">proc</span> <span class="Identifier">`[]=`</span><span class="Other">(</span><span class="Identifier">node</span><span class="Other">:</span> <span class="Identifier">YamlNode</span><span class="Other">;</span> <span class="Identifier">key</span><span class="Other">:</span> <span class="Identifier">YamlNode</span><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">YamlNode</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Set the value for a key in a mapping. <em>node</em> must be a <em>yMapping</em>.
+&nbsp;&nbsp;<a
+href="/yaml/dom.nim#L325"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="[]"><a name="[],YamlNode not nil,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">`[]`</span><span class="Other">(</span><span class="Identifier">node</span><span class="Other">:</span> <span class="Identifier">YamlNode</span><span class="Other">;</span> <span class="Identifier">key</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlNode</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Get the value for a string key in a mapping. <em>node</em> must be a <em>yMapping</em>. This searches for a scalar key with content <em>key</em> and either no explicit tag or the explicit tag <tt class="docutils literal"><span class="pre">!!str</span></tt>.
+&nbsp;&nbsp;<a
+href="/yaml/dom.nim#L329"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="len"><a name="len,YamlNode not nil"></a><pre><span class="Keyword">proc</span> <span class="Identifier">len</span><span class="Other">(</span><span class="Identifier">node</span><span class="Other">:</span> <span class="Identifier">YamlNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">int</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+If <em>node</em> is a <em>yMapping</em>, return the number of key-value pairs. If <em>node</em> is a <em>ySequence</em>, return the number of elements. Else, return <tt class="docutils literal"><span class="pre">0</span></tt>
+&nbsp;&nbsp;<a
+href="/yaml/dom.nim#L345"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+
+</dl></section>
+<section id="14">
+<h1><a class="toc-backref" href="#14">Iterators</a></h1>
+<dl class="item">
+<dt id="items"><a name="items.i,YamlNode not nil"></a><pre><span class="Keyword">iterator</span> <span class="Identifier">items</span><span class="Other">(</span><span class="Identifier">node</span><span class="Other">:</span> <span class="Identifier">YamlNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlNode</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Iterates over all items of a sequence. <em>node</em> must be a <em>ySequence</em>.
+&nbsp;&nbsp;<a
+href="/yaml/dom.nim#L353"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="mitems"><a name="mitems.i,YamlNode not nil"></a><pre><span class="Keyword">iterator</span> <span class="Identifier">mitems</span><span class="Other">(</span><span class="Identifier">node</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlNode</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Iterates over all items of a sequence. <em>node</em> must be a <em>ySequence</em>. Values can be modified.
+&nbsp;&nbsp;<a
+href="/yaml/dom.nim#L358"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="pairs"><a name="pairs.i,YamlNode not nil"></a><pre><span class="Keyword">iterator</span> <span class="Identifier">pairs</span><span class="Other">(</span><span class="Identifier">node</span><span class="Other">:</span> <span class="Identifier">YamlNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">key</span><span class="Other">,</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">YamlNode</span><span class="Other">]</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Iterates over all key-value pairs of a mapping. <em>node</em> must be a <em>yMapping</em>.
+&nbsp;&nbsp;<a
+href="/yaml/dom.nim#L364"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="mpairs"><a name="mpairs.i,YamlNode not nil"></a><pre><span class="Keyword">iterator</span> <span class="Identifier">mpairs</span><span class="Other">(</span><span class="Identifier">node</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlNode</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">tuple</span><span class="Other">[</span><span class="Identifier">key</span><span class="Other">:</span> <span class="Identifier">YamlNode</span><span class="Other">,</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlNode</span><span class="Other">]</span> <span class="Other pragmabegin">{.</span><div class="pragma">
+    <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">AssertionError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Iterates over all key-value pairs of a mapping. <em>node</em> must be a <em>yMapping</em>. Values can be modified.
+&nbsp;&nbsp;<a
+href="/yaml/dom.nim#L370"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 
@@ -241,7 +371,7 @@ class="link-seesrc" target="_blank">Source</a>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2016-11-08 21:32:29 UTC</small>
+        <small>Made with Nim. Generated: 2017-09-20 19:08:35 UTC</small>
       </div>
     </div>
   </div>

@@ -87,8 +87,23 @@
       scalarAnchor*: AnchorId
       scalarTag*: TagId
       scalarContent*: string
+      when defined(yamlScalarRepInd):
+          scalarRep*: ScalarRepresentationIndicator
 
-  of yamlEndMap, yamlEndSeq, yamlStartDoc, yamlEndDoc:
+    
+  of yamlStartDoc:
+      when defined(yamlScalarRepInd):
+          explicitDirectivesEnd*: bool
+
+      else:
+        nil
+    
+  of yamlEndDoc:
+      when defined(yamlScalarRepInd):
+          explicitDocumentEnd*: bool
+
+    
+  of yamlEndMap, yamlEndSeq:
     nil
   of yamlAlias:
       aliasTarget*: AnchorId"><wbr />Yaml<wbr />Stream<wbr />Event</a></li>
@@ -192,7 +207,7 @@
   <section id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a class="reference external" href="hashes.html">hashes</a>, <a class="reference external" href="../private/internal.html">../private/internal</a>, <a class="reference external" href="taglib.html">taglib</a>
+<a class="reference external" href="hashes.html">hashes</a>, <a class="reference external" href="private/internal.html">private/internal</a>, <a class="reference external" href="taglib.html">taglib</a>
 </dl></section>
 <section id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
@@ -202,7 +217,7 @@
 
 An <tt class="docutils literal"><span class="pre">AnchorId</span></tt> identifies an anchor in the current document. It becomes invalid as soon as the current document scope is invalidated (for example, because the parser yielded a <tt class="docutils literal"><span class="pre">yamlEndDocument</span></tt> event). <tt class="docutils literal"><span class="pre">AnchorId</span></tt> s exists because of efficiency, much like <tt class="docutils literal"><span class="pre">TagId</span></tt> s. The actual anchor name is a presentation detail and cannot be queried by the user.
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L19"
+href="/yaml/stream.nim#L23"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="YamlStreamEventKind"><a name="YamlStreamEventKind"></a><pre><span class="Identifier">YamlStreamEventKind</span> <span class="Other">=</span> <span class="Keyword">enum</span>
@@ -211,7 +226,7 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 Kinds of YAML events that may occur in an <tt class="docutils literal"><span class="pre">YamlStream</span></tt>. Event kinds are discussed in <a class="reference external" href="#YamlStreamEvent">YamlStreamEvent</a>.
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L27"
+href="/yaml/stream.nim#L31"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="YamlStreamEvent"><a name="YamlStreamEvent"></a><pre><span class="Identifier">YamlStreamEvent</span> <span class="Other">=</span> <span class="Keyword">object</span>
@@ -228,8 +243,23 @@ class="link-seesrc" target="_blank">Source</a>
       <span class="Identifier">scalarAnchor</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">AnchorId</span>
       <span class="Identifier">scalarTag</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">TagId</span>
       <span class="Identifier">scalarContent</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">string</span>
+      <span class="Keyword">when</span> <span class="Identifier">defined</span><span class="Other">(</span><span class="Identifier">yamlScalarRepInd</span><span class="Other">)</span><span class="Other">:</span>
+          <span class="Identifier">scalarRep</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">ScalarRepresentationIndicator</span>
 
-  <span class="Keyword">of</span> <span class="Identifier">yamlEndMap</span><span class="Other">,</span> <span class="Identifier">yamlEndSeq</span><span class="Other">,</span> <span class="Identifier">yamlStartDoc</span><span class="Other">,</span> <span class="Identifier">yamlEndDoc</span><span class="Other">:</span>
+    
+  <span class="Keyword">of</span> <span class="Identifier">yamlStartDoc</span><span class="Other">:</span>
+      <span class="Keyword">when</span> <span class="Identifier">defined</span><span class="Other">(</span><span class="Identifier">yamlScalarRepInd</span><span class="Other">)</span><span class="Other">:</span>
+          <span class="Identifier">explicitDirectivesEnd</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">bool</span>
+
+      <span class="Keyword">else</span><span class="Other">:</span>
+        <span class="Keyword">nil</span>
+    
+  <span class="Keyword">of</span> <span class="Identifier">yamlEndDoc</span><span class="Other">:</span>
+      <span class="Keyword">when</span> <span class="Identifier">defined</span><span class="Other">(</span><span class="Identifier">yamlScalarRepInd</span><span class="Other">)</span><span class="Other">:</span>
+          <span class="Identifier">explicitDocumentEnd</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">bool</span>
+
+    
+  <span class="Keyword">of</span> <span class="Identifier">yamlEndMap</span><span class="Other">,</span> <span class="Identifier">yamlEndSeq</span><span class="Other">:</span>
     <span class="Keyword">nil</span>
   <span class="Keyword">of</span> <span class="Identifier">yamlAlias</span><span class="Other">:</span>
       <span class="Identifier">aliasTarget</span><span class="Operator">*</span><span class="Other">:</span> <span class="Identifier">AnchorId</span>
@@ -240,7 +270,7 @@ class="link-seesrc" target="_blank">Source</a>
 <p>A non-existing tag in the YAML character stream will be resolved to the non-specific tags <tt class="docutils literal"><span class="pre">?</span></tt> or <tt class="docutils literal"><span class="pre">!</span></tt> according to the YAML specification. These are by convention mapped to the <tt class="docutils literal"><span class="pre">TagId</span></tt> s <tt class="docutils literal"><span class="pre">yTagQuestionMark</span></tt> and <tt class="docutils literal"><span class="pre">yTagExclamationMark</span></tt> respectively. Mapping is done by a <a class="reference external" href="#TagLibrary">TagLibrary</a>.</p>
 
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L33"
+href="/yaml/stream.nim#L37"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="YamlStream"><a name="YamlStream"></a><pre><span class="Identifier">YamlStream</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">RootObj</span>
@@ -257,7 +287,7 @@ A <tt class="docutils literal"><span class="pre">YamlStream</span></tt> is an it
 <p>The creator of a <tt class="docutils literal"><span class="pre">YamlStream</span></tt> is responsible for it being well-formed. A user of the stream may assume that it is well-formed and is not required to check for it. The procs in this module will always yield a well-formed <tt class="docutils literal"><span class="pre">YamlStream</span></tt> and expect it to be well-formed if they take it as input parameter.</p>
 
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L59"
+href="/yaml/stream.nim#L72"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="YamlStreamError"><a name="YamlStreamError"></a><pre><span class="Identifier">YamlStreamError</span> <span class="Other">=</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">Exception</span>
@@ -265,7 +295,7 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 Exception that may be raised by a <tt class="docutils literal"><span class="pre">YamlStream</span></tt> when the underlying backend raises an exception. The error that has occurred is available from <tt class="docutils literal"><span class="pre">parent</span></tt>.
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L80"
+href="/yaml/stream.nim#L93"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="BufferYamlStream"><a name="BufferYamlStream"></a><pre><span class="Identifier">BufferYamlStream</span> <span class="Other">=</span> <span class="Keyword">ref</span> <span class="Keyword">object</span> <span class="Keyword">of</span> <span class="Identifier">YamlStream</span>
@@ -275,7 +305,7 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L126"
+href="/yaml/stream.nim#L138"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 
@@ -288,7 +318,7 @@ class="link-seesrc" target="_blank">Source</a>
 
 yielded when no anchor was defined for a YAML node
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L86"
+href="/yaml/stream.nim#L99"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 
@@ -300,21 +330,21 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L89"
+href="/yaml/stream.nim#L102"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="$"><a name="$,AnchorId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">`$`</span><span class="Other">(</span><span class="Identifier">id</span><span class="Other">:</span> <span class="Identifier">AnchorId</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">borrow</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L90"
+href="/yaml/stream.nim#L103"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="hash"><a name="hash,AnchorId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">hash</span><span class="Other">(</span><span class="Identifier">id</span><span class="Other">:</span> <span class="Identifier">AnchorId</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">Hash</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">borrow</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L91"
+href="/yaml/stream.nim#L104"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="basicInit"><a name="basicInit,YamlStream,proc(YamlStream,int,int,string)"></a><pre><span class="Keyword">proc</span> <span class="Identifier">basicInit</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">lastTokenContextImpl</span><span class="Other">:</span> <span class="Keyword">proc</span> <span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">;</span>
@@ -323,7 +353,7 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 initialize basic values of the YamlStream. Call this in your constructor if you subclass YamlStream.
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L98"
+href="/yaml/stream.nim#L111"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="initYamlStream"><a name="initYamlStream,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">initYamlStream</span><span class="Other">(</span><span class="Identifier">backend</span><span class="Other">:</span> <span class="Keyword">iterator</span> <span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
@@ -331,21 +361,21 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 Creates a new <tt class="docutils literal"><span class="pre">YamlStream</span></tt> that uses the given iterator as backend.
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L112"
+href="/yaml/stream.nim#L124"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="newBufferYamlStream"><a name="newBufferYamlStream,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">newBufferYamlStream</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">BufferYamlStream</span> <span class="Keyword">not</span> <span class="Keyword">nil</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L130"
+href="/yaml/stream.nim#L142"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="put"><a name="put,BufferYamlStream,YamlStreamEvent"></a><pre><span class="Keyword">proc</span> <span class="Identifier">put</span><span class="Other">(</span><span class="Identifier">bys</span><span class="Other">:</span> <span class="Identifier">BufferYamlStream</span><span class="Other">;</span> <span class="Identifier">e</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L145"
+href="/yaml/stream.nim#L157"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="next"><a name="next,YamlStream"></a><pre><span class="Keyword">proc</span> <span class="Identifier">next</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlStreamError</span><span class="Other">]</span><span class="Other">,</span>
@@ -353,7 +383,7 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 Get the next item of the stream. Requires <tt class="docutils literal"><span class="pre">finished(s) == true</span></tt>. If the backend yields an exception, that exception will be encapsulated into a <tt class="docutils literal"><span class="pre">YamlStreamError</span></tt>, which will be raised.
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L148"
+href="/yaml/stream.nim#L160"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="peek"><a name="peek,YamlStream"></a><pre><span class="Keyword">proc</span> <span class="Identifier">peek</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlStreamError</span><span class="Other">]</span><span class="Other">,</span>
@@ -361,21 +391,21 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 Get the next item of the stream without advancing the stream. Requires <tt class="docutils literal"><span class="pre">finished(s) == true</span></tt>. Handles exceptions of the backend like <tt class="docutils literal"><span class="pre">next()</span></tt>.
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L173"
+href="/yaml/stream.nim#L185"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="peek="><a name="peek=,YamlStream,YamlStreamEvent"></a><pre><span class="Keyword">proc</span> <span class="Identifier">peek=</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">value</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 Set the next item of the stream. Will replace a previously peeked item, if one exists.
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L182"
+href="/yaml/stream.nim#L194"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="finished"><a name="finished,YamlStream"></a><pre><span class="Keyword">proc</span> <span class="Identifier">finished</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlStreamError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 <tt class="docutils literal"><span class="pre">true</span></tt> if no more items are available in the stream. Handles exceptions of the backend like <tt class="docutils literal"><span class="pre">next()</span></tt>.
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L188"
+href="/yaml/stream.nim#L200"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="getLastTokenContext"><a name="getLastTokenContext,YamlStream,int,int,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">getLastTokenContext</span><span class="Other">(</span><span class="Identifier">s</span><span class="Other">:</span> <span class="Identifier">YamlStream</span><span class="Other">;</span> <span class="Identifier">line</span><span class="Other">,</span> <span class="Identifier">column</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">lineContent</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other pragmabegin">{.</span><div class="pragma">
@@ -383,42 +413,42 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 <tt class="docutils literal"><span class="pre">true</span></tt> if source context information is available about the last returned token. If <tt class="docutils literal"><span class="pre">true</span></tt>, line, column and lineContent are set to position and line content where the last token has been read from.
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L210"
+href="/yaml/stream.nim#L222"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="=="><a name="==,YamlStreamEvent,YamlStreamEvent"></a><pre><span class="Keyword">proc</span> <span class="Identifier">`==`</span><span class="Other">(</span><span class="Identifier">left</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span><span class="Other">;</span> <span class="Identifier">right</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 compares all existing fields of the given items
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L228"
+href="/yaml/stream.nim#L240"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="$"><a name="$,YamlStreamEvent"></a><pre><span class="Keyword">proc</span> <span class="Identifier">`$`</span><span class="Other">(</span><span class="Identifier">event</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
-outputs a human-readable string describing the given event
+outputs a human-readable string describing the given event. This string is compatible to the format used in the yaml test suite.
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L243"
+href="/yaml/stream.nim#L266"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="tag"><a name="tag,YamlStreamEvent"></a><pre><span class="Keyword">proc</span> <span class="Identifier">tag</span><span class="Other">(</span><span class="Identifier">event</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">FieldError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 returns the tag of the given event
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L263"
+href="/yaml/stream.nim#L300"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="startDocEvent"><a name="startDocEvent,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">startDocEvent</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 creates a new event that marks the start of a YAML document
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L271"
+href="/yaml/stream.nim#L320"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="endDocEvent"><a name="endDocEvent,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">endDocEvent</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 creates a new event that marks the end of a YAML document
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L275"
+href="/yaml/stream.nim#L324"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="startMapEvent"><a name="startMapEvent,TagId,AnchorId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">startMapEvent</span><span class="Other">(</span><span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other">=</span> <span class="Identifier">yTagQuestionMark</span><span class="Other">;</span> <span class="Identifier">anchor</span><span class="Other">:</span> <span class="Identifier">AnchorId</span> <span class="Other">=</span> <span class="Identifier">yAnchorNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span> <span class="Other pragmabegin">{.</span><div class="pragma">
@@ -426,14 +456,14 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 creates a new event that marks the start of a YAML mapping
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L279"
+href="/yaml/stream.nim#L328"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="endMapEvent"><a name="endMapEvent,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">endMapEvent</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 creates a new event that marks the end of a YAML mapping
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L284"
+href="/yaml/stream.nim#L333"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="startSeqEvent"><a name="startSeqEvent,TagId,AnchorId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">startSeqEvent</span><span class="Other">(</span><span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other">=</span> <span class="Identifier">yTagQuestionMark</span><span class="Other">;</span> <span class="Identifier">anchor</span><span class="Other">:</span> <span class="Identifier">AnchorId</span> <span class="Other">=</span> <span class="Identifier">yAnchorNone</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span> <span class="Other pragmabegin">{.</span><div class="pragma">
@@ -441,14 +471,14 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 creates a new event that marks the beginning of a YAML sequence
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L288"
+href="/yaml/stream.nim#L337"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="endSeqEvent"><a name="endSeqEvent,"></a><pre><span class="Keyword">proc</span> <span class="Identifier">endSeqEvent</span><span class="Other">(</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 creates a new event that marks the end of a YAML sequence
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L293"
+href="/yaml/stream.nim#L342"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="scalarEvent"><a name="scalarEvent,string,TagId,AnchorId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">scalarEvent</span><span class="Other">(</span><span class="Identifier">content</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">=</span> <span class="StringLit">&quot;&quot;</span><span class="Other">;</span> <span class="Identifier">tag</span><span class="Other">:</span> <span class="Identifier">TagId</span> <span class="Other">=</span> <span class="Identifier">yTagQuestionMark</span><span class="Other">;</span>
@@ -457,14 +487,14 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 creates a new event that represents a YAML scalar
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L297"
+href="/yaml/stream.nim#L356"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="aliasEvent"><a name="aliasEvent,AnchorId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">aliasEvent</span><span class="Other">(</span><span class="Identifier">anchor</span><span class="Other">:</span> <span class="Identifier">AnchorId</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">inline</span><span class="Other">,</span> <span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 creates a new event that represents a YAML alias
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L303"
+href="/yaml/stream.nim#L362"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 
@@ -477,14 +507,14 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 Iterate over all items of the stream. You may not use <tt class="docutils literal"><span class="pre">peek()</span></tt> on the stream while iterating.
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L217"
+href="/yaml/stream.nim#L229"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="mitems"><a name="mitems.i,BufferYamlStream"></a><pre><span class="Keyword">iterator</span> <span class="Identifier">mitems</span><span class="Other">(</span><span class="Identifier">bys</span><span class="Other">:</span> <span class="Identifier">BufferYamlStream</span><span class="Other">)</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">YamlStreamEvent</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 Iterate over all items of the stream. You may not use <tt class="docutils literal"><span class="pre">peek()</span></tt> on the stream while iterating.
 &nbsp;&nbsp;<a
-href="/yaml/stream.nim#L223"
+href="/yaml/stream.nim#L235"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 
@@ -497,7 +527,7 @@ class="link-seesrc" target="_blank">Source</a>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2016-11-08 21:32:31 UTC</small>
+        <small>Made with Nim. Generated: 2017-09-20 19:08:37 UTC</small>
       </div>
     </div>
   </div>

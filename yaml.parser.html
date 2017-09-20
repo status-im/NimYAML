@@ -96,6 +96,10 @@
     title="parse(p: YamlParser; s: Stream): YamlStream"><wbr />parse</a></li>
   <li><a class="reference" href="#parse,YamlParser,string"
     title="parse(p: YamlParser; str: string): YamlStream"><wbr />parse</a></li>
+  <li><a class="reference" href="#anchorName,YamlParser,AnchorId"
+    title="anchorName(p: YamlParser; anchor: AnchorId): string"><wbr />anchor<wbr />Name</a></li>
+  <li><a class="reference" href="#display,YamlParser,YamlStreamEvent"
+    title="display(p: YamlParser; event: YamlStreamEvent): string"><wbr />display</a></li>
 
   </ul>
 </li>
@@ -110,7 +114,7 @@
   <section id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a class="reference external" href="tables.html">tables</a>, <a class="reference external" href="strutils.html">strutils</a>, <a class="reference external" href="macros.html">macros</a>, <a class="reference external" href="streams.html">streams</a>, <a class="reference external" href="taglib.html">taglib</a>, <a class="reference external" href="stream.html">stream</a>, <a class="reference external" href="../private/lex.html">../private/lex</a>, <a class="reference external" href="../private/internal.html">../private/internal</a>
+<a class="reference external" href="tables.html">tables</a>, <a class="reference external" href="strutils.html">strutils</a>, <a class="reference external" href="macros.html">macros</a>, <a class="reference external" href="streams.html">streams</a>, <a class="reference external" href="taglib.html">taglib</a>, <a class="reference external" href="stream.html">stream</a>, <a class="reference external" href="private/lex.html">private/lex</a>, <a class="reference external" href="private/internal.html">private/internal</a>
 </dl></section>
 <section id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
@@ -187,7 +191,7 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 Parse the given stream as YAML character stream.
 &nbsp;&nbsp;<a
-href="/yaml/parser.nim#L1034"
+href="/yaml/parser.nim#L1069"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 <dt id="parse"><a name="parse,YamlParser,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">parse</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <span class="Identifier">YamlParser</span><span class="Other">;</span> <span class="Identifier">str</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">YamlStream</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">YamlParserError</span><span class="Other">]</span><span class="Other">,</span>
@@ -195,7 +199,24 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 Parse the given string as YAML character stream.
 &nbsp;&nbsp;<a
-href="/yaml/parser.nim#L1050"
+href="/yaml/parser.nim#L1085"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="anchorName"><a name="anchorName,YamlParser,AnchorId"></a><pre><span class="Keyword">proc</span> <span class="Identifier">anchorName</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <span class="Identifier">YamlParser</span><span class="Other">;</span> <span class="Identifier">anchor</span><span class="Other">:</span> <span class="Identifier">AnchorId</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Retrieve the textual representation of the given anchor as it occurred in the input (without the leading <cite>&amp;</cite>). Returns the empty string for unknown anchors.
+&nbsp;&nbsp;<a
+href="/yaml/parser.nim#L1093"
+class="link-seesrc" target="_blank">Source</a>
+</dd>
+<dt id="display"><a name="display,YamlParser,YamlStreamEvent"></a><pre><span class="Keyword">proc</span> <span class="Identifier">display</span><span class="Other">(</span><span class="Identifier">p</span><span class="Other">:</span> <span class="Identifier">YamlParser</span><span class="Other">;</span> <span class="Identifier">event</span><span class="Other">:</span> <span class="Identifier">YamlStreamEvent</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+<p>Generate a representation of the given event with proper visualization of anchor and tag (if any). The generated representation is conformant to the format used in the yaml test suite.</p>
+<p>This proc is an informed version of <tt class="docutils literal"><span class="pre">$</span></tt> on <tt class="docutils literal"><span class="pre">YamlStreamEvent</span></tt> which can properly display the anchor and tag name as it occurs in the input. However, it shall only be used while using the streaming API because after finishing the parsing of a document, the parser drops all information about anchor and tag names.</p>
+
+&nbsp;&nbsp;<a
+href="/yaml/parser.nim#L1113"
 class="link-seesrc" target="_blank">Source</a>
 </dd>
 
@@ -208,7 +229,7 @@ class="link-seesrc" target="_blank">Source</a>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2016-11-08 21:32:29 UTC</small>
+        <small>Made with Nim. Generated: 2017-09-20 19:08:35 UTC</small>
       </div>
     </div>
   </div>
