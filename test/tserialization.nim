@@ -5,7 +5,7 @@
 #    distribution, for details about the copyright.
 
 import "../yaml"
-import unittest, strutils, tables, times, math
+import unittest, strutils, tables, times, math, options
 
 type
   MyTuple = tuple
@@ -38,38 +38,28 @@ type
     of akDog: barkometer: int
 
   DumbEnum = enum
-    deA, deB, deC, deD
+    deA, deB, deC
 
   NonVariantWithTransient = object
-    a, b, c, d: string
+    a {.transient.}, b, c {.transient.}, d: string
 
   VariantWithTransient = object
-    gStorable, gTemporary: string
+    gStorable: string
+    gTemporary {.transient.}: string
     case kind: DumbEnum
-    of deA, deB:
-      cStorable, cTemporary: string
-    of deC:
+    of deA:
+      cStorable: string
+      cTemporary {.transient.}: string
+    of deB:
       alwaysThere: int
-    of deD:
-      neverThere: int
+    of deC:
+      neverThere {.transient.}: int
 
   WithDefault = object
-    a, b, c, d: string
+    a, b {.defaultVal: "b".}, c, d {.defaultVal: "d".}: string
 
-  WithIgnoredField = object
+  WithIgnoredField {.ignore: ["z"].} = object
     x, y: int
-
-markAsTransient(NonVariantWithTransient, a)
-markAsTransient(NonVariantWithTransient, c)
-
-markAsTransient(VariantWithTransient, gTemporary)
-markAsTransient(VariantWithTransient, cTemporary)
-markAsTransient(VariantWithTransient, neverThere)
-
-setDefaultValue(WithDefault, b, "b")
-setDefaultValue(WithDefault, d, "d")
-
-ignoreInputKey(WithIgnoredField, "z")
 
 proc `$`(v: BetterInt): string {.borrow.}
 proc `==`(left, right: BetterInt): bool {.borrow.}
@@ -81,7 +71,7 @@ setTagUri(BetterInt, "!test:BetterInt")
 const yamlDirs = "%YAML 1.2\n%TAG !n! tag:nimyaml.org,2016:\n--- "
 
 proc representObject*(value: BetterInt, ts: TagStyle = tsNone,
-    c: SerializationContext, tag: TagId) {.raises: [].} =
+    c: SerializationContext, tag: Tag) {.raises: [].} =
   var
     val = $value
     i = val.len - 3
@@ -129,8 +119,8 @@ template expectConstructionError(li, co: int, message: string, body: typed) =
     fail()
   except YamlConstructionError:
     let e = (ref YamlConstructionError)(getCurrentException())
-    doAssert li == e.line, "Expected error line " & $li & ", was " & $e.line
-    doAssert co == e.column, "Expected error column " & $co & ", was " & $e.column
+    doAssert li == e.mark.line, "Expected error line " & $li & ", was " & $e.mark.line
+    doAssert co == e.mark.column, "Expected error column " & $co & ", was " & $e.mark.column
     doAssert message == e.msg, "Expected error message \n" & escape(message) &
         ", got \n" & escape(e.msg)
 
@@ -270,6 +260,19 @@ suite "Serialization":
     var output = dump(input, tsNone, asTidy, blockOnly)
     assertStringEqual yamlDirs & "\n- 23\n- 42\n- 47", output
 
+  test "Load Option":
+    let input = "- Some\n- !!null ~"
+    var result: array[0..1, Option[string]]
+    load(input, result)
+    assert result[0].isSome
+    assert result[0].get() == "Some"
+    assert not result[1].isSome
+
+  test "Dump Option":
+    let input = [none(int32), some(42'i32), none(int32)]
+    let output = dump(input, tsNone, asTidy, blockOnly)
+    assertStringEqual yamlDirs & "\n- !!null ~\n- 42\n- !!null ~", output
+
   test "Load Table[int, string]":
     let input = "23: dreiundzwanzig\n42: zweiundvierzig"
     var result: Table[int32, string]
@@ -304,21 +307,21 @@ suite "Serialization":
 
   test "Dump OrderedTable[tuple[int32, int32], string]":
     var input = initOrderedTable[tuple[a, b: int32], string]()
-    input.add((a: 23'i32, b: 42'i32), "dreiundzwanzigzweiundvierzig")
-    input.add((a: 13'i32, b: 47'i32), "dreizehnsiebenundvierzig")
+    input[(a: 23'i32, b: 42'i32)] = "dreiundzwanzigzweiundvierzig"
+    input[(a: 13'i32, b: 47'i32)] = "dreizehnsiebenundvierzig"
     var output = dump(input, tsRootOnly, asTidy, blockOnly)
     assertStringEqual(yamlDirs &
-        """!n!tables:OrderedTable(tag:nimyaml.org;2016:tuple(tag:nimyaml.org;2016:system:int32;tag:nimyaml.org;2016:system:int32);tag:yaml.org;2002:str) 
-- 
-  ? 
-    a: 23
-    b: 42
-  : dreiundzwanzigzweiundvierzig
-- 
-  ? 
-    a: 13
-    b: 47
-  : dreizehnsiebenundvierzig""", output)
+        "!n!tables:OrderedTable(tag:nimyaml.org;2016:tuple(tag:nimyaml.org;2016:system:int32;tag:nimyaml.org;2016:system:int32);tag:yaml.org;2002:str) \n" &
+        "- \n" &
+        "  ? \n" &
+        "    a: 23\n" &
+        "    b: 42\n" &
+        "  : dreiundzwanzigzweiundvierzig\n" &
+        "- \n" &
+        "  ? \n" &
+        "    a: 13\n" &
+        "    b: 47\n" &
+        "  : dreizehnsiebenundvierzig", output)
 
   test "Load Sequences in Sequence":
     let input = " - [1, 2, 3]\n - [4, 5]\n - [6]"
@@ -371,7 +374,7 @@ suite "Serialization":
   test "Load Tuple - missing field":
     let input = "str: value\nb: true"
     var result: MyTuple
-    expectConstructionError(2, 8, "While constructing MyTuple: Missing field: \"i\""):
+    expectConstructionError(1, 1, "While constructing MyTuple: Missing field: \"i\""):
       load(input, result)
 
   test "Load Tuple - duplicate field":
@@ -418,7 +421,7 @@ suite "Serialization":
   test "Load custom object - missing field":
     let input = "surname: Pan\nage: 12\n  "
     var result: Person
-    expectConstructionError(3, 3, "While constructing Person: Missing field: \"firstnamechar\""):
+    expectConstructionError(1, 1, "While constructing Person: Missing field: \"firstnamechar\""):
       load(input, result)
 
   test "Load custom object - duplicate field":
@@ -474,27 +477,26 @@ suite "Serialization":
     let input = @[Animal(name: "Bastet", kind: akCat, purringIntensity: 7),
                   Animal(name: "Anubis", kind: akDog, barkometer: 13)]
     var output = dump(input, tsNone, asTidy, blockOnly)
-    assertStringEqual yamlDirs & """
-
-- 
-  - 
-    name: Bastet
-  - 
-    kind: akCat
-  - 
-    purringIntensity: 7
-- 
-  - 
-    name: Anubis
-  - 
-    kind: akDog
-  - 
-    barkometer: 13""", output
+    assertStringEqual yamlDirs & "\n" &
+        "- \n" &
+        "  - \n" &
+        "    name: Bastet\n" &
+        "  - \n" &
+        "    kind: akCat\n" &
+        "  - \n" &
+        "    purringIntensity: 7\n" &
+        "- \n" &
+        "  - \n" &
+        "    name: Anubis\n" &
+        "  - \n" &
+        "    kind: akDog\n" &
+        "  - \n" &
+        "    barkometer: 13", output
 
   test "Load custom variant object - missing field":
     let input = "[{name: Bastet}, {kind: akCat}]"
     var result: Animal
-    expectConstructionError(1, 32, "While constructing Animal: Missing field: \"purringIntensity\""):
+    expectConstructionError(1, 1, "While constructing Animal: Missing field: \"purringIntensity\""):
       load(input, result)
 
   test "Load non-variant object with transient fields":
@@ -509,7 +511,7 @@ suite "Serialization":
   test "Load non-variant object with transient fields - unknown field":
     let input = "{b: b, c: c, d: d}"
     var result: NonVariantWithTransient
-    expectConstructionError(1, 9, "While constructing NonVariantWithTransient: Field \"c\" is transient and may not occur in input"):
+    expectConstructionError(1, 8, "While constructing NonVariantWithTransient: Field \"c\" is transient and may not occur in input"):
       load(input, result)
 
   test "Dump non-variant object with transient fields":
@@ -518,42 +520,41 @@ suite "Serialization":
     assertStringEqual yamlDirs & "\nb: b\nd: d", output
 
   test "Load variant object with transient fields":
-    let input = "[[gStorable: gs, kind: deB, cStorable: cs], [gStorable: a, kind: deD]]"
+    let input = "[[gStorable: gs, kind: deA, cStorable: cs], [gStorable: a, kind: deC]]"
     var result: seq[VariantWithTransient]
     load(input, result)
     assert result.len == 2
-    assert result[0].kind == deB
+    assert result[0].kind == deA
     assert result[0].gStorable == "gs"
     assert result[0].cStorable == "cs"
-    assert result[1].kind == deD
+    assert result[1].kind == deC
     assert result[1].gStorable == "a"
 
-  test "Load variant object with transient fields":
-    let input = "[gStorable: gc, kind: deD, neverThere: foo]"
+  test "Load variant object with transient fields, error":
+    let input = "[gStorable: gc, kind: deC, neverThere: foo]"
     var result: VariantWithTransient
-    expectConstructionError(1, 38, "While constructing VariantWithTransient: Field \"neverThere\" is transient and may not occur in input"):
+    expectConstructionError(1, 28, "While constructing VariantWithTransient: Field \"neverThere\" is transient and may not occur in input"):
       load(input, result)
 
   test "Dump variant object with transient fields":
-    let input = @[VariantWithTransient(kind: deB, gStorable: "gs",
+    let input = @[VariantWithTransient(kind: deA, gStorable: "gs",
         gTemporary: "gt", cStorable: "cs", cTemporary: "ct"),
-        VariantWithTransient(kind: deD, gStorable: "a", gTemporary: "b",
+        VariantWithTransient(kind: deC, gStorable: "a", gTemporary: "b",
         neverThere: 42)]
     let output = dump(input, tsNone, asTidy, blockOnly)
-    assertStringEqual yamlDirs & """
-
-- 
-  - 
-    gStorable: gs
-  - 
-    kind: deB
-  - 
-    cStorable: cs
-- 
-  - 
-    gStorable: a
-  - 
-    kind: deD""", output
+    assertStringEqual yamlDirs & "\n" &
+        "- \n" &
+        "  - \n" &
+        "    gStorable: gs\n" &
+        "  - \n" &
+        "    kind: deA\n" &
+        "  - \n" &
+        "    cStorable: cs\n" &
+        "- \n" &
+        "  - \n" &
+        "    gStorable: a\n" &
+        "  - \n" &
+        "    kind: deC", output
 
   test "Load object with ignored key":
     let input = "[{x: 1, y: 2}, {x: 3, z: 4, y: 5}, {z: [1, 2, 3], x: 4, y: 5}]"
@@ -570,7 +571,7 @@ suite "Serialization":
   test "Load object with ignored key - unknown field":
     let input = "{x: 1, y: 2, zz: 3}"
     var result: WithIgnoredField
-    expectConstructionError(1, 16, "While constructing WithIgnoredField: Unknown field: \"zz\""):
+    expectConstructionError(1, 14, "While constructing WithIgnoredField: Unknown field: \"zz\""):
       load(input, result)
 
   when not defined(JS):
@@ -583,21 +584,21 @@ suite "Serialization":
       b.next = c
       c.next = a
       var output = dump(a, tsRootOnly, asTidy, blockOnly)
-      assertStringEqual yamlDirs & """!example.net:Node &a 
-value: a
-next: 
-  value: b
-  next: 
-    value: c
-    next: *a""", output
+      assertStringEqual yamlDirs & "!example.net:Node &a \n" &
+          "value: a\n" &
+          "next: \n" &
+          "  value: b\n" &
+          "  next: \n" &
+          "    value: c\n" &
+          "    next: *a", output
 
     test "Load cyclic data structure":
-      let input = yamlDirs & """!n!system:seq(example.net:Node) 
-  - &a 
+      let input = yamlDirs & """!n!system:seq(example.net:Node)
+  - &a
     value: a
-    next: &b 
+    next: &b
       value: b
-      next: &c 
+      next: &c
         value: c
         next: *a
   - *b
@@ -607,7 +608,7 @@ next:
       try: load(input, result)
       except YamlConstructionError:
         let ex = (ref YamlConstructionError)(getCurrentException())
-        echo "line ", ex.line, ", column ", ex.column, ": ", ex.msg
+        echo "line ", ex.mark.line, ", column ", ex.mark.column, ": ", ex.msg
         echo ex.lineContent
         raise ex
 
@@ -648,7 +649,7 @@ next:
   test "Custom representObject":
     let input = @[1.BetterInt, 9998887.BetterInt, 98312.BetterInt]
     var output = dump(input, tsAll, asTidy, blockOnly)
-    assertStringEqual yamlDirs & """!n!system:seq(test:BetterInt) 
-- !test:BetterInt 1
-- !test:BetterInt 9_998_887
-- !test:BetterInt 98_312""", output
+    assertStringEqual yamlDirs & "!n!system:seq(test:BetterInt) \n" &
+        "- !test:BetterInt 1\n" &
+        "- !test:BetterInt 9_998_887\n" &
+        "- !test:BetterInt 98_312", output
