@@ -1,6 +1,9 @@
 import hashes
 import private/escaping
 
+when (NimMajor, NimMinor, NimPatch) < (1, 4, 0):
+  type FieldDefect* = object of Defect
+
 type
   Anchor* = distinct string ## \
     ## An ``Anchor`` identifies an anchor in the current document.

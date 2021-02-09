@@ -13,6 +13,9 @@
 import streams, deques, strutils
 import data, taglib, stream, private/internal, hints, parser, stream
 
+when (NimMajor, NimMinor, NimPatch) < (1, 4, 0):
+  type IndexDefect* = object of Defect
+
 type
   PresentationStyle* = enum
     ## Different styles for YAML character stream output.
@@ -448,7 +451,7 @@ proc writeTagAndAnchor(c: Context, props: Properties) {.raises: [YamlPresenterOu
     raise e
 
 proc nextItem(c: var Deque, s: var YamlStream):
-    Event {.raises: [YamlStreamError].} =
+    Event {.raises: [YamlStreamError, IndexError].} =
   if c.len > 0:
     try: result = c.popFirst
     except IndexDefect: internalError("Unexpected IndexError")
@@ -733,7 +736,7 @@ proc present*(s: var YamlStream, target: Stream,
               tagLib: TagLibrary,
               options: PresentationOptions = defaultPresentationOptions)
     {.raises: [YamlPresenterJsonError, YamlPresenterOutputError,
-               YamlStreamError].} =
+               YamlStreamError, IndexError].} =
   ## Convert ``s`` to a YAML character stream and write it to ``target``.
   var c = Context(target: target, tagLib: tagLib, options: options)
   doPresent(c, s)
@@ -741,7 +744,7 @@ proc present*(s: var YamlStream, target: Stream,
 proc present*(s: var YamlStream, tagLib: TagLibrary,
               options: PresentationOptions = defaultPresentationOptions):
     string {.raises: [YamlPresenterJsonError, YamlPresenterOutputError,
-                      YamlStreamError].} =
+                      YamlStreamError, IndexError].} =
   ## Convert ``s`` to a YAML character stream and return it as string.
 
   var

@@ -22,6 +22,9 @@ export data, stream, macros, annotations, options
   # *something* in here needs externally visible `==`(x,y: AnchorId),
   # but I cannot figure out what. binding it would be the better option.
 
+when (NimMajor, NimMinor, NimPatch) < (1, 4, 0):
+  type RangeDefect* = object of Defect
+
 type
   SerializationContext* = ref object
     ## Context information for the process of serializing YAML from Nim values.
@@ -1354,7 +1357,7 @@ proc construct*[T](s: var YamlStream, target: var T)
     raise ex
 
 proc load*[K](input: Stream | string, target: var K)
-    {.raises: [YamlConstructionError, IOError, OSError, YamlParserError].} =
+    {.raises: [YamlConstructionError, IOError, OSError, YamlParserError, Defect].} =
   ## Loads a Nim value from a YAML character stream.
   var
     parser = initYamlParser(serializationTagLibrary)
@@ -1432,7 +1435,7 @@ proc dump*[K](value: K, target: Stream, tagStyle: TagStyle = tsRootOnly,
               anchorStyle: AnchorStyle = asTidy,
               options: PresentationOptions = defaultPresentationOptions)
     {.raises: [YamlPresenterJsonError, YamlPresenterOutputError,
-               YamlStreamError].} =
+               YamlStreamError, IndexError].} =
   ## Dump a Nim value as YAML character stream.
   var events = represent(value,
       if options.style == psCanonical: tsAll else: tagStyle,

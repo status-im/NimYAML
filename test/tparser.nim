@@ -70,7 +70,7 @@ macro genTests(): untyped =
     pwd = staticExec("pwd").strip
     absolutePath = '"' & (pwd / testSuiteFolder) & '"'
   echo "[tparser] Generating tests from " & absolutePath
-  discard staticExec("git submodule init && git submodule update --remote")
+  # discard staticExec("git submodule init && git submodule update --remote")
 
   let errorTests = toHashSet(staticExec("cd " & (absolutePath / "tags" / "error") &
                          " && ls -1d *").splitLines())

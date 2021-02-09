@@ -747,7 +747,7 @@ proc next*(lex: var Lexer) =
   debug("lexer -> [" & $lex.curStartPos.line & "," & $lex.curStartPos.column &
       "-" & $lex.curEndPos.line & "," & $lex.curEndPos.column & "] " & $lex.cur)
 
-proc init*(lex: var Lexer, source: Stream) {.raises: [IOError, OSError].} =
+proc init*(lex: var Lexer, source: Stream) {.raises: [IOError, OSError, Defect].} =
   lex.source.open(source)
   lex.basicInit()
 

@@ -178,7 +178,7 @@ proc constructJson*(s: var YamlStream): seq[JsonNode]
 
 when not defined(JS):
   proc loadToJson*(s: Stream): seq[JsonNode]
-      {.raises: [YamlParserError, YamlConstructionError, IOError, OSError].} =
+      {.raises: [YamlParserError, YamlConstructionError, IOError, OSError, Defect].} =
     ## Uses `YamlParser <#YamlParser>`_ and
     ## `constructJson <#constructJson>`_ to construct an in-memory JSON tree
     ## from a YAML character stream.

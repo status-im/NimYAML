@@ -189,7 +189,7 @@ proc compose*(s: var YamlStream, tagLib: TagLibrary): YamlDocument
   yAssert n.kind == yamlEndDoc
 
 proc loadDom*(s: Stream | string): YamlDocument
-    {.raises: [IOError, OSError, YamlParserError, YamlConstructionError].} =
+    {.raises: [IOError, OSError, YamlParserError, YamlConstructionError, Defect].} =
   var
     tagLib = initExtendedTagLibrary()
     parser = initYamlParser(tagLib)
@@ -294,7 +294,7 @@ proc dumpDom*(doc: YamlDocument, target: Stream,
               anchorStyle: AnchorStyle = asTidy,
               options: PresentationOptions = defaultPresentationOptions)
     {.raises: [YamlPresenterJsonError, YamlPresenterOutputError,
-               YamlStreamError].} =
+               YamlStreamError, IndexError].} =
   ## Dump a YamlDocument as YAML character stream.
   var
     tagLib = initExtendedTagLibrary()
