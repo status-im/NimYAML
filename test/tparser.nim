@@ -9,7 +9,7 @@ import testEventParser, commonTestUtils
 import ../yaml, ../yaml/data
 
 const
-  testSuiteFolder = "yaml-test-suite"
+  testSuiteFolder = "yaml-test-suite-copy"
 
 proc echoError(msg: string) =
   styledWriteLine(stdout, fgRed, "[error] ", fgWhite, msg, resetStyle)
@@ -89,6 +89,6 @@ macro genTests(): untyped =
         newLit(strip(title) & " [" &
         testId & ']'), newCall("doAssert", newCall("parserTest",
         newLit(dirPath), newLit(errorTests.contains(testId))))))
-  result = newCall("suite", newLit("Parser Tests (from yaml-test-suite)"), result)
+  result = newCall("suite", newLit("Parser Tests (from " & testSuiteFolder & ")"), result)
 
 genTests()
