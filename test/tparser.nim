@@ -4,7 +4,7 @@
 #    See the file "copying.txt", included in this
 #    distribution, for details about the copyright.
 
-import os, terminal, strutils, streams, macros, unittest, sets
+import os, terminal, strutils, streams, macros, unittest, sets, osproc
 import testEventParser, commonTestUtils
 import ../yaml, ../yaml/data
 
@@ -20,13 +20,13 @@ proc parserTest(path: string, errorExpected : bool): bool =
     tagLib = initExtendedTagLibrary()
     parser: YamlParser
   parser.init(tagLib)
+  # We can't open these files in Mingw, even after converting the paths with
+  # `cygpath -w ...`.
   var
-    actualIn = newFileStream(path / "in.yaml")
-    actual = parser.parse(actualIn)
-    expectedIn = newFileStream(path / "test.event")
+    actual = parser.parse(execCmdEx("cat " & path & "/in.yaml")[0])
+    expectedIn = newStringStream(execCmdEx("cat " & path & "/test.event")[0])
     expected = parseEventStream(expectedIn, tagLib)
   defer:
-    actualIn.close()
     expectedIn.close()
   var i = 1
   try:
@@ -68,22 +68,21 @@ proc parserTest(path: string, errorExpected : bool): bool =
 macro genTests(): untyped =
   let
     pwd = staticExec("pwd").strip
-    absolutePath = '"' & (pwd / testSuiteFolder) & '"'
+    absolutePath = '"' & (pwd / testSuiteFolder).replace('\\', '/') & '"'
   echo "[tparser] Generating tests from " & absolutePath
-  # discard staticExec("git submodule init && git submodule update --remote")
 
-  let errorTests = toHashSet(staticExec("cd " & (absolutePath / "tags" / "error") &
+  let errorTests = toHashSet(staticExec("cd " & (absolutePath & "/tags/error") &
                          " && ls -1d *").splitLines())
   var ignored = toHashSet([".git", "name", "tags", "meta"])
 
   result = newStmtList()
   # walkDir for some crude reason does not work with travis build
-  let dirItems = staticExec("ls -1d " & absolutePath / "*")
-  for dirPath in dirItems.splitLines():
+  let dirItems = staticExec("ls -1d " & absolutePath &  "/*")
+  for dirPath in dirItems.replace('\\', '/').splitLines():
     if dirPath.strip.len == 0: continue
     let testId = dirPath[^4..^1]
     if ignored.contains(testId): continue
-    let title = slurp(dirPath / "===")
+    let title = staticExec("cat " & dirPath & "/===").strip
 
     result.add(newCall("test",
         newLit(strip(title) & " [" &

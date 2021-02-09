@@ -16,7 +16,7 @@ jobs:
             cpu: amd64
           - os: windows
             cpu: amd64
-        branch: [master, devel]
+        branch: [version-1-2, version-1-4, devel]
         include:
           - target:
               os: linux
@@ -143,11 +143,15 @@ jobs:
           echo '${{ github.workspace }}/nim/bin' >> $GITHUB_PATH
 
       - name: Run tests
+        shell: bash
+        working-directory: NimYAML
         run: |
           nim lexerTests
-          nim parserTests
+          if [[ '${{ matrix.target.os }}' != 'windows' ]]; then
+            nim parserTests
+            nim quickstartTests
+          fi
           nim jsonTests
           nim domTests
           nim serializationTests
-          nim quickstartTests
 
