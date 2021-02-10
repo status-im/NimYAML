@@ -1,3 +1,31 @@
+## 0.14.0
+
+Features:
+
+ * **Breaking change**:
+   transient, defaultVal, ignore and implicit are now annotations.
+ * Added ``sparse`` annotation to treat all ``Option`` fields as optional.
+
+Bugfixes:
+
+ * can now use default values with ref objects (#66)
+
+## 0.13.1
+
+Bugfixes:
+
+ * Changed `nim tests` to `nim test` to make nim ci happy.
+
+## 0.13.0
+
+Bugfixes:
+
+ * Fixed submodule link to yaml-test-suite.
+
+Features:
+
+ * Added support for `Option` type.
+
 ## 0.12.0
 
 Bugfixes:

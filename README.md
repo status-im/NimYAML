@@ -1,7 +1,5 @@
 # NimYAML - YAML implementation for Nim
 
-[![Build Status](https://travis-ci.org/flyx/NimYAML.svg?branch=devel)](https://travis-ci.org/flyx/NimYAML)
-
 NimYAML is a pure Nim YAML implementation without any dependencies other than
 Nim's standard library. It enables you to serialize Nim objects to a YAML stream
 and back. It also provides a low-level event-based API, and a document object
@@ -29,7 +27,7 @@ PRs for bugs are welcome. If you want to add a feature, you are free to; but be 
 ## Developers
 
 ```bash
-nim tests # runs all tests
+nim test # runs all tests
 nim lexerTests # run lexer tests
 nim parserTests # run parser tests (git-clones yaml-dev-kit)
 nim serializationTests # runs serialization tests
