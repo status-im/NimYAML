@@ -1,42 +1,34 @@
+mode = ScriptMode.Verbose
+
+proc test(args, path: string) =
+  if not dirExists "build":
+    mkDir "build"
+  exec "nim " & getEnv("TEST_LANG", "c") & " " & getEnv("NIMFLAGS") & " " & args &
+    " --outdir:build --verbosity:0 --hints:off --skipParentCfg " & path
+
 task build, "Compile the YAML module into a library":
-  --app:lib
-  --d:release
-  setCommand "c", "yaml"
+  test "--app:lib -d:release", "yaml.nim"
 
 task test, "Run all tests":
-  --r
-  --verbosity:0
-  setCommand "c", "test/tests"
+  test "-r", "test/tests.nim"
 
 task lexerTests, "Run lexer tests":
-  --r
-  --verbosity:0
-  setCommand "c", "test/tlex"
+  test "-r", "test/tlex.nim"
 
 task parserTests, "Run parser tests":
-  --r
-  --verbosity:0
-  setCommand "c", "test/tparser"
+  test "-r", "test/tparser.nim"
 
 task jsonTests, "Run JSON tests":
-  --r
-  --verbosity:0
-  setCommand "c", "test/tjson"
+  test "-r", "test/tjson.nim"
 
 task domTests, "Run DOM tests":
-  --r
-  --verbosity:0
-  setCommand "c", "test/tdom"
+  test "-r", "test/tdom.nim"
 
 task serializationTests, "Run serialization tests":
-  --r
-  --verbosity:0
-  setCommand "c", "test/tserialization"
+  test "-r", "test/tserialization.nim"
 
 task quickstartTests, "Run quickstart tests":
-  --r
-  --verbosity:0
-  setCommand "c", "test/tquickstart"
+  test "-r", "test/tquickstart.nim"
 
 task documentation, "Generate documentation":
   exec "mkdir -p docout"
@@ -57,24 +49,15 @@ task documentation, "Generate documentation":
     exec r"nim doc2 -o:docout/yaml." & packageName &
         ".html --docSeeSrcUrl:https://github.com/flyx/NimYAML/blob/yaml/`git log -n 1 --format=%H` " &
         file
-  setCommand "nop"
 
 task bench, "Benchmarking":
-  --r
-  --w:off
-  --hints:off
-  --d:release
-  setCommand "c", "bench/bench"
+  test "-r -d:release", "bench/bench.nim"
 
 task clean, "Remove all generated files":
-  exec "rm -rf libyaml.* test/tests test/parsing test/lexing bench/json docout"
-  setCommand "nop"
+  exec "rm -rf build docout"
 
 task server, "Compile server daemon":
-  --d:release
-  --d:yamlScalarRepInd
-  setCommand "c", "server/server"
+  test "-d:release -d:yamlScalarRepInd", "server/server.nim"
 
 task testSuiteEvents, "Compile the testSuiteEvents tool":
-  --d:release
-  setCommand "c", "tools/testSuiteEvents"
+  test "-d:release", "tools/testSuiteEvents.nim"
