@@ -57,7 +57,7 @@ When debugging crashes in this library, use the `d:debug` compile flag to enable
 
 ### Web Documentation
 
-The online documentation on [nimyaml.org](https://nimyaml.org), including the
+The online documentation on [nimyaml.org][1], including the
 testing ground, is generated via [Nix Flake][3].
 
 You can build & run the docs server at via
@@ -83,7 +83,7 @@ Since there isn't much of a use-case for third parties to host this documentatio
 
 If you want to support this project financially, there's a GitHub Sponsor button to the right.
 
- [1]: http://flyx.github.io/NimYAML/
+ [1]: https://nimyaml.org
  [2]: copying.txt
  [3]: https://nixos.wiki/wiki/Flakes
  [4]: https://github.com/yaml/yaml-test-suite
